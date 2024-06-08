@@ -1,38 +1,95 @@
-.App {
-  text-align: center;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: google;
+  src: url(./assets/font/Product\ Sans\ Regular.ttf);
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+@font-face {
+  font-family: wakanda;
+  src: url(./assets/font/WakandaForever-Regular.ttf);
+}
+@font-face {
+  font-family: waka;
+  src: url(./assets/font/WAKANDA\ PANTHER.ttf);
+}
+.contt :nth-child(1) {
+  margin-top: 0px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+input::placeholder {
+  color: #8b8b8b;
+  font-size: 15px;
+  /* font-family: "Montserrat", sans-serif; */
+  /* font-family: "Noto Sans", sans-serif; */
+  /* font-family: "Noto Sans JP", sans-serif; */
+  /* font-family: "Ubuntu", sans-serif; */
+  /* font-family: "Work Sans", sans-serif; */
+  /* font-weight: 400; */
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+::-webkit-scrollbar {
+  /* height: 3px; */
+  width: 2px;
 }
 
-.App-link {
-  color: #61dafb;
+.choose :nth-child(1) {
+  margin-left: 0px;
+}
+.choose :nth-child(4) {
+  margin-left: 0px;
+}
+.choose :nth-child(6) {
+  margin-left: 0px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* Track */
+::-webkit-scrollbar-track {
+  background: transparent;
+  transition: 0.5s;
+  width: 2px;
+  border-radius: 50px;
+  margin: 0px 550px;
+  max-height: 50%;
+  height: 50%;
+  /* padding-left: 300px; */
+}
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #de8544;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: white;
+}
+
+.under {
+  box-shadow: 15px 0px 10px -15px #98d832;
+}
+
+.conta > div:nth-child(1) {
+  margin-left: 0px;
+}
+.conta > div:nth-child(6n + 7) {
+  margin-left: 0px;
+}
+
+.box {
+  font-size: 3vw;
+  margin: max(1rem, 3vw);
+  border: 0.35rem solid;
+  padding: 3vw;
+  border-image: conic-gradient(
+      from var(--angle),
+      var(--c2),
+      var(--c1) 0.1turn,
+      var(--c1) 0.15turn,
+      var(--c2) 0.25turn
+    )
+    30;
+  /* animation: borderRotate var(--d) linear infinite forwards; */
 }
