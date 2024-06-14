@@ -52,13 +52,13 @@ const Login = (props) => {
       <div className="w-full lg:w-[350px] md:w-[350px] p-[40px] rounded-none md:rounded-xl lg:rounded-xl h-[100svh] md:h-[70%] lg:h-[70%]  flex flex-col justify-center items-start">
         {/* <span className="in  font-bold text-[40px] mb-[30px]">INFINITY</span> */}
         <div className="w-full flex flex-col ">
-          <span className="text-[40px] text-[#ffffff] font-[google] font-bold tracking-wider b2">
+          <span className="text-[40px] text-[#de8544] font-[google] font-bold tracking-wider b2">
             Login{" "}
           </span>
-          <span className="text-[15px] font-normal text-[#000000b4] font-[google] ">
+          <span className="text-[15px] font-normal text-[#000000] font-[google] ">
             new user ?
             <span
-              className="text-[#9a53a1] hover:text-[#9a53a1] cursor-pointer  font-normal"
+              className="text-[#de8544] hover:text-[#de8544] cursor-pointer  font-normal"
               style={{ transition: ".3s" }}
               onClick={() => props?.change(2)}
             >
@@ -110,31 +110,55 @@ const Login = (props) => {
         ></input>
 
         {show === true ? (
-          <div className="w-full flex justify-center items-center">
-            <input
-              className=" log outline-none font-[google]  text-[16px]  w-full h-[50px] mb-[7px] rounded-2xl px-[15px] font-normal  text-[black] bg-[#e4eaf1] placeholder:black"
-              placeholder="Password"
-              type="text"
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-                setError("");
-              }}
-            ></input>
+          <div className="w-full flex flex-col justify-center items-start">
             <div
-              className="w-[50px] h-[50px] ml-[-50px] flex justify-center items-center"
-              onClick={() => {
-                setShow(!show);
-              }}
+              className={
+                " w-auto px-[5px] ml-[10px]  rounded-md flex justify-start items-center bg-transparent    font-[google] font-normal  mt-[40px] " +
+                (password?.length === 0
+                  ? " h-[45px] mb-[-45px] z-30 border border-transparent text-[#8b8b8b] text-[15px]"
+                  : " h-[1px] mb-[-1px] z-50 border border-[#fff5ee] text-[#de8544] text-[14px]")
+              }
+              style={{ transition: ".4s" }}
             >
-              <IoEyeOff className="text-[#000000] text-[20px]" />
+              Password
+            </div>
+            <div className="w-full h-[45px] flex justify-start items-center">
+              <input
+                className=" outline-none outline-0 select-none font-[google] border border-[#ffd8be]  text-[16px] w-full h-[45px] mb-[10px] rounded-md px-[15px] font-normal  text-[black] bg-transparent z-40"
+                // placeholder="Password"
+                type="text"
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setError("");
+                }}
+              ></input>
+              <div
+                className="w-[50px] h-[50px] ml-[-50px] flex justify-center items-center"
+                onClick={() => {
+                  setShow(!show);
+                }}
+              >
+                <IoEyeOff className="text-[#000000] text-[20px]" />
+              </div>
             </div>
           </div>
         ) : (
-          <div className="w-full flex justify-center items-center">
+          <div className="w-full flex flex-col justify-center items-start">
+            <div
+              className={
+                " w-auto px-[5px] ml-[10px]  rounded-md flex justify-start items-center bg-transparent    font-[google] font-normal  mt-[40px] " +
+                (password?.length === 0
+                  ? " h-[45px] mb-[-45px] z-30 border border-transparent text-[#8b8b8b] text-[15px]"
+                  : " h-[1px] mb-[-1px] z-50 border border-[#fff5ee] text-[#de8544] text-[14px]")
+              }
+              style={{ transition: ".4s" }}
+            >
+              Password
+            </div>
             <input
-              className="log outline-none font-[google] text-[14px]   w-full h-[50px] mb-[7px] rounded-2xl px-[15px] font-normal  text-[black] bg-[#e4eaf1] placeholder:black"
-              placeholder="Password"
+              className="outline-none outline-0 select-none font-[google] border border-[#ffd8be]  text-[16px] w-full h-[45px] mb-[10px] rounded-md px-[15px] font-normal  text-[black] bg-transparent z-40"
+              // placeholder="Password"
               type="password"
               value={password}
               onChange={(e) => {

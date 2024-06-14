@@ -8,7 +8,7 @@ import Remiders from "./Remiders";
 import { auth } from "../firebase";
 import { db } from "../firebase";
 import firebase from "../firebase";
-import { onSnapshot } from "firebase/firestore";
+import { arrayUnion, onSnapshot } from "firebase/firestore";
 import { AiOutlineSwap } from "react-icons/ai";
 import { FaFilter } from "react-icons/fa";
 import { LuArrowDown } from "react-icons/lu";
@@ -50,6 +50,10 @@ const HomePage = () => {
       getObjectsForCurrentMonthAndYear();
     }
   }, [transactionHistory]);
+
+  useEffect(() => {
+    console.log(tempTransactionHistory);
+  }, [tempTransactionHistory]);
 
   function getObjectsForCurrentMonthAndYear() {
     const currentDate = new Date();

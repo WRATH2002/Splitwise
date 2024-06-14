@@ -97,7 +97,7 @@ const SubGraph = () => {
         <div className="w-[calc((100%-20px)/2)] h-full bg-[#ffeadc] rounded-2xl p-[20px] flex flex-col justify-center items-center">
           <div className="w-full h-[30px] flex justify-between items-center">
             <span>Shopping</span>
-            <div className="w-[30px] h-[30px] rounded-full bg-[#ffceab] text-[#de8544] flex justify-center items-center">
+            <div className="w-[30px] h-[30px] rounded-full bg-[#ffceab] text-[#95241d] flex justify-center items-center">
               x{getCount("Shopping")}
             </div>
           </div>
@@ -141,7 +141,7 @@ const SubGraph = () => {
         <div className="w-[calc((100%-20px)/2)] h-full bg-[#ffeadc] rounded-2xl p-[20px]  flex flex-col justify-center items-center">
           <div className="w-full h-[30px] flex justify-between items-center">
             <span>Grocery</span>
-            <div className="w-[30px] h-[30px] rounded-full bg-[#ffceab] text-[#de8544] flex justify-center items-center">
+            <div className="w-[30px] h-[30px] rounded-full bg-[#ffceab] text-[#95241d] flex justify-center items-center">
               x{getCount("Grocery")}
             </div>
           </div>
@@ -187,7 +187,7 @@ const SubGraph = () => {
         <div className="w-[calc((100%-20px)/2)] h-full bg-[#ffeadc] rounded-2xl p-[20px] flex flex-col justify-center items-center">
           <div className="w-full h-[30px] flex justify-between items-center">
             <span>Food</span>
-            <div className="w-[30px] h-[30px] rounded-full bg-[#ffceab] text-[#de8544] flex justify-center items-center">
+            <div className="w-[30px] h-[30px] rounded-full bg-[#ffceab] text-[#95241d] flex justify-center items-center">
               x{getCount("Food & Drinks")}
             </div>
           </div>
@@ -233,7 +233,7 @@ const SubGraph = () => {
         <div className="w-[calc((100%-20px)/2)] h-full bg-[#ffeadc] rounded-2xl p-[20px] flex flex-col justify-center items-center">
           <div className="w-full h-[30px] flex justify-between items-center">
             <span>Medical</span>
-            <div className="w-[30px] h-[30px] rounded-full bg-[#ffceab] text-[#de8544] flex justify-center items-center">
+            <div className="w-[30px] h-[30px] rounded-full bg-[#ffceab] text-[#95241d] flex justify-center items-center">
               x5
             </div>
           </div>
@@ -277,7 +277,7 @@ const SubGraph = () => {
         <div className="w-[calc((100%-20px)/2)] h-full bg-[#ffeadc] rounded-2xl p-[20px] flex flex-col justify-center items-center">
           <div className="w-full h-[30px] flex justify-between items-center">
             <span>Shopping</span>
-            <div className="w-[30px] h-[30px] rounded-full bg-[#ffceab] text-[#de8544] flex justify-center items-center">
+            <div className="w-[30px] h-[30px] rounded-full bg-[#ffceab] text-[#95241d] flex justify-center items-center">
               x5
             </div>
           </div>

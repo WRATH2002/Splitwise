@@ -1,6 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { BiRupee } from "react-icons/bi";
+import { GoAlertFill } from "react-icons/go";
 import { HiCheck } from "react-icons/hi";
+import { auth } from "../firebase";
+import { db } from "../firebase";
+import firebase from "../firebase";
+import { arrayRemove, arrayUnion, onSnapshot } from "firebase/firestore";
 
 const monthNames = [
   "January",
@@ -33,6 +38,8 @@ const monthsShort = [
 ];
 
 const IndividualReminder = (props) => {
+  const [aprroveModal, setApproveModal] = useState(false);
+  const [include, setInclude] = useState(false);
   function monthName(data) {
     // console.log(props?.data);
     let arr = data.split("/");
@@ -74,7 +81,7 @@ const IndividualReminder = (props) => {
         const diffMonths = Math.floor(diffDays / 30);
         return `${diffMonths} month${diffMonths !== 1 ? "s" : ""}`;
       } else if (diffDays >= 7) {
-        const diffWeeks = Math.floor(diffDays / 7);
+        const diffWeeks = Math.round(diffDays / 7);
         return `${diffWeeks} week${diffWeeks !== 1 ? "s" : ""}`;
       } else {
         return `${diffDays} day${diffDays !== 1 ? "s" : ""}`;
@@ -86,7 +93,7 @@ const IndividualReminder = (props) => {
         const diffMonths = Math.floor(Math.abs(diffDays) / 30);
         return `due, ${diffMonths} month${diffMonths !== 1 ? "s" : ""}`;
       } else if (diffDays <= -7) {
-        const diffWeeks = Math.floor(Math.abs(diffDays) / 7);
+        const diffWeeks = Math.round(Math.abs(diffDays) / 7);
         return `due, ${diffWeeks} week${diffWeeks !== 1 ? "s" : ""}`;
       } else {
         const absDays = Math.abs(diffDays);
@@ -95,63 +102,195 @@ const IndividualReminder = (props) => {
     }
   }
 
+  function deleteReminder() {
+    const user = firebase.auth().currentUser;
+    db.collection("Expense")
+      .doc(user?.uid)
+      .update({
+        // Reminders : arrayRemove({props?.data})
+        Reminders: arrayRemove({
+          Lable: props?.data?.Lable,
+          Date: props?.data?.Date,
+          Amount: props?.data?.Amount,
+          TransactionType: props?.data?.TransactionType,
+          Members: props?.data?.Members,
+          Category: props?.data?.Category,
+          Mode: props?.data?.Mode,
+          BillUrl: props?.data?.BillUrl,
+        }),
+      });
+
+    if (include) {
+      db.collection("Expense")
+        .doc(user?.uid)
+        .update({
+          NormalTransaction: arrayUnion({
+            Lable: props?.data?.Lable,
+            Date: props?.data?.Date,
+            Amount: props?.data?.Amount,
+            TransactionType: props?.data?.TransactionType,
+            Members: props?.data?.Members,
+            Category: props?.data?.Category,
+            Mode: props?.data?.Mode,
+            BillUrl: props?.data?.BillUrl,
+          }),
+        });
+    }
+
+    // console.log(
+    //   props?.data?.Lable,
+    //   props?.data?.Date,
+    //   props?.data?.Amount,
+    //   props?.data?.Category,
+    //   props?.data?.BillUrl,
+    //   props?.data?.Mode,
+    //   props?.data?.TransactionType,
+    //   props?.data?.Members
+    // );
+
+    setInclude(false);
+  }
+
   return (
-    <div
-      className={
-        "w-full min-h-[80px] my-[5px]  rounded-2xl flex font-[google] justify-center items-center font-normal border-[1px] border-[#ffe6d7]" +
-        (getRemainingTime(props?.data?.Date).includes("due")
-          ? " bg-[#ffa43c]"
-          : " bg-[#ffddc5]")
-      }
-    >
-      <div className="w-[50px] h-full flex flex-col justify-center items-center">
-        <div className="text-[12px] text-[#000000]">
-          {monthName(props?.data?.Date)}
+    <>
+      {aprroveModal ? (
+        <div
+          key={props?.index}
+          className="w-full h-[100svh] fixed z-50 bg-[#68686871] top-0 left-0 flex justify-center items-center backdrop-blur-md"
+        >
+          <div className="w-[320px] h-auto p-[30px] py-[23px] bg-[#fff5ee] rounded-3xl flex flex-col justify-center items-start">
+            <span className="w-full text-[22px] text-black font-[google] font-normal flex justify-start items-center ">
+              Confirm{" "}
+              <span className="text-[#de8544] ml-[10px]">Transaction</span>
+            </span>
+
+            <span className="w-full text-[14px] text-[#000000] font-[google] font-normal flex justify-center items-start whitespace-pre-wrap mt-[5px]  ">
+              Have you done this transaction already. If you dismiss this
+              reminder, you will not be notified later. Do you really want to
+              dismiss this reminder ?
+            </span>
+
+            <span className="w-full text-[14px] text-[#434343b5] font-[google] font-normal flex justify-start items-center mt-[10px]">
+              <span className="mr-[5px] text-[#000000]">Label :</span>{" "}
+              {props?.data?.Lable}
+            </span>
+            <span className="w-full text-[14px] text-[#434343b5] font-[google] font-normal flex justify-start items-center ">
+              <span className="mr-[5px] text-[#000000]">Amount :</span>{" "}
+              <BiRupee /> {formatAmountWithCommas(props?.data?.Amount)}
+            </span>
+
+            <span
+              className="w-full text-[14px] text-[#000000] font-[google] font-normal flex justify-start items-center whitespace-pre-wrap mt-[5px]  cursor-pointer"
+              onClick={() => {
+                setInclude(!include);
+                // setNewIncome("");
+                // setError("");
+              }}
+            >
+              <div
+                className={
+                  "w-[18px] h-[18px] rounded-md border-[1.5px] border-[#ffa43c] mr-[6px]  flex justify-center items-center" +
+                  (include ? " bg-[#ffa43c]" : " bg-transparent")
+                }
+                // onClick={() => {
+                //   setInclude(!include);
+                //   // setNewIncome("");
+                //   // setError("");
+                // }}
+              >
+                {" "}
+                <HiCheck className="text-[#fff5ee]" />
+              </div>
+              <span>Include this transaction in Budget</span>
+            </span>
+
+            <div className="w-full flex justify-end items-end font-[google] font-normal text-[15px] text-black h-[20px] mt-[20px]">
+              <div
+                className="h-full mr-[20px] flex justify-center items-center cursor-pointer  "
+                onClick={() => {
+                  setApproveModal(false);
+                  setInclude(false);
+                  // setNewIncome("");
+                  // setError("");
+                }}
+              >
+                Cancel
+              </div>
+              <div
+                className="h-full  flex justify-center items-center text-[#de8544] cursor-pointer "
+                onClick={() => {
+                  // updateIncome();
+                  deleteReminder();
+                  setApproveModal(false);
+                }}
+              >
+                Confirm
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="text-black text-[20px] ">{date(props?.data?.Date)}</div>
-      </div>
+      ) : (
+        <></>
+      )}
       <div
         className={
-          "w-[calc(100%-150px)] h-[80px] bg-[#ffeadc] flex flex-col justify-center items-start px-[10px] " +
+          "w-full min-h-[80px] my-[5px]  rounded-2xl flex font-[google] justify-center items-center font-normal border-[1px] border-[#ffe6d7]" +
           (getRemainingTime(props?.data?.Date).includes("due")
-            ? " bg-[#fec686] text-[#4a4a4a]"
-            : " bg-[#ffddc5] text-[#6a6a6a]")
+            ? " bg-[#ffa43c]"
+            : " bg-[#ffddc5]")
         }
       >
-        <div className="text-[14px] leading-[19px]  line-clamp-2 w-full overflow-hidden text-ellipsis">
-          {props?.data?.Lable}
-        </div>
-        <div className="text-black text-[17px] w-full flex justify-start items-center ">
-          <BiRupee className="ml-[-3px]" />{" "}
-          {formatAmountWithCommas(props?.data?.Amount)}
-        </div>
-      </div>
-      <div
-        className={
-          "w-[100px] min-h-[80px] bg-[#ffeadc] flex flex-col justify-center items-end rounded-r-2xl pr-[15px]" +
-          (getRemainingTime(props?.data?.Date).includes("due")
-            ? " bg-[#fec686] text-[#fa690e]"
-            : " bg-[#ffddc5] text-[#000000]")
-        }
-      >
-        <div className="text-[13px] ">
-          {getRemainingTime(props?.data?.Date)}
+        <div className="w-[50px] h-full flex flex-col justify-center items-center">
+          <div className="text-[12px] text-[#000000]">
+            {monthName(props?.data?.Date)}
+          </div>
+          <div className="text-black text-[20px] ">
+            {date(props?.data?.Date)}
+          </div>
         </div>
         <div
           className={
-            "text-white w-[30px] h-[30px] mt-[5px] rounded-full text-[18px] flex justify-center items-center cursor-pointer" +
+            "w-[calc(100%-150px)] h-[80px] flex flex-col justify-center items-start px-[10px] " +
             (getRemainingTime(props?.data?.Date).includes("due")
-              ? " bg-[#f88239] "
-              : " bg-[#de8544] ")
+              ? " bg-[#ffd29f] text-[#4a4a4a]"
+              : " bg-[#ffeadc] text-[#6a6a6a]")
           }
-          onClick={() => {
-            // setApproveModal(true);
-          }}
         >
-          <HiCheck />
+          <div className="text-[14px] leading-[19px]  line-clamp-2 w-full overflow-hidden text-ellipsis">
+            {props?.data?.Lable}
+          </div>
+          <div className="text-black text-[17px] w-full flex justify-start items-center ">
+            <BiRupee className="ml-[-3px]" />{" "}
+            {formatAmountWithCommas(props?.data?.Amount)}
+          </div>
+        </div>
+        <div
+          className={
+            "w-[100px] min-h-[80px] flex flex-col justify-center items-end rounded-r-2xl pr-[15px]" +
+            (getRemainingTime(props?.data?.Date).includes("due")
+              ? " bg-[#ffd29f] text-[#95241d]"
+              : " bg-[#ffeadc] text-[#000000]")
+          }
+        >
+          <div className="text-[13px] ">
+            {getRemainingTime(props?.data?.Date)}
+          </div>
+          <div
+            className={
+              "text-white w-[30px] h-[30px] mt-[5px] rounded-full text-[18px] flex justify-center items-center cursor-pointer" +
+              (getRemainingTime(props?.data?.Date).includes("due")
+                ? " bg-[#f88239] "
+                : " bg-[#de8544] ")
+            }
+            onClick={() => {
+              setApproveModal(true);
+            }}
+          >
+            <HiCheck />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

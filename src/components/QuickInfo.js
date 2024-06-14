@@ -8,7 +8,8 @@ import { db } from "../firebase";
 import firebase from "../firebase";
 import { onSnapshot } from "firebase/firestore";
 import { Line, Circle } from "rc-progress";
-import { FaLongArrowAltUp } from "react-icons/fa";
+import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
+import ExpenseBarGraph from "./ExpenseBarGraph";
 
 const monthNames = [
   "January",
@@ -47,6 +48,7 @@ const QuickInfo = () => {
   const [entertainment, setEntertainment] = useState("");
   const [food, setFood] = useState("");
   const [other, setOther] = useState("");
+  const [showGraph, setShowGraph] = useState(false);
 
   useEffect(() => {
     fetchMonth();
@@ -124,7 +126,15 @@ const QuickInfo = () => {
             const [day, month, year] = obj.Date.split("/").map(Number);
             return month - 1 === currentMonth && year === currentYear;
           })
-          .reduce((sum, obj) => sum + parseFloat(obj.Amount), 0)
+          .reduce((sum, obj) => {
+            if (obj?.MoneyIsAdded) {
+              sum = sum - parseFloat(obj.Amount);
+            } else {
+              sum = sum + parseFloat(obj.Amount);
+            }
+
+            return sum;
+          }, 0)
       ); // Convert amount to number before summing
     }
   }
@@ -196,6 +206,7 @@ const QuickInfo = () => {
 
   return (
     <>
+      {showGraph ? <ExpenseBarGraph /> : <></>}
       {budgetModal === true ? (
         <>
           <div className="w-full h-[100svh] fixed z-50 bg-[#68686871] top-0 left-0 text-white font-[google] font-normal flex justify-center items-center backdrop-blur-md">
@@ -513,13 +524,20 @@ const QuickInfo = () => {
           <span className=" font-[google] font-normal text-[22px] text-[#000000] flex justify-start items-center">
             {parseFloat(monthlyExpense) <= budget ? (
               <>
-                <BiRupee className="ml-[-3px] " />{" "}
-                {monthlyExpense.length != 0 ? (
-                  <>{formatAmountWithCommas(monthlyExpense)}</>
-                ) : (
-                  <></>
-                )}{" "}
-                {/* <span className="text-[#828282] text-[12px]">Under Budget</span> */}
+                <span className=" flex justify-start items-center text-[#000000]">
+                  <BiRupee className="ml-[-3px] " />{" "}
+                  {monthlyExpense.length != 0 ? (
+                    <>{formatAmountWithCommas(monthlyExpense)}</>
+                  ) : (
+                    <></>
+                  )}{" "}
+                </span>
+
+                <span className=" text-[13px] ml-[6px] h-[25px] flex justify-start items-end text-[#00bb00] ">
+                  <FaLongArrowAltDown className="mb-[4px] mr-[5px] text-[15px]" />{" "}
+                  <BiRupee className="ml-[-3px] mb-[3px]" />
+                  {formatAmountWithCommas(budget - monthlyExpense)}
+                </span>
               </>
             ) : (
               <>
@@ -532,7 +550,7 @@ const QuickInfo = () => {
                   )}{" "}
                 </span>
 
-                <span className=" text-[13px] ml-[6px] h-[25px] flex justify-start items-end text-[#ff6c00]">
+                <span className=" text-[13px] ml-[6px] h-[25px] flex justify-start items-end text-[#de8544] ">
                   <FaLongArrowAltUp className="mb-[4px] mr-[5px] text-[15px]" />{" "}
                   <BiRupee className="ml-[-3px] mb-[3px]" />
                   {formatAmountWithCommas(monthlyExpense - budget)}
@@ -540,13 +558,13 @@ const QuickInfo = () => {
               </>
             )}
           </span>
-          <span className="font-[google]  text-[13px] text-[#83b933] font-semibold flex justify-start items-center mt-[5px]">
+          <span className="font-[google]  text-[13px] text-[#000000]   flex justify-start items-center mt-[5px]">
             <Line
               percent={percent}
               strokeWidth={6}
               trailColor="#b7b7b7"
               trailWidth={2}
-              strokeColor={"" + (percent < 75 ? " #83b933" : " #ff6c00")}
+              strokeColor={"" + (percent < 75 ? " #00bb00" : " #de8544")}
               className="h-[4px]"
             />{" "}
             <span
@@ -579,7 +597,12 @@ const QuickInfo = () => {
           </span>
           <span className=" font-[google] font-normal text-[22px] text-[#828282] flex justify-start items-center">
             <span className="opacity-0">{transactionHistory.length}</span>
-            <RiDonutChartFill className="mr-[9px]" /> <MdOutlineBarChart />
+            <RiDonutChartFill className="mr-[9px]" />{" "}
+            <MdOutlineBarChart
+              onClick={() => {
+                setShowGraph(true);
+              }}
+            />
           </span>
           {income === 0 ? (
             <span

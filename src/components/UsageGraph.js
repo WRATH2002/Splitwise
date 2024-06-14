@@ -1,5 +1,5 @@
 import React, { PureComponent, useState } from "react";
-import { PieChart, Pie, Sector, ResponsiveContainer } from "recharts";
+import { PieChart, Pie, Sector, ResponsiveContainer, Cell } from "recharts";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { FaHandHoldingMedical, FaShopify } from "react-icons/fa";
@@ -8,13 +8,22 @@ import { IoFastFood } from "react-icons/io5";
 import SubGraph from "./SubGraph";
 
 const data = [
-  { name: "Shopping", amount: 400 },
-  { name: "Entertainment", amount: 300 },
-  { name: "Food & Drinks", amount: 300 },
-  { name: "Group D", amount: 200 },
-  { name: "Group D", amount: 200 },
+  { label: "Shopping", amount: 400 },
+  { label: "Entertainment", amount: 300 },
+  { label: "Food & Drinks", amount: 300 },
+  { label: "Group D", amount: 200 },
+  { label: "Group sfd", amount: 200 },
+  { label: "Group g", amount: 200 },
 ];
 
+const COLORS = [
+  "#95241d",
+  "#b63525",
+  "#d74e25",
+  "#ea682a",
+  "#ee8a56",
+  "#f2a87f",
+];
 // const [dataa, setDataa] = useState([]);
 
 // const ChangeData = () => {
@@ -85,16 +94,17 @@ const renderActiveShape = (props) => {
         x={ex + (cos >= 0 ? 1 : -1) * 12}
         y={ey}
         textAnchor={textAnchor}
-        fill="#333"
-      >{`PV ${value}`}</text>
+        fill="#000000"
+      >{`${value}`}</text>
       <text
         x={ex + (cos >= 0 ? 1 : -1) * 12}
         y={ey}
         dy={18}
+        fontSize={14}
         textAnchor={textAnchor}
-        fill="#999"
+        fill="#000000"
       >
-        {`(Rate ${(percent * 100).toFixed(2)}%)`}
+        {`${(percent * 100).toFixed(2)}%`}
       </text>
     </g>
   );
@@ -117,7 +127,7 @@ export default class UsageGraph extends PureComponent {
   render() {
     return (
       <div className="w-full h-full bg-[#fff5ee] flex flex-col justify-start items-center overflow-y-scroll">
-        <div className="w-full h-[320px] ">
+        <div className="w-full h-[270px] ">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart width={400} height={400}>
               <Pie
@@ -131,7 +141,14 @@ export default class UsageGraph extends PureComponent {
                 fill="#de8544"
                 dataKey="amount"
                 onMouseEnter={this.onPieEnter}
-              />
+              >
+                {data.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={COLORS[index % COLORS.length]}
+                  />
+                ))}
+              </Pie>
             </PieChart>
           </ResponsiveContainer>
         </div>

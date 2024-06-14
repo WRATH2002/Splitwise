@@ -16,6 +16,13 @@ import Button from "react-multi-date-picker/components/button";
 import { IoMdCloudUpload } from "react-icons/io";
 import { MdOutlineAddCircleOutline } from "react-icons/md";
 import { BsPersonFill } from "react-icons/bs";
+import { auth } from "../firebase";
+import { db } from "../firebase";
+import firebase from "../firebase";
+import { arrayUnion, onSnapshot } from "firebase/firestore";
+import Friends, { Profile, ProfileTwo } from "./Friends";
+import { RiSearchLine } from "react-icons/ri";
+import { FaFilter } from "react-icons/fa";
 
 const options = {
   title: "Demo Title",
@@ -56,6 +63,21 @@ const options = {
   },
 };
 
+const monthNames = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
 const weekDays = ["S", "M", "T", "W", "T", "F", "S"];
 const months = [
   "Jan",
@@ -84,19 +106,88 @@ const SplitExpense = () => {
   const [preDate, setPreDate] = useState(0);
   const [mode, setMode] = useState("");
   const [bill, setBill] = useState("");
-  const [addedMember, setAddedMember] = useState([]);
-  const [personName, setPersonName] = useState("");
+  const [addedMember, setAddedMember] = useState([
+    firebase.auth().currentUser.uid,
+  ]);
+  const [userList, setUserList] = useState([]);
+  const [splitTransaction, setSplitTransaction] = useState([]);
+  const [searchName, setSearchName] = useState("");
+  const [error, setError] = useState("");
+
   useEffect(() => {
+    // const user = firebase.auth().currentUser;
+    // if (addedMember.length === 0) {
+    //   setAddedMember((prevMembers) => [...prevMembers, user.uid]);
+    //   // setAddedMember(user.uid);
+    // }
     const currentDate = new Date();
     setPreDate(currentDate.getDate());
-    console.log(value);
+    fetchSplitTransaction();
   }, []);
 
-  function addPerson() {
-    const newMember = { user: personName };
-    setAddedMember((prevMembers) => [...prevMembers, newMember]);
-    setPersonName("");
+  function fetchSplitTransaction() {
+    const user = firebase.auth().currentUser;
+    const userRef = db.collection("Expense").doc(user.uid);
+    onSnapshot(userRef, (snapshot) => {
+      // setMonth(snapshot?.data()?.Photo);
+      setSplitTransaction(snapshot?.data()?.SplitTransaction);
+    });
   }
+
+  function addTransactionToFirebase(userid) {
+    const user = firebase.auth().currentUser;
+    db.collection("Expense")
+      .doc(userid)
+      .update({
+        SplitTransaction: arrayUnion({
+          Lable: label,
+          Date: value?.day + "/" + value?.month?.number + "/" + value?.year,
+          Amount: price,
+          TransactionType: "Split",
+          Members: addedMember,
+          Category: category,
+          Mode: mode,
+          BillUrl: bill,
+          Owner: user.uid,
+          MemberCount: addedMember.length,
+        }),
+      });
+  }
+
+  function addTransactionToTransaction(userid) {
+    const user = firebase.auth().currentUser;
+    db.collection("Expense")
+      .doc(userid)
+      .update({
+        NormalTransaction: arrayUnion({
+          Lable: "Split : " + label,
+          Date: value?.day + "/" + value?.month?.number + "/" + value?.year,
+          Amount: price,
+          TransactionType: "Single",
+          Members: addedMember,
+          Category: category,
+          Mode: mode,
+          BillUrl: bill,
+          Owner: user.uid,
+          MemberCount: addedMember.length,
+        }),
+      });
+  }
+
+  function mapOverAll() {
+    const user = firebase.auth().currentUser;
+    addTransactionToFirebase(user.uid);
+    addTransactionToTransaction(user.uid);
+    addedMember.map((data) => {
+      addTransactionToFirebase(data);
+    });
+  }
+
+  // function addPerson() {
+  //   const newMember = { user: personName };
+  //   setAddedMember((prevMembers) => [...prevMembers, newMember]);
+  //   // setPersonName("");
+  // }
 
   const [value, setValue] = useState();
 
@@ -106,90 +197,303 @@ const SplitExpense = () => {
     return /^[0-9]+(\.[0-9]*)?$/.test(str);
   }
 
+  function searchUserFriendChangeWord() {
+    let words = searchName.split(" ");
+    for (let i = 0; i < words.length; i++) {
+      words[i] =
+        words[i].charAt(0).toUpperCase() + words[i].slice(1).toLowerCase();
+    }
+    searchUserFriend(words.join(" "));
+  }
+
+  function searchUserFriend(nameString) {
+    setUserList([]);
+    const UserRef = db.collection("Expense");
+    const queryRef = UserRef.where("Name", "==", nameString);
+    queryRef
+      .get()
+      .then((data) => {
+        data.docs.forEach((userId) => {
+          console.log(userId.id);
+          setUserList((prevMembers) => [
+            ...prevMembers,
+            { UserID: userId?.id },
+          ]);
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+  useEffect(() => {
+    console.log(userList);
+    console.log(addedMember);
+  }, [userList, addedMember]);
+
   return (
     <>
       {addModal ? (
-        <div className="w-full h-[100svh] fixed  bg-[#00000071] top-0 left-0 flex justify-center items-center backdrop-blur-md z-50">
-          <div className=" w-[320px] h-auto p-[30px]   bg-[#212121] rounded-3xl flex flex-col justify-start items-start ">
-            <span className="w-full text-[25px] text-white font-[google] font-normal flex justify-start items-center mb-[10px] mt-[-10px]">
-              Add <span className="text-[#98d832] ml-[10px]">Member</span>
-            </span>
+        <div className="w-[calc(100%-40px)] h-[calc(100svh-40px)] rounded-3xl fixed  bg-[#fff5ee] top-[20px] left-[20px] flex flex-col justify-start items-start py-[30px] text-black z-50">
+          {/* <div className=" w-[320px] h-auto p-[30px]   bg-[#212121] rounded-3xl flex flex-col justify-start items-start "> */}
+          <span className="px-[30px] w-full text-[25px] text-black font-[google] font-normal flex justify-start items-center mb-[10px] mt-[-10px]">
+            Add <span className="text-[#de8544] ml-[10px]">Member</span>
+          </span>
+          <div
+            className={
+              "px-[35px] pr-[5px]  w-auto  rounded-md flex justify-start items-center bg-transparent ml-[5px]   font-[google] font-normal mt-[15px]" +
+              (searchName?.length === 0
+                ? " h-[45px] mb-[-45px] z-30 border border-transparent text-[#8b8b8b] text-[15px]"
+                : " h-[1px] mb-[-1px] z-50 border border-[#fff5ee] text-[#de8544] text-[14px]")
+            }
+            style={{ transition: ".4s" }}
+          >
+            Friend's Name
+          </div>
+          <div className="px-[30px] w-full h-[45px] flex justify-start items-center ">
             <input
-              className="outline-none rounded-md w-full h-[40px] bg-transparent border border-[#535353] px-[10px] text-white font-[google] font-normal text-[15px]"
-              placeholder="Name"
-              value={personName}
+              className="outline-none rounded-md w-full h-[45px] bg-transparent border border-[#ffd8be] px-[10px]  font-[google] font-normal text-[16px] z-40"
+              // placeholder="Name"
+              value={searchName}
               onChange={(e) => {
-                setPersonName(e.target.value);
+                setSearchName(e.target.value);
               }}
             />
-            <div className="w-full flex justify-end items-end font-[google] font-normal text-[15px] text-white h-[20px] mt-[20px]">
-              <div
-                className="h-full mr-[20px] flex justify-center items-center cursor-pointer  "
-                onClick={() => {
-                  setPersonName("");
-                  setAddModal(false);
-                }}
-              >
-                Cancel
-              </div>
-              <div
-                className="h-full  flex justify-center items-center text-[#98d832] cursor-pointer "
-                onClick={() => {
-                  // addToFirebase();
-                  addPerson();
-                  setAddModal(false);
-                }}
-              >
-                Add
-              </div>
+            {searchName !== "" ? (
+              <>
+                <div
+                  className="w-[45px] h-full flex justify-center items-center ml-[-45px] text-[18px] cursor-pointer z-50 hover:text-[#de8544]"
+                  onClick={() => {
+                    // addToFirebase();
+                    // addPerson();
+                    // setAddModal(false);
+                    searchUserFriendChangeWord();
+                  }}
+                >
+                  <RiSearchLine className="cursor-pointer" />
+                </div>
+              </>
+            ) : (
+              <></>
+            )}
+          </div>
+          <div
+            className={
+              "px-[30px] w-full mt-[10px]  overflow-y-scroll " +
+              (addedMember?.length === 0
+                ? " h-[calc(100%-128px)]"
+                : " h-[calc(100%-218px)]")
+            }
+          >
+            {userList.length === 0 ? (
+              <>
+                <div className="w-full h-[60px] flex flex-col  justify-center text-[15px] items-center font-[google] font-normal text-[#de8544]">
+                  {/* <span>No Users Found</span>
+                  <span>Try searching with Full Name</span> */}
+                </div>
+              </>
+            ) : (
+              <>
+                {userList?.map((data) => {
+                  return (
+                    <>
+                      <Friends
+                        data={data}
+                        addedMember={addedMember}
+                        setAddedMember={setAddedMember}
+                      />
+                    </>
+                  );
+                })}
+                <Friends
+                  data={{ UserID: "50QaJrpno3SIKLnfQxqbzHOSXpy1" }}
+                  addedMember={addedMember}
+                  setAddedMember={setAddedMember}
+                />
+                <Friends
+                  data={{ UserID: "fbYMWUIviJWlu6ro4qGXkxelw2i1" }}
+                  addedMember={addedMember}
+                  setAddedMember={setAddedMember}
+                />
+                <Friends
+                  data={{ UserID: "kqctxvgivIcDULNNpBF8erfzb5zI42" }}
+                  addedMember={addedMember}
+                  setAddedMember={setAddedMember}
+                />
+                <Friends
+                  data={{ UserID: "kqctxvgivIcDULNNpBwrF8ezb5zI42" }}
+                  addedMember={addedMember}
+                  setAddedMember={setAddedMember}
+                />
+                <Friends
+                  data={{ UserID: "kqctxvgivIcDULNNpBrgaqeF8ezb5zI42" }}
+                  addedMember={addedMember}
+                  setAddedMember={setAddedMember}
+                />
+                <Friends
+                  data={{ UserID: "kqctxvgivIcDULNNpsvqaervBwefF8ezb5zI42" }}
+                  addedMember={addedMember}
+                  setAddedMember={setAddedMember}
+                />
+                <Friends
+                  data={{ UserID: "kqctxvgivIcDULNNpBF8avezb5zI42" }}
+                  addedMember={addedMember}
+                  setAddedMember={setAddedMember}
+                />
+                <Friends
+                  data={{ UserID: "kqctxvgivIcDULNNpBF8ezervvb5zI42" }}
+                  addedMember={addedMember}
+                  setAddedMember={setAddedMember}
+                />
+                <div>
+                  {" "}
+                  {/* <Friends
+                  data={{ UserID: "kqctxvgivIcDULNNpBF8ezb5zI42" }}
+                  addedMember={addedMember}
+                  setAddedMember={setAddedMember}
+                />
+                <Friends
+                  data={{ UserID: "kqctxvgivIcDULNNpBF8ezb5zI42" }}
+                  addedMember={addedMember}
+                  setAddedMember={setAddedMember}
+                />
+                <Friends
+                  data={{ UserID: "kqctxvgivIcDULNNpBF8ezb5zI42" }}
+                  addedMember={addedMember}
+                  setAddedMember={setAddedMember}
+                />
+                <Friends
+                  data={{ UserID: "kqctxvgivIcDULNNpBF8ezb5zI42" }}
+                  addedMember={addedMember}
+                  setAddedMember={setAddedMember}
+                />
+                <Friends
+                  data={{ UserID: "kqctxvgivIcDULNNpBF8ezb5zI42" }}
+                  addedMember={addedMember}
+                  setAddedMember={setAddedMember}
+                />
+                <Friends
+                  data={{ UserID: "kqctxvgivIcDULNNpBF8ezb5zI42" }}
+                  addedMember={addedMember}
+                  setAddedMember={setAddedMember}
+                />
+                <Friends
+                  data={{ UserID: "kqctxvgivIcDULNNpBF8ezb5zI42" }}
+                  addedMember={addedMember}
+                  setAddedMember={setAddedMember}
+                />
+                <Friends
+                  data={{ UserID: "kqctxvgivIcDULNNpBF8ezb5zI42" }}
+                  addedMember={addedMember}
+                  setAddedMember={setAddedMember}
+                />
+                <Friends
+                  data={{ UserID: "kqctxvgivIcDULNNpBF8ezb5zI42" }}
+                  addedMember={addedMember}
+                  setAddedMember={setAddedMember}
+                />
+                <Friends
+                  data={{ UserID: "kqctxvgivIcDULNNpBF8ezb5zI42" }}
+                  addedMember={addedMember}
+                  setAddedMember={setAddedMember}
+                />
+                <Friends
+                  data={{ UserID: "kqctxvgivIcDULNNpBF8ezb5zI42" }}
+                  addedMember={addedMember}
+                  setAddedMember={setAddedMember}
+                />
+                <Friends
+                  data={{ UserID: "kqctxvgivIcDULNNpBF8ezb5zI42" }}
+                  addedMember={addedMember}
+                  setAddedMember={setAddedMember}
+                />
+                <Friends
+                  data={{ UserID: "kqctxvgivIcDULNNpBF8ezb5zI42" }}
+                  addedMember={addedMember}
+                  setAddedMember={setAddedMember}
+                />
+                <Friends
+                  data={{ UserID: "kqctxvgivIcDULNNpBF8ezb5zI42" }}
+                  addedMember={addedMember}
+                  setAddedMember={setAddedMember}
+                />
+                <Friends
+                  data={{ UserID: "kqctxvgivIcDULNNpBF8ezb5zI42" }}
+                  addedMember={addedMember}
+                  setAddedMember={setAddedMember}
+                />
+                <Friends
+                  data={{ UserID: "kqctxvgivIcDULNNpBF8ezb5zI42" }}
+                  addedMember={addedMember}
+                  setAddedMember={setAddedMember}
+                />
+                <Friends data={{ UserID: "kqctxvgivIcDULNNpBF8ezb5zI42" }} />
+                <Friends data={{ UserID: "kqctxvgivIcDULNNpBF8ezb5zI42" }} />
+                <Friends data={{ UserID: "kqctxvgivIcDULNNpBF8ezb5zI42" }} />
+                <Friends data={{ UserID: "kqctxvgivIcDULNNpBF8ezb5zI42" }} />
+                <Friends data={{ UserID: "kqctxvgivIcDULNNpBF8ezb5zI42" }} /> */}
+                </div>
+              </>
+            )}
+          </div>
+          <div
+            className={
+              "w-[calc(100%-40px)] flex flex-col justify-center px-[30px] items-start font-[google] font-normal text-[15px] fixed bottom-[70px] left-[20px]   bg-[#fff5ee] z-50 overflow-hidden" +
+              (addedMember?.length === 0 ? " h-0" : " h-[90px]")
+            }
+            style={{ transition: ".2s" }}
+          >
+            <div>Members Selected</div>
+            <div className="w-full flex justify-start items-center mt-[8px] ">
+              {addedMember.map((data) => {
+                return (
+                  <Profile
+                    data={data}
+                    addedMember={addedMember}
+                    setAddedMember={setAddedMember}
+                  />
+                );
+              })}
             </div>
           </div>
+          <div className="w-[calc(100%-40px)] flex justify-center items-end font-[google] font-normal text-[17px] fixed bottom-[20px] left-[20px] rounded-b-3xl  h-[50px] px-[20px]  bg-[#fff5ee] z-50 ">
+            {/* <div
+              className="h-full flex justify-center items-center cursor-pointer  mr-[30px]"
+              onClick={() => {
+                // setPersonName("");
+                // setAddModal(false);
+              }}
+            >
+              Cancel
+            </div> */}
+            <div
+              className="h-full  flex justify-center items-center text-[#de8544] cursor-pointer "
+              onClick={() => {
+                // addToFirebase();
+                // addPerson();
+                // setAddModal(false);
+                setAddModal(false);
+              }}
+            >
+              Done
+            </div>
+          </div>
+          {/* </div> */}
         </div>
       ) : (
         <></>
       )}
       {splitModal === true ? (
-        // <div
-        //   className="w-full h-[100svh] fixed z-50 bg-[#00000071] top-0 left-0 flex justify-center items-center backdrop-blur-md"
-        //   onClick={() => {
-        //     setSplitModal(false);
-        //   }}
-        // >
-        //   <div
-        //     className="w-[320px] h-auto p-[30px] bg-[#171717] rounded-3xl flex flex-col justify-center items-start"
-        //     style={{ zIndex: "51" }}
-        //   >
-        //     <span className="w-full text-[22px] text-white font-[google] font-normal flex justify-start items-center ">
-        //       Split Bill <span className="text-[#98d832] ml-[10px]">Info</span>
-        //     </span>
-        //     <div className="flex w-full justify-between items-center mt-[10px]">
-        //       <input
-        //         className="outline-none w-full h-[40px] bg-black px-[10px] text-white font-[google] font-normal text-[14px]"
-        //         placeholder="label"
-        //       ></input>
-        //     </div>
-        //     <div className="flex w-full justify-between items-center mt-[10px]">
-        //       {/* <input
-        //           className="outline-none w-[calc((100%-30px)/2)] h-[40px] bg-black px-[10px] text-white font-[google] font-normal text-[14px]"
-        //           placeholder="Date"
-        //         ></input> */}
-        //       <input
-        //         className="outline-none w-[calc((100%-30px)/2)] h-[40px] bg-black px-[10px] text-white font-[google] font-normal text-[14px]"
-        //         placeholder="Amount"
-        //       ></input>
-        //     </div>
-        //   </div>
-        // </div>
-        <div className="w-full h-[100svh] fixed z-30 bg-[#00000071] top-0 left-0 flex justify-center items-center backdrop-blur-md">
-          <div className=" w-[320px] h-auto max-h-[80%]  py-[30px] bg-[#212121] rounded-3xl flex flex-col justify-start items-start z-40">
-            <div className="w-[320px] h-auto overflow-y-scroll px-[30px] bg-[#212121] rounded-3xl flex flex-col justify-start items-start z-40">
-              <span className="w-full text-[25px] text-white font-[google] font-normal flex justify-start items-center ">
+        <div className="w-full h-[100svh] fixed z-30 bg-[#68686871] top-0 left-0 flex justify-center items-center backdrop-blur-md">
+          <div className="w-[320px] max-h-[400px] py-[27px] bg-[#fff5ee] rounded-3xl flex flex-col justify-center items-start z-40">
+            <div className="w-full h-auto px-[30px] bg-transparent overflow-y-scroll flex flex-col justify-start items-start z-40">
+              <span className="w-full text-[25px] text-black font-[google] font-normal flex justify-start items-center ">
                 Transaction{" "}
-                <span className="text-[#98d832] ml-[10px]">Info</span>
+                <span className="text-[#de8544] ml-[10px]">Info</span>
               </span>
 
               <div className="flex flex-col w-full justify-between items-start mt-[20px]">
-                <span className="text-[#d2d2d2] font-[google] font-normal text-[15px] mb-[10px]">
+                <span className="text-[#000000] font-[google] font-normal text-[15px] mb-[10px]">
                   About Transaction{" "}
                   <span className="text-[#ff6c00] h-auto pt-[3px]">*</span>
                 </span>
@@ -197,15 +501,15 @@ const SplitExpense = () => {
                   className={
                     " w-auto  rounded-md flex justify-start items-center bg-transparent ml-[5px] px-[5px]   font-[google] font-normal " +
                     (label?.length === 0
-                      ? " h-[40px] mb-[-40px] z-30 border border-transparent text-[#535353] text-[15px]"
-                      : " h-[1px] mb-[-1px] z-50 border border-[#212121] text-[#98d832] text-[14px]")
+                      ? " h-[40px] mb-[-40px] z-30 border border-transparent text-[#8b8b8b] text-[15px]"
+                      : " h-[1px] mb-[-1px] z-50 border border-[#fff5ee] text-[#de8544] text-[14px]")
                   }
                   style={{ transition: ".4s" }}
                 >
                   Label
                 </div>
                 <input
-                  className="outline-none rounded-md w-full h-[40px] bg-transparent border border-[#535353] px-[10px] text-white font-[google] font-normal text-[15px]"
+                  className="outline-none rounded-md w-full h-[40px] bg-transparent border border-[#ffd8be] px-[10px] text-black font-[google] font-normal text-[15px] z-40"
                   // placeholder="Label"
                   value={label}
                   onChange={(e) => {
@@ -220,9 +524,9 @@ const SplitExpense = () => {
                   <div
                     className={
                       " w-auto  flex justify-start items-center bg-transparent ml-[5px] px-[5px]   font-[google] font-normal " +
-                      (value === undefined
-                        ? " h-[40px] mb-[-40px] z-30 border border-transparent text-[#535353] text-[15px]"
-                        : " h-[1px] mb-[-1px] z-50 border border-[#212121] text-[#98d832] text-[14px]")
+                      (value?.length === 0
+                        ? " h-[40px] mb-[-40px] z-30 border border-transparent text-[#8b8b8b] text-[15px]"
+                        : " h-[1px] mb-[-1px] z-50 border border-[#fff5ee] text-[#de8544] text-[14px]")
                     }
                     style={{ transition: ".4s" }}
                   >
@@ -239,8 +543,8 @@ const SplitExpense = () => {
                     disableMonthPicker
                     weekDays={weekDays}
                     months={months}
-                    // minDate={new Date().setDate(0)}
-                    // maxDate={new Date().setDate(preDate)}
+                    minDate={new Date().setDate(0)}
+                    maxDate={new Date().setDate(preDate)}
                     // render={<InputIcon />}
                     buttons={false}
                     value={value}
@@ -250,7 +554,7 @@ const SplitExpense = () => {
                     render={(value, openCalendar) => {
                       return (
                         <button
-                          className="border-[1px] border-[#535353] flex justify-start items-center px-[10px] font-[google] text-[15px] w-[125px] h-[40px] rounded-md text-white"
+                          className="border-[1px] border-[#ffd8be] flex justify-start items-center px-[10px] font-[google] text-[15px] w-[125px] h-[40px] rounded-md text-black z-40"
                           onClick={openCalendar}
                         >
                           {value}
@@ -265,21 +569,22 @@ const SplitExpense = () => {
                 <div className="flex flex-col justify-between items-start  w-[calc((100%-10px)/2)] h-[40px] ">
                   <div
                     className={
-                      " w-auto  flex justify-start items-center rounded-md bg-transparent ml-[5px] px-[5px]   font-[google] font-normal " +
+                      " w-auto  flex justify-start items-center rounded-md bg-transparent ml-[5px]    font-[google] font-normal " +
                       (price?.length === 0
-                        ? " h-[40px] mb-[-40px] z-30 border border-transparent text-[#535353] text-[15px] ml-[20px]"
-                        : " h-[1px] mb-[-1px] z-50 border border-[#212121] text-[#98d832] text-[14px] ml-[5px]")
+                        ? " h-[40px] mb-[-40px] z-30 border border-transparent text-[#8b8b8b] text-[15px] ml-[20px] px-[19px]"
+                        : " h-[1px] mb-[-1px] z-50 border border-[#fff5ee] text-[#de8544] text-[14px] ml-[5px] px-[5px]")
                     }
                     style={{ transition: ".4s" }}
                   >
                     Amount
                   </div>
+                  {/* <BiRupee /> */}
                   <div className="w-full h-[40px] flex justify-start items-center">
-                    {/* <div className="w-[20px] h-[50px] flex justify-center items-center mr-[-30px] text-white ">
+                    <div className="w-[30px] h-[50px] flex justify-center items-center mr-[-30px] text-black ">
                       <BiRupee className="text-[17px]" />
-                    </div> */}
+                    </div>
                     <input
-                      className="outline-none w-full h-[40px] rounded-md pl-[10px] bg-transparent border border-[#535353] px-[10px] text-white font-[google] font-normal text-[14px]"
+                      className="outline-none w-full h-[40px] rounded-md pl-[25px] bg-transparent border border-[#ffd8be] px-[10px] text-black font-[google] font-normal text-[14px] z-40"
                       // placeholder="Price"
                       value={price}
                       onChange={(e) => {
@@ -311,17 +616,17 @@ const SplitExpense = () => {
                   }}
                 ></input>
               </div> */}
-              <div className="flex flex-col w-full justify-center items-start mt-[20px] font-[google] font-normal text-white text-[15px]">
-                <span className="text-[#d2d2d2]">
+              <div className="flex flex-col w-full justify-center items-start mt-[20px] font-[google] font-normal text-black text-[15px]">
+                <span className="text-[#000000]">
                   Select Category{" "}
                   <span className="text-[#ff6c00] h-auto pt-[3px]">*</span>
                 </span>
                 <div className="w-full flex justify-start items-center flex-wrap text-[#535353] choose mt-[10px]">
                   <span
                     className={
-                      "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#535353] flex justify-center items-center" +
+                      "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
                       (category == "Shopping"
-                        ? " bg-[#98d832] text-[black]"
+                        ? " bg-[#ffddc5] text-[black]"
                         : " text-[#535353]")
                     }
                     onClick={() => {
@@ -332,9 +637,9 @@ const SplitExpense = () => {
                   </span>
                   <span
                     className={
-                      "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#535353] flex justify-center items-center" +
+                      "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
                       (category == "Medical"
-                        ? " bg-[#98d832] text-[black]"
+                        ? " bg-[#ffddc5] text-[black]"
                         : " text-[#535353]")
                     }
                     onClick={() => {
@@ -345,9 +650,9 @@ const SplitExpense = () => {
                   </span>
                   <span
                     className={
-                      "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#535353] flex justify-center items-center" +
+                      "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
                       (category == "Grocery"
-                        ? " bg-[#98d832] text-[black]"
+                        ? " bg-[#ffddc5] text-[black]"
                         : " text-[#535353]")
                     }
                     onClick={() => {
@@ -358,9 +663,9 @@ const SplitExpense = () => {
                   </span>
                   <span
                     className={
-                      "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#535353] flex justify-center items-center" +
+                      "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
                       (category == "Travel"
-                        ? " bg-[#98d832] text-[black]"
+                        ? " bg-[#ffddc5] text-[black]"
                         : " text-[#535353]")
                     }
                     onClick={() => {
@@ -372,9 +677,9 @@ const SplitExpense = () => {
 
                   <span
                     className={
-                      "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#535353] flex justify-center items-center" +
+                      "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
                       (category == "Entertainment"
-                        ? " bg-[#98d832] text-[black]"
+                        ? " bg-[#ffddc5] text-[black]"
                         : " text-[#535353]")
                     }
                     onClick={() => {
@@ -385,9 +690,9 @@ const SplitExpense = () => {
                   </span>
                   <span
                     className={
-                      "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#535353] flex justify-center items-center" +
+                      "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
                       (category == "Food & Drinks"
-                        ? " bg-[#98d832] text-[black]"
+                        ? " bg-[#ffddc5] text-[black]"
                         : " text-[#535353]")
                     }
                     onClick={() => {
@@ -398,9 +703,9 @@ const SplitExpense = () => {
                   </span>
                   <span
                     className={
-                      "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#535353] flex justify-center items-center" +
+                      "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
                       (category == "Other"
-                        ? " bg-[#98d832] text-[black]"
+                        ? " bg-[#ffddc5] text-[black]"
                         : " text-[#535353]")
                     }
                     onClick={() => {
@@ -411,17 +716,17 @@ const SplitExpense = () => {
                   </span>
                 </div>
               </div>
-              <div className="flex flex-col w-full justify-center items-start mt-[15px] font-[google] font-normal text-white text-[15px]">
-                <span className="text-[#d2d2d2]">
+              <div className="flex flex-col w-full justify-center items-start mt-[15px] font-[google] font-normal text-black text-[15px]">
+                <span className="text-[#000000]">
                   Select Mode of Transaction{" "}
                   <span className="text-[#ff6c00] h-auto pt-[3px]">*</span>
                 </span>
                 <div className="w-full flex justify-start items-center flex-wrap text-[#535353] choose mt-[10px]">
                   <span
                     className={
-                      "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#535353] flex justify-center items-center" +
+                      "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
                       (mode == "Online UPI"
-                        ? " bg-[#98d832] text-[black]"
+                        ? " bg-[#ffddc5] text-[black]"
                         : " text-[#535353]")
                     }
                     onClick={() => {
@@ -432,9 +737,9 @@ const SplitExpense = () => {
                   </span>
                   <span
                     className={
-                      "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#535353] flex justify-center items-center" +
+                      "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
                       (mode == "Offline Cash"
-                        ? " bg-[#98d832] text-[black]"
+                        ? " bg-[#ffddc5] text-[black]"
                         : " text-[#535353]")
                     }
                     onClick={() => {
@@ -445,39 +750,42 @@ const SplitExpense = () => {
                   </span>
                 </div>
               </div>
-              <div
-                className="flex flex-col w-full justify-center items-start mt-[15px] font-[google] font-normal text-white text-[15px]"
-                onClick={() => {
-                  setAddModal(true);
-                }}
-              >
-                <span className="text-[#d2d2d2] mb-[10px]">
-                  Tag Members{" "}
-                  <span className="text-[#ff6c00] h-auto pt-[3px]">*</span>
-                </span>
-                {addedMember.map((data) => {
-                  return (
-                    <div className="w-full h-[30px] flex justify-start items-center">
-                      <BsPersonFill className="text-[15px] mr-[8px]" />{" "}
-                      {data?.user}
-                    </div>
-                  );
-                })}
-                <div className="w-full flex justify-start items-center text-[#98d832] text-[15px] h-[30px]">
-                  <MdOutlineAddCircleOutline className="text-[18px] text-[#98d832] mr-[8px]" />{" "}
-                  Add Member
-                </div>
-              </div>
-              <div className="flex flex-col w-full justify-center items-start mt-[15px] font-[google] font-normal text-white text-[15px]">
-                <span className="text-[#d2d2d2]">Upload Reciept / Bill</span>
+              <div className="flex flex-col w-full justify-center items-start mt-[15px] font-[google] font-normal text-black text-[15px]">
+                <span className="text-[#000000]">Upload Reciept / Bill</span>
                 <div className="w-full flex justify-start items-center flex-wrap text-[#535353] choose mt-[10px]">
-                  <span className="p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md w-[80px] h-[80px] border border-[#535353] flex justify-center items-center text-[#535353]">
+                  <span className="p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md w-[80px] h-[80px] border border-[#ffd8be] bg-[#ffddc5] flex justify-center items-center text-[#535353]">
                     <IoMdCloudUpload className="text-[25px]" />{" "}
                     <span className="ml-[10px]">Upload Photo</span>
                   </span>
                 </div>
               </div>
-              <div className="w-full flex justify-end items-end font-[google] font-normal text-[15px] text-white h-[20px] mt-[20px]">
+              <div className="flex flex-col w-full justify-center items-start mt-[15px] font-[google] font-normal text-black text-[15px]">
+                <span className="text-[#000000]">Add Members</span>
+                {/* <div className="w-full flex justify-start items-center flex-wrap text-[#535353] choose mt-[10px]">
+                  <span className="p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md w-[80px] h-[80px] border border-[#ffd8be] bg-[#ffddc5] flex justify-center items-center text-[#535353]">
+                    <IoMdCloudUpload className="text-[25px]" />{" "}
+                    <span className="ml-[10px]">Upload Photo</span>
+                  </span>
+                </div> */}
+                <div className="w-full h-auto mt-[10px] flex justify-start items-center flex-wrap">
+                  {addedMember.map((data) => {
+                    return (
+                      <>
+                        <ProfileTwo data={data} />{" "}
+                      </>
+                    );
+                  })}
+                  <div
+                    className="w-[40px] h-[40px] mb-[10px] rounded-full bg-[#ffddc5] flex justify-center items-center "
+                    onClick={() => {
+                      setAddModal(true);
+                    }}
+                  >
+                    <FiPlus className="text-[#535353] text-[20px]" />
+                  </div>
+                </div>
+              </div>
+              <div className="w-full flex justify-end items-end font-[google] font-normal text-[15px] text-black h-[20px] mt-[20px]">
                 <div
                   className="h-full mr-[20px] flex justify-center items-center cursor-pointer  "
                   onClick={() => {
@@ -492,9 +800,10 @@ const SplitExpense = () => {
                   Cancel
                 </div>
                 <div
-                  className="h-full  flex justify-center items-center text-[#98d832] cursor-pointer "
+                  className="h-full  flex justify-center items-center text-[#de8544] cursor-pointer "
                   onClick={() => {
                     // addToFirebase();
+                    mapOverAll();
                     setSplitModal(false);
                   }}
                 >
@@ -507,14 +816,40 @@ const SplitExpense = () => {
       ) : (
         <></>
       )}
-      <div className="pt-[20px] w-full h-[60px] flex justify-center items-center bg-[#171717] border-none">
+      <div className="pt-[20px] w-full h-[60px] flex justify-center items-center bg-[#fff5ee] border-none">
         <TopNavbar />
       </div>
-      <div className="h-[calc(100%-60px)] w-full bg-[#171717] flex justify-start items-center flex-col  text-white py-[20px] border-none">
+      <div className="h-[calc(100%-60px)] w-full bg-[#fff5ee] flex justify-start items-center flex-col  text-white py-[20px] border-none">
         <QuickSplitInfo />
-        <div className="w-[calc(100%-40px)] border-[.7px] border-[#3d3d3d]"></div>
+        <div className="w-[calc(100%-40px)] border-[.7px] border-[#fee6d7]"></div>
+        <span className="text-[#828282] font-[google] font-normal text-[14px] w-full mt-[20px] flex justify-between h-[30px] items-start px-[20px] ">
+          <div className="flex justify-start items-center">
+            Split Transaction History,{" "}
+            <span className=" ml-[4px]">
+              {monthNames[new Date().getMonth()]} - {new Date().getFullYear()}
+            </span>
+          </div>
+          <div
+            className="w-[30px] h-full flex justify-end items-center text-black text-[14px]"
+            onClick={() => {
+              // setShowFilterModal(!showFilterModal);
+            }}
+          >
+            <FaFilter />
+          </div>
+        </span>
 
-        <SplitTransaction
+        <div className="w-full flex flex-col justify-start items-center">
+          {splitTransaction?.map((data) => {
+            return (
+              <>
+                <SplitTransaction data={data} />
+              </>
+            );
+          })}
+        </div>
+
+        {/* <SplitTransaction
           name={"Aminia - Chicken Roll Party"}
           amount={2345}
           date={"23 May, 2024"}
@@ -522,6 +857,22 @@ const SplitExpense = () => {
           return={false}
           status={true}
         />
+        <SplitTransaction
+          name={"Trip to Ladakh"}
+          amount={2345}
+          date={"23 May, 2024"}
+          member={14}
+          return={false}
+          status={true}
+        />
+        <SplitTransaction
+          name={"Taxi Fare to Jay Bangla"}
+          amount={2345}
+          date={"23 May, 2024"}
+          member={14}
+          return={false}
+          status={true}
+        /> */}
       </div>
       <div
         className="w-[40px] h-[40px] rounded-full bg-[#98d832] fixed right-[20px] bottom-[70px] flex justify-center items-center"

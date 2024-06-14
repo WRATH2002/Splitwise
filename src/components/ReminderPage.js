@@ -151,16 +151,16 @@ const ReminderPage = () => {
       <div className="w-full h-full bg-[#fff5ee] py-[20px]">
         <div className="w-[calc(100%-40px)] ml-[20px] h-[135px] flex  justify-between items-center p-[20px] bg-[#ffeadc] rounded-2xl border-[1px] border-[#ffe6d7] ">
           <div className="w-full  flex flex-col justify-center items-start font-[google] font-normal text-[22px] text-white ">
-            <span className="text-[#000000] text-[14px]">
+            <span className="text-[#6c6c6c] text-[14px]">
               Total Due till June
             </span>
-            <span className="flex justify-start items-center text-[#de8544] mt-[-5px]">
+            <span className="flex justify-start items-center text-[#95241d] mt-[-5px]">
               <BiRupee className="ml-[-3px]" /> {formatAmountWithCommas(due())}
             </span>
-            <span className="text-[#000000] text-[14px]">
+            <span className="text-[#6c6c6c] text-[14px]">
               Total Upcoming in June
             </span>
-            <span className="flex justify-start items-center text-[#de8544] mt-[-5px]">
+            <span className="flex justify-start items-center text-[#95241d] mt-[-5px]">
               <BiRupee className="ml-[-3px]" />{" "}
               {formatAmountWithCommas(upcoming())}
             </span>
@@ -179,7 +179,7 @@ const ReminderPage = () => {
           </div>
         </div>
         <div className="flex justify-start items-center text-[14px] font-[google] font-normal mt-[20px] px-[20px] text-[#828282]">
-          Transaction History,{" "}
+          Reminders,{" "}
           <span className=" ml-[4px]">
             {monthsShort[new Date().getMonth()]} - {new Date().getFullYear()}
           </span>

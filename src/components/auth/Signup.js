@@ -101,6 +101,7 @@ const Signup = (props) => {
       SplitTransaction: [],
       Reminders: [],
       CategoryBudget: [],
+      MonthlyData: [],
     });
     console.log("done");
   }

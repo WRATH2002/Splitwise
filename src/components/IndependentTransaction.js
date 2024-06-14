@@ -1,13 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaShopify } from "react-icons/fa";
 import { GiPartyPopper } from "react-icons/gi";
 import { IoFastFood } from "react-icons/io5";
 import { MdMedication, MdOutlineTravelExplore } from "react-icons/md";
 import AboutTransaction from "./AboutTransaction";
 import { HiReceiptRefund } from "react-icons/hi2";
+import { FiArrowDownLeft, FiArrowUpRight } from "react-icons/fi";
+import { BiRupee } from "react-icons/bi";
+import { auth } from "../firebase";
+import { db } from "../firebase";
+import firebase from "../firebase";
+import {
+  QuerySnapshot,
+  arrayUnion,
+  onSnapshot,
+  where,
+} from "firebase/firestore";
 
 const IndependentTransaction = (props) => {
   const [showTransaction, setShowTransaction] = useState(false);
+  const [name, setName] = useState("");
   function formatDate(dateStr) {
     const months = [
       "January",
@@ -49,7 +61,18 @@ const IndependentTransaction = (props) => {
     const monthName = months[month - 1];
 
     // Return the formatted string
-    return `${dayWithSuffix}, ${monthName}, ${year}`;
+    return `${dayWithSuffix} ${monthName}, ${year}`;
+  }
+
+  useEffect(() => {
+    fetchName(props?.data?.Sender);
+  }, [props?.data?.Sender]);
+
+  function fetchName(ownerid) {
+    const userRef = db.collection("Expense").doc(ownerid);
+    onSnapshot(userRef, (snapshot) => {
+      setName(snapshot?.data()?.Name);
+    });
   }
 
   function formatAmountWithCommas(amountStr) {
@@ -85,7 +108,7 @@ const IndependentTransaction = (props) => {
         <></>
       )}
       <div
-        className="w-[calc(100%-40px)] min-h-[60px]  font-[google] font-normal text-[15px] text-white flex justify-center items-center border-b-[.7px] border-[#ffede2]"
+        className="w-[calc(100%-40px)] min-h-[60px]  font-[google] font-normal text-[15px] text-white flex justify-center items-center border-b-[.7px] border-[#ffede2] cursor-pointer hover:bg-[#fff0e6]"
         onClick={() => {
           setShowTransaction(true);
         }}
@@ -107,15 +130,41 @@ const IndependentTransaction = (props) => {
             </>
           )}
         </div>
-        <div className="w-[calc(100%-130px)] px-[10px] text-black ">
-          {props?.data?.Lable}
+        <div className="w-[calc(100%-130px)] h-full flex flex-col justify-center items-start px-[10px] text-black ">
+          <span>{props?.data?.Lable}</span>
+          {props?.data?.Sender ? (
+            <>
+              <span className="w-full flex justify-start items-center text-[14px] text-[#828282] ">
+                By, {name}
+              </span>
+            </>
+          ) : (
+            <></>
+          )}
         </div>
         <div className="w-[100px]  flex flex-col justify-center items-end">
           <div className="text-[12px] text-[#828282]">
             {formatDate(props?.data?.Date)}
           </div>
-          <div className="text-black">
-            {formatAmountWithCommas(parseFloat(props?.data?.Amount))} /-
+          <div
+            className={
+              " flex justify-end items-center whitespace-nowrap " +
+              (props?.data?.MoneyIsAdded
+                ? " text-[#00bb00]"
+                : " text-[#de8544]")
+            }
+          >
+            <BiRupee />
+            {formatAmountWithCommas(parseFloat(props?.data?.Amount))}{" "}
+            {props?.data?.MoneyIsAdded ? (
+              <>
+                <FiArrowDownLeft className="text-[#00bb00] ml-[5px] text-[19px]" />
+              </>
+            ) : (
+              <>
+                <FiArrowUpRight className="text-[#de8544] ml-[5px] text-[19px]" />
+              </>
+            )}
           </div>
         </div>
       </div>

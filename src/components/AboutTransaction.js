@@ -12,6 +12,15 @@ import {
   MdOutlineTravelExplore,
 } from "react-icons/md";
 import { RxCross2 } from "react-icons/rx";
+import { auth } from "../firebase";
+import { db } from "../firebase";
+import firebase from "../firebase";
+import {
+  QuerySnapshot,
+  arrayUnion,
+  onSnapshot,
+  where,
+} from "firebase/firestore";
 
 const MemberProfile = () => {
   return (
@@ -25,6 +34,19 @@ const AboutTransaction = (props) => {
   const [section, setSection] = useState(1);
   const [showReciept, setShowReciept] = useState(false);
   const [duration, setDuration] = useState("");
+
+  const [name, setName] = useState("");
+
+  useEffect(() => {
+    fetchName(props?.data?.Sender);
+  }, [props?.data?.Sender]);
+
+  function fetchName(ownerid) {
+    const userRef = db.collection("Expense").doc(ownerid);
+    onSnapshot(userRef, (snapshot) => {
+      setName(snapshot?.data()?.Name);
+    });
+  }
 
   function formatAmountWithCommas(amountStr) {
     // Convert the string to a number
@@ -195,17 +217,17 @@ const AboutTransaction = (props) => {
             {props?.data?.TransactionType === "Normal" ? (
               <></>
             ) : (
-              <>8 members,</>
+              <>{props?.data?.MemberCount} members,</>
             )}{" "}
             {duration}
           </span>
         </div>
-        <div className="w-full border-[.7px] border-[#fee6d7] my-[30px]"></div>
+        {/* <div className="w-full border-[.7px] border-[#fee6d7] my-[30px]"></div> */}
         {/* <div className="w-[260px] h-[1.5px] bg-gradient-to-r from-[#2a2a2a]  via-[#caff76] via-50% to-[#2a2a2a] mb-[-1.5px] z-50 "></div> */}
         {/* <div className="w-full h-[100px] mb-[-100px] flex justify-center items-start bg-[#282828] rounded-2xl ">
           <div className="min-w-[80px] min-h-[40px] rounded-b-full bg-[#41f6ea]"></div>
         </div> */}
-        <div className="w-full h-[100px] flex justify-between bg-[#ffeadc] border-[1px] border-[#ffe6d7] items-start  backdrop-blur-2xl rounded-2xl p-[20px]  ">
+        <div className="w-full h-[100px] mt-[30px] flex justify-between bg-[#ffeadc] border-[1px] border-[#ffe6d7] items-start  backdrop-blur-2xl rounded-2xl p-[20px]  ">
           <div
             className={
               " flex flex-col justify-center " +
@@ -215,13 +237,44 @@ const AboutTransaction = (props) => {
             }
           >
             <span className=" flex justify-center items-center text-[14px] text-[#828282] font-[google] font-normal">
-              <span className="text-black ">Total Expense</span>
+              {props?.data?.TransactionType === "Single" ? (
+                <span className=" ">Total Expense</span>
+              ) : (
+                <span className=" ">Paid to You</span>
+              )}
             </span>
-            <span className=" font-[google] font-normal text-[26px] text-[#83b933] flex justify-start items-center">
+            <span
+              className={
+                " font-[google] font-normal text-[26px]  flex justify-start items-center" +
+                (props?.data?.MoneyIsAdded
+                  ? " text-[#00bb00]"
+                  : " text-[#de8544]")
+              }
+            >
               <BiRupee className="ml-[-3px] " />{" "}
-              {formatAmountWithCommas(props?.data?.Amount)}
+              {formatAmountWithCommas(parseFloat(props?.data?.Amount))}
             </span>
           </div>
+          {props?.data?.TransactionType === "Split" ? (
+            <div
+              className={
+                " flex flex-col justify-center " +
+                (props?.data?.TransactionType === "Single"
+                  ? " items-end w-full"
+                  : " items-end w-[calc(100%/2)]")
+              }
+            >
+              <span className=" flex justify-center items-center text-[14px] text-[#828282] font-[google] font-normal">
+                <span className=" ">Total Expense</span>
+              </span>
+              <span className=" font-[google] font-normal text-[26px] text-[#000000] flex justify-start items-center">
+                <BiRupee className="ml-[-3px] " />{" "}
+                {/* {formatAmountWithCommas(parseFloat(props?.data?.TotalAmount))} */}
+              </span>
+            </div>
+          ) : (
+            <></>
+          )}
           {/* <div className="w-[calc(100%/2)] flex flex-col justify-center items-end">
             <span className=" flex justify-center items-center text-[12px] text-[#ffffff]">
               <span className=" ">Remaining</span>
@@ -279,7 +332,7 @@ const AboutTransaction = (props) => {
                 <span>Total Transaction </span>{" "}
                 <span className="text-black flex justify-end items-center">
                   <BiRupee className="" />{" "}
-                  {formatAmountWithCommas(props?.data?.Amount)}
+                  {formatAmountWithCommas(parseFloat(props?.data?.Amount))}
                 </span>
               </span>
               <span className=" text-[#828282] text-[14px] mt-[4px] w-full flex justify-between items-center">
@@ -298,13 +351,23 @@ const AboutTransaction = (props) => {
                   )}
                 </span>
               </span>
+              {props?.data?.TransactionType === "Split" ? (
+                <span className=" text-[#828282] text-[14px] mt-[4px] w-full flex justify-between items-center">
+                  <span>Total Member </span>{" "}
+                  <span className="text-black ">
+                    {props?.data?.MemberCount}
+                  </span>
+                </span>
+              ) : (
+                <></>
+              )}
               <span className=" text-[#828282] text-[14px] mt-[4px] w-full flex justify-between items-center">
                 {props?.data?.TransactionType === "Single" ? (
                   <></>
                 ) : (
                   <>
                     <span>Payment Done By </span>{" "}
-                    <span className="text-black ">You</span>
+                    <span className="text-black ">{name}</span>
                   </>
                 )}
               </span>

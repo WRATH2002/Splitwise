@@ -25,13 +25,16 @@ const Settings = () => {
         Set / Change Budget
       </div>
       <div className="w-auto flex justify-start items-center my-[7px]">
-        <IoIosWallet className="mr-[10px] text-[20px]" /> Set / Change Income
+        <IoIosWallet className="mr-[10px] text-[20px] text-[#de8544]" /> Set /
+        Change Income
       </div>
       <div className="w-auto flex justify-start items-center my-[7px]">
-        <MdSavings className="mr-[10px] text-[20px]" /> Total Savings
+        <MdSavings className="mr-[10px] text-[20px] text-[#de8544]" /> Total
+        Savings
       </div>
       <div className="w-auto flex justify-start items-center my-[7px]">
-        <BiSolidReport className="mr-[10px] text-[20px]" /> Get Report
+        <BiSolidReport className="mr-[10px] text-[20px] text-[#de8544]" /> Get
+        Report
       </div>
       <div
         className="w-auto flex justify-start items-center my-[7px]"
@@ -39,7 +42,7 @@ const Settings = () => {
           userSignOut();
         }}
       >
-        <IoLogOut className="mr-[10px] text-[20px]" /> Log Out
+        <IoLogOut className="mr-[10px] text-[20px] text-[#de8544]" /> Log Out
       </div>
     </div>
   );

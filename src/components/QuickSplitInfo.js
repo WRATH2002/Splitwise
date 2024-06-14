@@ -37,7 +37,7 @@ const QuickSplitInfo = () => {
         <span className=" flex justify-center items-center text-[12px] text-[#828282]">
           <IoCalendarSharp className="text-[12px] mr-[8px]" />
           {monthNames[month - 1]},{" "}
-          <span className="text-white ml-[4px]">Split Expense</span>
+          <span className="text-black ?? ml-[4px]">Split Expense</span>
         </span>
         <span className=" font-[google] font-normal text-[22px] text-[#ff6c00] flex justify-start items-center">
           <BiRupee className="ml-[-3px] " /> 2405
@@ -57,7 +57,7 @@ const QuickSplitInfo = () => {
         </span>
         <span className="font-[google] font-normal text-[13px] text-[#828282] flex justify-end items-center">
           Curr. Income{" "}
-          <span className="text-white flex justify-end items-center ml-[6px]">
+          <span className="text-black ?? flex justify-end items-center ml-[6px]">
             <BiRupee className=" " />
             60000
           </span>
