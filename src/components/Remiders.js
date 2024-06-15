@@ -6,6 +6,7 @@ import { auth } from "../firebase";
 import { db } from "../firebase";
 import firebase from "../firebase";
 import { arrayRemove, arrayUnion, onSnapshot } from "firebase/firestore";
+import OutsideClickHandler from "react-outside-click-handler";
 
 const monthsShort = [
   "Jan",
@@ -132,7 +133,7 @@ const RemiderCard = (props) => {
 
   return (
     <>
-      {aprroveModal ? (
+      {/* {aprroveModal ? (
         <div
           key={props?.index}
           className="w-full h-[100svh] fixed z-50 bg-[#68686871] top-0 left-0 flex justify-center items-center backdrop-blur-md"
@@ -210,6 +211,105 @@ const RemiderCard = (props) => {
         </div>
       ) : (
         <></>
+      )} */}
+
+      {aprroveModal ? (
+        <>
+          <div
+            className="w-full h-[100svh]  flex justify-center items-end bg-[#0000003e] p-[20px] fixed top-0 left-0  z-40"
+            style={{ zIndex: 70 }}
+            // onClick={() => {
+            //   setNotificationModal(false);
+            // }}
+          >
+            <OutsideClickHandler
+              onOutsideClick={() => {
+                setApproveModal(false);
+              }}
+            >
+              <div
+                className="w-full z-50 h-auto bg-[#fff5ee] drop-shadow-sm   text-black  rounded-[20px] font-[google] font-normal text-[14px] flex flex-col justify-center items-start p-[30px]"
+                style={{ zIndex: 100 }}
+                onClick={() => {
+                  // setNotificationModal(true);
+                }}
+              >
+                <span className="w-full text-[22px] text-black font-[google] font-normal flex justify-start items-center ">
+                  Confirm{" "}
+                  <span className="text-[#000000] ml-[5px]">Transaction</span>
+                </span>
+
+                <span className="w-full text-[14px] text-[#434343b5] font-[google] font-normal flex justify-center items-start whitespace-pre-wrap mt-[5px]  ">
+                  Have you done this transaction already. If you dismiss this
+                  reminder, you will not be notified later. Do you really want
+                  to dismiss this reminder ?
+                </span>
+
+                <span className="w-full text-[14px] text-[#000000] font-[google] font-normal flex justify-start items-center mt-[10px]">
+                  <span className="text-[22px] mr-[6px]">◍</span>{" "}
+                  <span className="mr-[5px] text-[#000000]">Label :</span>{" "}
+                  {props?.data?.Lable}
+                </span>
+                <span className="w-full text-[14px] text-[#000000] font-[google] mt-[-9px] font-normal flex justify-start items-center ">
+                  <span className="text-[22px] mr-[6px]">◍</span>{" "}
+                  <span className="mr-[5px] text-[#000000]">Amount :</span>{" "}
+                  <BiRupee /> {formatAmountWithCommas(props?.data?.Amount)}
+                </span>
+
+                <span
+                  className="w-full text-[14px] text-[#000000] font-[google] font-normal flex justify-start items-center whitespace-pre-wrap   cursor-pointer mt-[10px]"
+                  onClick={() => {
+                    setInclude(!include);
+                    // setNewIncome("");
+                    // setError("");
+                  }}
+                >
+                  <div
+                    className={
+                      "w-[18px] h-[18px] rounded-md border-[1.5px] border-[#ffa43c] mr-[6px]  flex justify-center items-center" +
+                      (include ? " bg-[#ffa43c]" : " bg-transparent")
+                    }
+                    // onClick={() => {
+                    //   setInclude(!include);
+                    //   // setNewIncome("");
+                    //   // setError("");
+                    // }}
+                  >
+                    {" "}
+                    <HiCheck className="text-[#fff5ee]" />
+                  </div>
+                  <span>Include this transaction in Budget</span>
+                </span>
+
+                <div className="w-full flex justify-end items-end font-[google] font-normal text-[15px] text-black h-[20px] mt-[20px]">
+                  <div
+                    className="h-full mr-[25px] flex justify-center items-center cursor-pointer  "
+                    onClick={() => {
+                      setApproveModal(false);
+                      setInclude(false);
+                      // setNewIncome("");
+                      // setError("");
+                    }}
+                  >
+                    Cancel
+                  </div>
+                  <div
+                    className="h-full  flex justify-center items-center text-[#de8544] cursor-pointer "
+                    onClick={() => {
+                      // updateIncome();
+                      deleteReminder();
+                      setApproveModal(false);
+                    }}
+                  >
+                    Confirm
+                  </div>
+                </div>
+              </div>
+            </OutsideClickHandler>
+          </div>
+        </>
+      ) : (
+        <></>
       )}
       <div
         className={
@@ -273,76 +373,79 @@ const RemiderCard = (props) => {
   );
 };
 
-const Remiders = () => {
-  const [reminders, setReminders] = useState([]);
-  const [tempReminders, setTempReminders] = useState([]);
+const Remiders = (props) => {
+  // const [reminders, setReminders] = useState([]);
+  // const [tempReminders, setTempReminders] = useState([]);
 
-  useEffect(() => {
-    fetchReminders();
-  }, []);
+  // useEffect(() => {
+  //   fetchReminders();
+  // }, []);
 
-  function fetchReminders() {
-    const user = firebase.auth().currentUser;
-    const userRef = db.collection("Expense").doc(user?.uid);
-    onSnapshot(userRef, (snapshot) => {
-      setReminders(snapshot?.data()?.Reminders);
-    });
-  }
+  // function fetchReminders() {
+  //   const user = firebase.auth().currentUser;
+  //   const userRef = db.collection("Expense").doc(user?.uid);
+  //   onSnapshot(userRef, (snapshot) => {
+  //     setReminders(snapshot?.data()?.Reminders);
+  //   });
+  // }
 
-  useEffect(() => {
-    if (reminders != undefined) {
-      sortTransactionsByDate();
-    }
-  }, [reminders]);
+  // useEffect(() => {
+  //   if (reminders != undefined) {
+  //     sortTransactionsByDate();
+  //   }
+  // }, [reminders]);
 
-  useEffect(() => {
-    if (tempReminders != undefined) {
-      console.log(tempReminders);
-    }
-  }, [tempReminders]);
+  // useEffect(() => {
+  //   if (tempReminders != undefined) {
+  //     console.log("tempReminders");
+  //     console.log(tempReminders.length);
+  //   }
 
-  function sortTransactionsByDate() {
-    setTempReminders(
-      fetchUptoPresentMonth(
-        reminders.sort((a, b) => {
-          const [dayA, monthA, yearA] = a.Date.split("/").map(Number);
-          const [dayB, monthB, yearB] = b.Date.split("/").map(Number);
-          const dateA = new Date(yearA, monthA - 1, dayA);
-          const dateB = new Date(yearB, monthB - 1, dayB);
-          return dateA - dateB;
-        })
-      )
-    );
-  }
+  //   props?.setReminderCount(tempReminders.length);
+  // }, [tempReminders, reminders]);
 
-  function fetchUptoPresentMonth(data) {
-    let month = new Date().getMonth() + 1;
-    let date = new Date().getDate();
-    let newData = data?.filter((obj) => {
-      let dateArr = obj?.Date?.split("/");
-      if (dateArr[1] <= month) {
-        console.log("yo");
-        return obj;
-      } else if (dateArr[1] == month + 1) {
-        // let newDate = date + 7;
-        console.log("yo");
-        if (date + 7 > 30) {
-          if (parseInt(dateArr[0]) <= date + 7 - 30) {
-            console.log(obj.Date);
-            return obj;
-          }
-        }
-      }
-    });
+  // function sortTransactionsByDate() {
+  //   setTempReminders(
+  //     fetchUptoPresentMonth(
+  //       reminders.sort((a, b) => {
+  //         const [dayA, monthA, yearA] = a.Date.split("/").map(Number);
+  //         const [dayB, monthB, yearB] = b.Date.split("/").map(Number);
+  //         const dateA = new Date(yearA, monthA - 1, dayA);
+  //         const dateB = new Date(yearB, monthB - 1, dayB);
+  //         return dateA - dateB;
+  //       })
+  //     )
+  //   );
+  // }
 
-    return newData;
-  }
+  // function fetchUptoPresentMonth(data) {
+  //   let month = new Date().getMonth() + 1;
+  //   let date = new Date().getDate();
+  //   let newData = data?.filter((obj) => {
+  //     let dateArr = obj?.Date?.split("/");
+  //     if (dateArr[1] <= month) {
+  //       console.log("yo");
+  //       return obj;
+  //     } else if (dateArr[1] == month + 1) {
+  //       // let newDate = date + 7;
+  //       console.log("yo");
+  //       if (date + 7 > 30) {
+  //         if (parseInt(dateArr[0]) <= date + 7 - 30) {
+  //           console.log(obj.Date);
+  //           return obj;
+  //         }
+  //       }
+  //     }
+  //   });
+
+  //   return newData;
+  // }
 
   return (
     <>
       {/* <div className="w-full h-[130px] "> */}
       <div className="w-full h-[110px] flex overflow-x-scroll items-center pt-[10px]  px-[10px] pr-[20px]">
-        {tempReminders.map((data, index) => {
+        {props?.data?.map((data, index) => {
           return (
             <>
               <RemiderCard data={data} index={index} />

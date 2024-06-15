@@ -19,7 +19,7 @@ const monthNames = [
   "December",
 ];
 
-const QuickSplitInfo = () => {
+const QuickSplitInfo = (props) => {
   const [month, setMonth] = useState(0);
 
   useEffect(() => {
@@ -32,34 +32,51 @@ const QuickSplitInfo = () => {
     setMonth(currMonth);
   }
   return (
-    <div className="w-full h-[100px] flex justify-between items-center pb-[20px] px-[20px]">
-      <div className="w-[calc(100%/2)] flex flex-col justify-center items-start">
-        <span className=" flex justify-center items-center text-[12px] text-[#828282]">
-          <IoCalendarSharp className="text-[12px] mr-[8px]" />
-          {monthNames[month - 1]},{" "}
-          <span className="text-black ?? ml-[4px]">Split Expense</span>
+    <div className="w-full h-[120px] flex justify-between items-center font-[google] font-normal px-[20px]">
+      <div className="w-[calc(100%/2)] flex flex-col justify-center items-start ">
+        <span className=" flex justify-center items-center text-[14px] text-[#000000]">
+          {/* <IoCalendarSharp className="text-[12px] mr-[8px]" /> */}
+          Total you will get
         </span>
-        <span className=" font-[google] font-normal text-[22px] text-[#ff6c00] flex justify-start items-center">
-          <BiRupee className="ml-[-3px] " /> 2405
+        <span className=" font-[google] font-normal text-[22px] text-[#000000] flex justify-start items-center">
+          <span className=" flex justify-start items-center text-[#00bb00]">
+            <BiRupee className="ml-[-4px] " /> {props?.willGet}
+          </span>
         </span>
-        <span className="font-[google] font-normal text-[13px] text-[#ff6c00]">
-          Remaining
+        <span className="font-[google]  text-[13px] text-[#000000]   flex justify-start items-center mt-[5px]">
+          <span
+            className="whitespace-nowrap flex justify-center items-center ml-[1px]"
+            onClick={() => {
+              // setBudgetModal(true);
+            }}
+          >
+            {props?.count}
+            <span className="text-[#828282] ml-[4px] font-normal">
+              Transactions{" "}
+            </span>
+          </span>
         </span>
       </div>
-      <div className="w-[calc(100%/2)] flex flex-col justify-center items-end">
-        <span className=" flex justify-center items-center text-[12px] text-[#828282] opacity-0">
-          {/* <IoCalendarSharp className="text-[12px] mr-[8px]" /> */}
-          {monthNames[month - 1]}
+      <div className="w-[calc(100%/2)] flex flex-col justify-center items-end font-[google] font-normal">
+        <span className=" flex justify-center items-center text-[14px] text-[#000000] ">
+          Total you to pay
         </span>
-        <span className=" font-[google] font-normal text-[22px] text-[#828282] flex justify-start items-center">
-          <span className="opacity-0">0</span>
-          <RiDonutChartFill className="mr-[9px]" /> <MdOutlineBarChart />
+        <span className=" font-[google] font-normal text-[22px] text-[#000000] flex justify-start items-center">
+          <span className=" flex justify-start items-center text-[#de8544]">
+            <BiRupee className="ml-[-3px] " /> {props?.willPay}
+          </span>
         </span>
-        <span className="font-[google] font-normal text-[13px] text-[#828282] flex justify-end items-center">
-          Curr. Income{" "}
-          <span className="text-black ?? flex justify-end items-center ml-[6px]">
-            <BiRupee className=" " />
-            60000
+        <span className="font-[google]  text-[13px] text-[#000000]   flex justify-start items-center mt-[5px]">
+          <span
+            className="whitespace-nowrap flex justify-center items-center "
+            onClick={() => {
+              // setBudgetModal(true);
+            }}
+          >
+            {props?.payCount}
+            <span className="text-[#828282] ml-[4px] font-normal">
+              Transactions
+            </span>
           </span>
         </span>
       </div>

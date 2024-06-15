@@ -168,7 +168,7 @@ const ReminderPage = () => {
           <div className="w-auto h-full flex flex-col justify-center items-center font-[google] font-normal text-black">
             {/* <span className="text-[14px] whitespace-nowrap">New Reminder</span> */}
             <div
-              className="w-[40px] h-[40px] rounded-xl bg-[#ffc296] flex justify-center items-center"
+              className="w-[40px] h-[40px] rounded-xl bg-[#ffcba5] flex justify-center items-center"
               onClick={() => {
                 setAddModal(true);
                 // setSplitModal(true);
@@ -186,13 +186,23 @@ const ReminderPage = () => {
         </div>
 
         <div className="contt w-full h-[calc(100%-225px)] flex flex-col justify-start items-center overflow-y-scroll mt-[10px] px-[20px]">
-          {tempTransactionHistory.map((dat) => {
-            return (
-              <>
-                <IndividualReminder data={dat} />
-              </>
-            );
-          })}
+          {tempTransactionHistory.length === 0 ? (
+            <>
+              <span className="mt-[30px] w-full h-[100px] rounded-3xl border-[1px] border-[#ffe6d7] bg-[#ffe6d7]  flex justify-center items-center font-[google] font-normal text-[15px] text-[black]">
+                No Reminders remaining this Month
+              </span>
+            </>
+          ) : (
+            <>
+              {tempTransactionHistory.map((dat) => {
+                return (
+                  <>
+                    <IndividualReminder data={dat} />
+                  </>
+                );
+              })}
+            </>
+          )}
         </div>
 
         {/* <div

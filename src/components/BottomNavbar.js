@@ -16,40 +16,40 @@ const BottomNavbar = (props) => {
             className="w-[calc(100%/5)] h-full flex flex-col justify-end items-center ml-0"
             style={{ transition: ".3s" }}
           >
-            <div className="w-full h-[10px] rounded-t-full bg-[#ffe6d5] mb-[-4px]"></div>
-            <div className="w-[30px] h-[0px] border-[4px] rounded-full border-[#de8544] z-0"></div>
+            {/* <div className="w-full h-[10px] rounded-t-full bg-[#ffe6d5] mb-[-4px]"></div> */}
+            <div className="w-[30px] h-[0px] border-[3px] rounded-t-full border-[#de8544] z-0"></div>
           </div>
         ) : props?.segment == 2 ? (
           <div
             className="w-[calc(100%/5)] h-full flex flex-col justify-end items-center ml-[calc((100%/5)*1)]"
             style={{ transition: ".3s" }}
           >
-            <div className="w-full h-[10px] rounded-t-full bg-[#ffe6d5] mb-[-4px]"></div>
-            <div className="w-[30px] h-[2px] border-[4px] rounded-full border-[#de8544] z-0 "></div>
+            {/* <div className="w-full h-[10px] rounded-t-full bg-[#ffe6d5] mb-[-4px]"></div> */}
+            <div className="w-[30px] h-[0px] border-[3px] rounded-t-full border-[#de8544] z-0 "></div>
           </div>
         ) : props?.segment == 3 ? (
           <div
             className="w-[calc(100%/5)] h-full flex flex-col justify-end items-center ml-[calc((100%/5)*2)]"
             style={{ transition: ".3s" }}
           >
-            <div className="w-full h-[10px] rounded-t-full bg-[#ffe6d5] mb-[-4px]"></div>
-            <div className="w-[30px] h-[2px] border-[4px] rounded-full border-[#de8544] z-0"></div>
+            {/* <div className="w-full h-[10px] rounded-t-full bg-[#ffe6d5] mb-[-4px]"></div> */}
+            <div className="w-[30px] h-[0px] border-[3px] rounded-t-full border-[#de8544] z-0"></div>
           </div>
         ) : props?.segment == 4 ? (
           <div
             className="w-[calc(100%/5)] h-full flex flex-col justify-end items-center ml-[calc((100%/5)*3)]"
             style={{ transition: ".3s" }}
           >
-            <div className="w-full h-[10px] rounded-t-full bg-[#ffe6d5] mb-[-4px]"></div>
-            <div className="w-[30px] h-[2px] border-[4px] rounded-full border-[#de8544] z-0"></div>
+            {/* <div className="w-full h-[10px] rounded-t-full bg-[#ffe6d5] mb-[-4px]"></div> */}
+            <div className="w-[30px] h-[0px] border-[3px] rounded-t-full border-[#de8544] z-0"></div>
           </div>
         ) : (
           <div
             className="w-[calc(100%/5)] h-full flex flex-col justify-end items-center ml-[calc((100%/5)*4)]"
             style={{ transition: ".3s" }}
           >
-            <div className="w-full h-[10px] rounded-t-full bg-[#ffe6d5] mb-[-4px]"></div>
-            <div className="w-[30px] h-[2px] border-[4px] rounded-full border-[#de8544] z-0"></div>
+            {/* <div className="w-full h-[10px] rounded-t-full bg-[#ffe6d5] mb-[-4px]"></div> */}
+            <div className="w-[30px] h-[0px] border-[3px] rounded-t-full border-[#de8544] z-0"></div>
           </div>
         )}
       </div>

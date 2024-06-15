@@ -104,6 +104,8 @@ const SplitExpense = () => {
   const [date, setDate] = useState("");
   const [member, setMember] = useState("");
   const [preDate, setPreDate] = useState(0);
+  const [inCount, setInCount] = useState(0);
+  const [outCount, setOutCount] = useState(0);
   const [mode, setMode] = useState("");
   const [bill, setBill] = useState("");
   const [addedMember, setAddedMember] = useState([
@@ -111,6 +113,7 @@ const SplitExpense = () => {
   ]);
   const [userList, setUserList] = useState([]);
   const [splitTransaction, setSplitTransaction] = useState([]);
+  const [normalTransaction, setNormalTransaction] = useState([]);
   const [searchName, setSearchName] = useState("");
   const [error, setError] = useState("");
 
@@ -131,6 +134,7 @@ const SplitExpense = () => {
     onSnapshot(userRef, (snapshot) => {
       // setMonth(snapshot?.data()?.Photo);
       setSplitTransaction(snapshot?.data()?.SplitTransaction);
+      setNormalTransaction(snapshot?.data()?.NormalTransaction);
     });
   }
 
@@ -183,12 +187,6 @@ const SplitExpense = () => {
     });
   }
 
-  // function addPerson() {
-  //   const newMember = { user: personName };
-  //   setAddedMember((prevMembers) => [...prevMembers, newMember]);
-  //   // setPersonName("");
-  // }
-
   const [value, setValue] = useState();
 
   function isNumeric(str) {
@@ -226,10 +224,158 @@ const SplitExpense = () => {
       });
   }
 
+  function formatAmountWithCommas(amountStr) {
+    // Convert the string to a number
+    const amount = parseFloat(amountStr);
+
+    // Check if the conversion was successful
+    if (isNaN(amount)) {
+      throw new Error("Invalid input: not a number");
+    }
+
+    // Format the number with commas and ensure two decimal places
+    return amount.toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  }
+
+  // useEffect(() => {
+  //   console.log(userList);
+  //   console.log(addedMember);
+  // }, [userList, addedMember]);
+
+  function amountToGet() {
+    let count = 0;
+    const user = firebase.auth().currentUser;
+    console.log(splitTransaction);
+    console.log(normalTransaction);
+
+    let TotalAmount = splitTransaction.reduce((acc, curr) => {
+      let newArr = [];
+      if (curr?.Owner == user.uid) {
+        // console.log("Same Same");
+        newArr = normalTransaction?.filter((data) => {
+          if (
+            data?.TotalAmount == curr?.Amount &&
+            data?.BillUrl == curr?.BillUrl &&
+            data?.Category == curr?.Category &&
+            data?.SplitDate == curr?.Date &&
+            (data?.Lable).slice(12) == curr?.Lable &&
+            data?.MemberCount == curr?.MemberCount &&
+            data?.Owner == curr?.Owner &&
+            data?.TransactionType == curr?.TransactionType
+          ) {
+            return data;
+          }
+        });
+
+        console.log(newArr);
+
+        if (newArr.length === 0) {
+          acc =
+            acc +
+            parseFloat(curr?.Amount) -
+            (parseFloat(curr?.Amount) / curr?.MemberCount).toFixed(2);
+
+          count++;
+        } else {
+          acc =
+            acc +
+            parseFloat(curr?.Amount) -
+            (newArr?.length + 1) * parseFloat(newArr[0]?.Amount);
+
+          if (
+            parseFloat(curr?.Amount) -
+              (newArr?.length + 1) * parseFloat(newArr[0]?.Amount) !==
+            0
+          ) {
+            count++;
+          }
+        }
+        console.log("acc");
+        console.log(acc);
+      }
+
+      return acc;
+    }, 0);
+
+    console.log(TotalAmount);
+
+    return { amount: TotalAmount, count: count };
+  }
+
+  function getAmountToPay() {
+    let count = 0;
+    const user = firebase.auth().currentUser;
+    console.log(splitTransaction);
+    console.log(normalTransaction);
+
+    let TotalAmount = splitTransaction.reduce((acc, curr) => {
+      let newArr = [];
+      if (curr?.Owner !== user.uid) {
+        console.log("Rounddddddddddddddddddddddddddddddddddddddddd");
+        newArr = normalTransaction?.filter((data) => {
+          if (
+            data?.TotalAmount == curr?.Amount &&
+            data?.BillUrl == curr?.BillUrl &&
+            data?.Category == curr?.Category &&
+            data?.SplitDate == curr?.Date &&
+            (data?.Lable).slice(13) == curr?.Lable &&
+            data?.MemberCount == curr?.MemberCount &&
+            data?.Owner == curr?.Owner &&
+            data?.TransactionType == curr?.TransactionType
+          ) {
+            return data;
+          }
+        });
+
+        console.log(newArr);
+
+        if (newArr.length === 0) {
+          console.log(curr?.Amount);
+          console.log(curr?.MemberCount);
+          acc =
+            acc +
+            parseFloat(
+              parseFloat(
+                parseFloat(curr?.Amount) / parseInt(curr?.MemberCount)
+              ).toFixed(2)
+            );
+
+          count++;
+        } else {
+        }
+        //  else {
+        //   acc =
+        //     acc +
+        //     parseFloat(curr?.Amount) -
+        //     (newArr?.length + 1) * parseFloat(newArr[0]?.Amount);
+
+        //   if (
+        //     parseFloat(curr?.Amount) -
+        //       (newArr?.length + 1) * parseFloat(newArr[0]?.Amount) !==
+        //     0
+        //   ) {
+        //     count++;
+        //   }
+        // }
+        console.log("acc");
+        console.log(acc);
+      }
+
+      return acc;
+    }, 0);
+
+    console.log(TotalAmount);
+
+    return { amount: TotalAmount, count: count };
+  }
+
   useEffect(() => {
-    console.log(userList);
-    console.log(addedMember);
-  }, [userList, addedMember]);
+    // amountToGet();
+    getAmountToPay();
+  }, [splitTransaction]);
 
   return (
     <>
@@ -345,94 +491,7 @@ const SplitExpense = () => {
                   addedMember={addedMember}
                   setAddedMember={setAddedMember}
                 />
-                <div>
-                  {" "}
-                  {/* <Friends
-                  data={{ UserID: "kqctxvgivIcDULNNpBF8ezb5zI42" }}
-                  addedMember={addedMember}
-                  setAddedMember={setAddedMember}
-                />
-                <Friends
-                  data={{ UserID: "kqctxvgivIcDULNNpBF8ezb5zI42" }}
-                  addedMember={addedMember}
-                  setAddedMember={setAddedMember}
-                />
-                <Friends
-                  data={{ UserID: "kqctxvgivIcDULNNpBF8ezb5zI42" }}
-                  addedMember={addedMember}
-                  setAddedMember={setAddedMember}
-                />
-                <Friends
-                  data={{ UserID: "kqctxvgivIcDULNNpBF8ezb5zI42" }}
-                  addedMember={addedMember}
-                  setAddedMember={setAddedMember}
-                />
-                <Friends
-                  data={{ UserID: "kqctxvgivIcDULNNpBF8ezb5zI42" }}
-                  addedMember={addedMember}
-                  setAddedMember={setAddedMember}
-                />
-                <Friends
-                  data={{ UserID: "kqctxvgivIcDULNNpBF8ezb5zI42" }}
-                  addedMember={addedMember}
-                  setAddedMember={setAddedMember}
-                />
-                <Friends
-                  data={{ UserID: "kqctxvgivIcDULNNpBF8ezb5zI42" }}
-                  addedMember={addedMember}
-                  setAddedMember={setAddedMember}
-                />
-                <Friends
-                  data={{ UserID: "kqctxvgivIcDULNNpBF8ezb5zI42" }}
-                  addedMember={addedMember}
-                  setAddedMember={setAddedMember}
-                />
-                <Friends
-                  data={{ UserID: "kqctxvgivIcDULNNpBF8ezb5zI42" }}
-                  addedMember={addedMember}
-                  setAddedMember={setAddedMember}
-                />
-                <Friends
-                  data={{ UserID: "kqctxvgivIcDULNNpBF8ezb5zI42" }}
-                  addedMember={addedMember}
-                  setAddedMember={setAddedMember}
-                />
-                <Friends
-                  data={{ UserID: "kqctxvgivIcDULNNpBF8ezb5zI42" }}
-                  addedMember={addedMember}
-                  setAddedMember={setAddedMember}
-                />
-                <Friends
-                  data={{ UserID: "kqctxvgivIcDULNNpBF8ezb5zI42" }}
-                  addedMember={addedMember}
-                  setAddedMember={setAddedMember}
-                />
-                <Friends
-                  data={{ UserID: "kqctxvgivIcDULNNpBF8ezb5zI42" }}
-                  addedMember={addedMember}
-                  setAddedMember={setAddedMember}
-                />
-                <Friends
-                  data={{ UserID: "kqctxvgivIcDULNNpBF8ezb5zI42" }}
-                  addedMember={addedMember}
-                  setAddedMember={setAddedMember}
-                />
-                <Friends
-                  data={{ UserID: "kqctxvgivIcDULNNpBF8ezb5zI42" }}
-                  addedMember={addedMember}
-                  setAddedMember={setAddedMember}
-                />
-                <Friends
-                  data={{ UserID: "kqctxvgivIcDULNNpBF8ezb5zI42" }}
-                  addedMember={addedMember}
-                  setAddedMember={setAddedMember}
-                />
-                <Friends data={{ UserID: "kqctxvgivIcDULNNpBF8ezb5zI42" }} />
-                <Friends data={{ UserID: "kqctxvgivIcDULNNpBF8ezb5zI42" }} />
-                <Friends data={{ UserID: "kqctxvgivIcDULNNpBF8ezb5zI42" }} />
-                <Friends data={{ UserID: "kqctxvgivIcDULNNpBF8ezb5zI42" }} />
-                <Friends data={{ UserID: "kqctxvgivIcDULNNpBF8ezb5zI42" }} /> */}
-                </div>
+                <div></div>
               </>
             )}
           </div>
@@ -819,8 +878,13 @@ const SplitExpense = () => {
       <div className="pt-[20px] w-full h-[60px] flex justify-center items-center bg-[#fff5ee] border-none">
         <TopNavbar />
       </div>
-      <div className="h-[calc(100%-60px)] w-full bg-[#fff5ee] flex justify-start items-center flex-col  text-white py-[20px] border-none">
-        <QuickSplitInfo />
+      <div className="h-[calc(100%-60px)] w-full bg-[#fff5ee] flex justify-start items-center flex-col  text-white pb-[20px] border-none">
+        <QuickSplitInfo
+          willGet={formatAmountWithCommas(amountToGet()?.amount)}
+          count={amountToGet()?.count}
+          willPay={formatAmountWithCommas(getAmountToPay()?.amount)}
+          payCount={getAmountToPay()?.count}
+        />
         <div className="w-[calc(100%-40px)] border-[.7px] border-[#fee6d7]"></div>
         <span className="text-[#828282] font-[google] font-normal text-[14px] w-full mt-[20px] flex justify-between h-[30px] items-start px-[20px] ">
           <div className="flex justify-start items-center">

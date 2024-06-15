@@ -32,13 +32,80 @@ const HomePage = () => {
   const [transactionHistory, setTransactionHistory] = useState([]);
   const [tempTransactionHistory, setTempTransactionHistory] = useState([]);
   const [month, setMonth] = useState(0);
+  const [reminderCount, setReminderCount] = useState(0);
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [end, setEnd] = useState(false);
+
+  const [transactionHistoryOne, setTransactionHistoryOne] = useState([]);
+  const [tempTransactionHistoryOne, setTempTransactionHistoryOne] = useState(
+    []
+  );
+
+  useEffect(() => {
+    // fetchMonth();
+    fetchReminders();
+    // console.log("tempTransactionHistory");
+    // console.log(tempTransactionHistory);
+  }, []);
+
+  // function fetchMonth() {
+  //   var date = new Date();
+  //   const currMonth = date.getMonth() + 1;
+  //   setMonth(currMonth);
+  // }
+
+  useEffect(() => {
+    if (transactionHistoryOne != undefined) {
+      sortTransactionsByDate();
+    }
+  }, [transactionHistoryOne]);
+
+  function sortTransactionsByDate() {
+    setTempTransactionHistoryOne(
+      filterByPresentDate(
+        transactionHistoryOne.sort((a, b) => {
+          const [dayA, monthA, yearA] = a.Date.split("/").map(Number);
+          const [dayB, monthB, yearB] = b.Date.split("/").map(Number);
+          const dateA = new Date(yearA, monthA - 1, dayA);
+          const dateB = new Date(yearB, monthB - 1, dayB);
+          return dateA - dateB;
+        })
+      )
+    );
+  }
+
+  function filterByPresentDate(data) {
+    let preMonth = new Date().getMonth() + 1;
+    const newData = data?.filter((obj) => {
+      let dateArr = obj?.Date?.split("/");
+      // console.log(preMonth);
+      if (parseInt(dateArr[1]) <= parseInt(preMonth)) {
+        // console.log("obj");
+        return obj;
+      }
+    });
+    return newData;
+  }
+
+  function fetchReminders() {
+    const user = firebase.auth().currentUser;
+    const userRef = db.collection("Expense").doc(user?.uid);
+    onSnapshot(userRef, (snapshot) => {
+      // setMonth(snapshot?.data()?.Photo);
+      setTransactionHistoryOne(snapshot?.data()?.Reminders);
+      // setTempTransactionHistory(snapshot?.data()?.Reminders);
+    });
+  }
+
+  useEffect(() => {
+    setReminderCount(tempTransactionHistoryOne.length);
+  }, [tempTransactionHistoryOne, transactionHistoryOne]);
 
   useEffect(() => {
     fetchMonth();
     fetchTransactionData();
   }, []);
+
   function fetchMonth() {
     var date = new Date();
     const currMonth = date.getMonth() + 1;
@@ -146,6 +213,10 @@ const HomePage = () => {
   //   }
   // }, []);
 
+  useEffect(() => {
+    console.log(reminderCount);
+  }, []);
+
   return (
     <div className="w-full h-[calc(100svh-60px)] bg-[#FFF5EE] flex flex-col justify-start items-center pt-[20px]">
       <TopNavbar />
@@ -226,7 +297,13 @@ const HomePage = () => {
       </div>
 
       <div
-        className="w-full max-h-[calc(100%-396.4px)] flex flex-col items-center justify-start "
+        className={
+          "w-full  flex flex-col items-center justify-start " +
+          (reminderCount === 0
+            ? " max-h-[calc(100%-281.4px)]"
+            : " max-h-[calc(100%-391.4px)]")
+        }
+        style={{ transition: ".4s" }}
         id="container"
       >
         <div
@@ -261,11 +338,18 @@ const HomePage = () => {
         </div>
       )}
 
-      <div className="w-full h-[75px] flex justify-center items-end">
+      <div className="w-full h-[70px]  flex justify-center items-end">
         <AddIndependentTransaction />
       </div>
 
-      <Remiders />
+      {reminderCount !== 0 ? (
+        <Remiders
+          setReminderCount={setReminderCount}
+          data={tempTransactionHistoryOne}
+        />
+      ) : (
+        <></>
+      )}
       {/* <BottomNavbar /> */}
     </div>
   );

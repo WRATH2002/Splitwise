@@ -12,6 +12,7 @@ import {
   MdMedication,
   MdOutlineTravelExplore,
 } from "react-icons/md";
+import OutsideClickHandler from "react-outside-click-handler";
 import { auth } from "../firebase";
 import { db } from "../firebase";
 import firebase from "../firebase";
@@ -65,8 +66,15 @@ const MemberProfile = (props) => {
   }
 
   useEffect(() => {
-    let result = havePaid();
-    console.log(result);
+    let result;
+    // const user = firebase.auth().currentUser;
+    if (props?.userId === props?.owner) {
+      result = true;
+    } else {
+      result = havePaid();
+    }
+
+    // console.log(result);
 
     // props?.setIsPaid(result);
     setTempIsPaid(result);
@@ -78,6 +86,7 @@ const MemberProfile = (props) => {
         onClick={() => {
           props?.setNotificationModal(!props?.notificationModal);
           props?.setIsPaid(tempIsPaid);
+          props?.setNotName(name);
         }}
       >
         <img
@@ -94,16 +103,22 @@ const MemberProfile = (props) => {
           </span>
         </div>
         <div className="w-[100px] h-full flex justify-end items-center text-[14px] ">
-          {tempIsPaid ? (
+          {props?.isOwner ? (
             <>
-              Paid{" "}
-              <FaCheckCircle className="text-[15px] ml-[5px] text-[#00bb00] z-40" />
+              {tempIsPaid ? (
+                <>
+                  Paid{" "}
+                  <FaCheckCircle className="text-[15px] ml-[5px] text-[#00bb00] z-40" />
+                </>
+              ) : (
+                <>
+                  Pending{" "}
+                  <FaCircleExclamation className="text-[15px] ml-[5px] text-[#de8544] z-40" />{" "}
+                </>
+              )}
             </>
           ) : (
-            <>
-              Pending{" "}
-              <FaCircleExclamation className="text-[15px] ml-[5px] text-[#de8544] z-40" />{" "}
-            </>
+            <></>
           )}
         </div>
         {/* {isPaid ? (
@@ -126,6 +141,7 @@ export const MoreAboutTransaction = (props) => {
   const [splitRemaining, setSplitRemaining] = useState([]);
   const [confirmModal, setConfirmModal] = useState(false);
   const [notificationModal, setNotificationModal] = useState(false);
+  const [notName, setNotName] = useState("");
   const [isPaid, setIsPaid] = useState(false);
 
   useEffect(() => {
@@ -134,8 +150,6 @@ export const MoreAboutTransaction = (props) => {
   }, []);
 
   useEffect(() => {
-    console.log("normalTransaction");
-    console.log(normalTransaction);
     getSameSplitTransaction();
   }, [normalTransaction]);
 
@@ -338,7 +352,7 @@ export const MoreAboutTransaction = (props) => {
 
   function getSameSplitTransaction() {
     let newArr = normalTransaction?.filter((data) => {
-      console.log((data?.Lable).slice(12));
+      // console.log((data?.Lable).slice(12));
       if (
         data?.TotalAmount == props?.data?.Amount &&
         data?.BillUrl == props?.data?.BillUrl &&
@@ -355,9 +369,9 @@ export const MoreAboutTransaction = (props) => {
       }
     });
 
-    console.log("newArr");
-    console.log(newArr);
-    console.log(newArr.length);
+    // console.log("newArr");
+    // console.log(newArr);
+    // console.log(newArr.length);
     setSplitRemaining(newArr);
   }
 
@@ -481,42 +495,78 @@ export const MoreAboutTransaction = (props) => {
       ) : (
         <></>
       )}
-      {notificationModal ? (
+      {notificationModal && props?.owner ? (
         <>
           <div
             className="w-full h-[100svh]  flex justify-center items-end bg-[#0000003e] p-[20px] fixed top-0 left-0  z-40"
-            onClick={() => {
-              setNotificationModal(false);
-            }}
+            style={{ zIndex: 70 }}
+            // onClick={() => {
+            //   setNotificationModal(false);
+            // }}
           >
-            <div className="w-full z-40 h-auto bg-[#ffeadc] drop-shadow-sm  border-[1px] border-[#ffdcc6] text-black  rounded-2xl font-[google] font-normal text-[14px] flex flex-col justify-center items-start p-[20px]">
-              <span className="text-[19px] mb-[10px]">
-                Send Notification to Himadri Purkait
-              </span>
-              <span>
-                {isPaid ? (
-                  <>
-                    Uh ! It seems like the person has already paid his splitted
-                    amount. Please check your Expense History .
-                  </>
-                ) : (
-                  <>
-                    A notification will be send to the person about this split
-                    transaction as a reminder. Do you want to continue ?
-                  </>
-                )}
-              </span>
-              <div className="w-full flex justify-end items-center mt-[14px] ">
-                {isPaid ? <></> : <div className="mr-[15px]">Cancel</div>}
-                <div>Ok</div>
+            <OutsideClickHandler
+              onOutsideClick={() => {
+                setNotificationModal(false);
+              }}
+            >
+              <div
+                className="w-full z-50 h-auto bg-[#fff5ee] drop-shadow-sm   text-black  rounded-[20px] font-[google] font-normal text-[14px] flex flex-col justify-center items-start p-[30px]"
+                style={{ zIndex: 100 }}
+                onClick={() => {
+                  // setNotificationModal(true);
+                }}
+              >
+                <span className="text-[22px] mb-[10px]">
+                  Send Notification to "{notName}"
+                </span>
+                <span className="text-[#828282]">
+                  {isPaid ? (
+                    <>
+                      Uh ! It seems like the person has already paid his
+                      splitted amount. Please check your Expense History .
+                    </>
+                  ) : (
+                    <>
+                      A notification will be send to the person about this split
+                      transaction as a reminder. Do you want to continue ?
+                    </>
+                  )}
+                </span>
+                <div className="w-full flex justify-end items-center mt-[14px] ">
+                  {isPaid ? (
+                    <></>
+                  ) : (
+                    <div
+                      className="mr-[25px] cursor-pointer"
+                      onClick={() => {
+                        setNotificationModal(false);
+                      }}
+                    >
+                      Cancel
+                    </div>
+                  )}
+                  <div
+                    className=" cursor-pointer text-[#de8544]"
+                    onClick={() => {
+                      if (isPaid === true) {
+                        setNotificationModal(false);
+                      } else {
+                        setNotificationModal(false);
+                      }
+                      // setNotificationModal(true);
+                    }}
+                  >
+                    Ok
+                  </div>
+                </div>
               </div>
-            </div>
+            </OutsideClickHandler>
           </div>
         </>
       ) : (
         <></>
       )}
-      <div className="w-full h-[100svh] fixed top-0 left-0 flex justify-start items-center flex-col p-[20px] bg-[#fff5ee] font-[google] font-normal z-30 overflow-y-scroll">
+      <div className="w-full h-[100svh] fixed top-0 left-0 flex justify-start items-center flex-col p-[20px] bg-[#fff5ee] font-[google] font-normal z-30 overflow-y-scroll pt-[50px] pb-[10px]">
         <div className="w-[calc(100%-40px)] h-[40px] flex justify-between items-center fixed top-[20px] ">
           <div
             className="w-[40px] aspect-square flex justify-start items-center cursor-pointer"
@@ -592,11 +642,12 @@ export const MoreAboutTransaction = (props) => {
             {props?.owner ? (
               <>
                 <span className="font-[google] font-normal text-[14px]  text-[#828282] flex justify-end items-center">
-                  Person Remaining :{" "}
+                  Remaining :{" "}
                   <span className="text-black flex justify-end items-center ml-[6px]">
                     {parseInt(props?.data?.MemberCount) -
                       splitRemaining.length -
-                      1}
+                      1}{" "}
+                    Person
                   </span>
                 </span>
               </>
@@ -708,6 +759,9 @@ export const MoreAboutTransaction = (props) => {
                         setNotificationModal={setNotificationModal}
                         isPaid={isPaid}
                         setIsPaid={setIsPaid}
+                        setNotName={setNotName}
+                        owner={props?.data?.Owner}
+                        isOwner={props?.owner}
                       />
                     );
                   })}
@@ -727,7 +781,7 @@ export const MoreAboutTransaction = (props) => {
           <></>
         ) : (
           <>
-            <div className="w-full h-[55px] flex justify-center items-center font-[google] font-normal fixed  bottom-0 left-0 text-[#ffffff]  text-[16px]">
+            <div className="w-full h-[55px] flex justify-center items-center font-[google] bg-[#fff5ee] z-40 font-normal fixed  bottom-0 left-0 text-[#ffffff]  text-[16px]">
               {props?.data?.Paid === true ? (
                 <div className="w-auto h-[40px] flex justify-center items-center rounded-full px-[15px] bg-[#8c8c8c] cursor-default">
                   Paid
@@ -743,6 +797,14 @@ export const MoreAboutTransaction = (props) => {
                 </div>
               )}
             </div>
+          </>
+        )}
+
+        {props?.owner ? (
+          <></>
+        ) : (
+          <>
+            <div className="w-full min-h-[55px] "></div>
           </>
         )}
       </div>
@@ -842,7 +904,7 @@ const SplitTransaction = (props) => {
 
   function getSameSplitTransaction() {
     let newArr = normalTransaction?.filter((data) => {
-      console.log((data?.Lable).slice(12));
+      // console.log((data?.Lable).slice(12));
       if (
         data?.TotalAmount == props?.data?.Amount &&
         data?.BillUrl == props?.data?.BillUrl &&
@@ -859,9 +921,9 @@ const SplitTransaction = (props) => {
       }
     });
 
-    console.log("newArr");
-    console.log(newArr);
-    console.log(newArr.length);
+    // console.log("newArr");
+    // console.log(newArr);
+    // console.log(newArr.length);
     setSplitRemaining(newArr);
   }
 

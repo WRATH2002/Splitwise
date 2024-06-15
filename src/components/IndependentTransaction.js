@@ -131,7 +131,9 @@ const IndependentTransaction = (props) => {
           )}
         </div>
         <div className="w-[calc(100%-130px)] h-full flex flex-col justify-center items-start px-[10px] text-black ">
-          <span>{props?.data?.Lable}</span>
+          <span className="w-full overflow-hidden text-ellipsis line-clamp-1">
+            {props?.data?.Lable}
+          </span>
           {props?.data?.Sender ? (
             <>
               <span className="w-full flex justify-start items-center text-[14px] text-[#828282] ">

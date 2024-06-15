@@ -19,6 +19,7 @@ import "react-multi-date-picker/styles/colors/green.css";
 import "react-multi-date-picker/styles/colors/teal.css";
 import Button from "react-multi-date-picker/components/button";
 import { IoMdCloudUpload } from "react-icons/io";
+import { Label } from "recharts";
 
 const options = {
   title: "Demo Title",
@@ -138,8 +139,8 @@ const AddIndependentTransaction = () => {
     <>
       {addNewTransaction === true ? (
         <>
-          <div className="w-full h-[100svh] fixed z-30 bg-[#68686871] top-0 left-0 flex justify-center items-center backdrop-blur-md">
-            <div className="w-[320px] max-h-[400px] py-[27px] bg-[#fff5ee] rounded-3xl flex flex-col justify-center items-start z-40">
+          <div className="w-full h-[100svh] fixed z-30 bg-[#68686871] top-0 left-0 flex justify-center items-end p-[20px] ">
+            <div className="w-full max-h-[70%] py-[27px] bg-[#fff5ee] rounded-3xl flex flex-col justify-center items-start z-40">
               <div className="w-full h-auto px-[30px] bg-transparent overflow-y-scroll flex flex-col justify-start items-start z-40">
                 <span className="w-full text-[25px] text-black font-[google] font-normal flex justify-start items-center ">
                   Transaction{" "}
@@ -275,7 +276,7 @@ const AddIndependentTransaction = () => {
                     Select Category{" "}
                     <span className="text-[#ff6c00] h-auto pt-[3px]">*</span>
                   </span>
-                  <div className="w-full flex justify-start items-center flex-wrap text-[#535353] choose mt-[10px]">
+                  <div className="w-full flex justify-start items-center flex-wrap text-[#535353]  mt-[10px]">
                     <span
                       className={
                         "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
@@ -407,7 +408,7 @@ const AddIndependentTransaction = () => {
                 <div className="flex flex-col w-full justify-center items-start mt-[15px] font-[google] font-normal text-black text-[15px]">
                   <span className="text-[#000000]">Upload Reciept / Bill</span>
                   <div className="w-full flex justify-start items-center flex-wrap text-[#535353] choose mt-[10px]">
-                    <span className="p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md w-[80px] h-[80px] border border-[#ffd8be] bg-[#ffddc5] flex justify-center items-center text-[#535353]">
+                    <span className="p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md w-[80px] h-[80px] border border-[#ffd8be] flex justify-center items-center text-[#535353]">
                       <IoMdCloudUpload className="text-[25px]" />{" "}
                       <span className="ml-[10px]">Upload Photo</span>
                     </span>
@@ -415,7 +416,7 @@ const AddIndependentTransaction = () => {
                 </div>
                 <div className="w-full flex justify-end items-end font-[google] font-normal text-[15px] text-black h-[20px] mt-[20px]">
                   <div
-                    className="h-full mr-[20px] flex justify-center items-center cursor-pointer  "
+                    className="h-full mr-[25px] flex justify-center items-center cursor-pointer  "
                     onClick={() => {
                       setAddNewTransaction(false);
                       setLabel("");
@@ -427,15 +428,53 @@ const AddIndependentTransaction = () => {
                   >
                     Cancel
                   </div>
-                  <div
-                    className="h-full  flex justify-center items-center text-[#de8544] cursor-pointer "
-                    onClick={() => {
-                      addToFirebase();
-                      setAddNewTransaction(false);
-                    }}
-                  >
-                    Add
-                  </div>
+                  {label?.length != 0 &&
+                  value?.length != 0 &&
+                  price?.length != 0 &&
+                  category?.length != 0 &&
+                  mode?.length != 0 ? (
+                    <>
+                      <div
+                        className="h-full  flex justify-center items-center text-[#de8544] cursor-pointer "
+                        onClick={() => {
+                          // if (
+                          //   label?.length != 0 &&
+                          //   value?.length != 0 &&
+                          //   price?.length != 0 &&
+                          //   category?.length != 0 &&
+                          //   mode?.length != 0
+                          //   // bill?.length != 0
+                          // ) {
+                          addToFirebase();
+                          setAddNewTransaction(false);
+                          // }
+                        }}
+                      >
+                        Add
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div
+                        className="h-full  flex justify-center items-center text-[#ffc194]  "
+                        onClick={() => {
+                          // if (
+                          //   label?.length != 0 &&
+                          //   value?.length != 0 &&
+                          //   price?.length != 0 &&
+                          //   category?.length != 0 &&
+                          //   mode?.length != 0
+                          //   // bill?.length != 0
+                          // ) {
+                          //   addToFirebase();
+                          //   setAddNewTransaction(false);
+                          // }
+                        }}
+                      >
+                        Add
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
