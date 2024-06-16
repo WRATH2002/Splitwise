@@ -149,18 +149,18 @@ const ReminderPage = () => {
         <TopNavbar />
       </div>
       <div className="w-full h-full bg-[#fff5ee] py-[20px]">
-        <div className="w-[calc(100%-40px)] ml-[20px] h-[135px] flex  justify-between items-center p-[20px] bg-[#ffeadc] rounded-2xl border-[1px] border-[#ffe6d7] ">
+        <div className="w-[calc(100%-40px)] ml-[20px] h-[135px] flex  justify-between items-center p-[20px] bg-[#ffeadc] rounded-3xl border-[1px] border-[#ffe6d7] ">
           <div className="w-full  flex flex-col justify-center items-start font-[google] font-normal text-[22px] text-white ">
             <span className="text-[#6c6c6c] text-[14px]">
               Total Due till June
             </span>
-            <span className="flex justify-start items-center text-[#95241d] mt-[-5px]">
+            <span className="flex justify-start items-center text-[#c43b31] mt-[-5px]">
               <BiRupee className="ml-[-3px]" /> {formatAmountWithCommas(due())}
             </span>
             <span className="text-[#6c6c6c] text-[14px]">
               Total Upcoming in June
             </span>
-            <span className="flex justify-start items-center text-[#95241d] mt-[-5px]">
+            <span className="flex justify-start items-center text-[#c43b31] mt-[-5px]">
               <BiRupee className="ml-[-3px]" />{" "}
               {formatAmountWithCommas(upcoming())}
             </span>
@@ -168,7 +168,7 @@ const ReminderPage = () => {
           <div className="w-auto h-full flex flex-col justify-center items-center font-[google] font-normal text-black">
             {/* <span className="text-[14px] whitespace-nowrap">New Reminder</span> */}
             <div
-              className="w-[40px] h-[40px] rounded-xl bg-[#ffcba5] flex justify-center items-center"
+              className="w-[40px] h-[40px] rounded-2xl bg-[#ffcba5] flex justify-center items-center"
               onClick={() => {
                 setAddModal(true);
                 // setSplitModal(true);

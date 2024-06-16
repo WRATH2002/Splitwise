@@ -1,10 +1,10 @@
 // import { Datepicker } from "flowbite-datepicker";
 import React, { useEffect, useState } from "react";
 import { BiRupee } from "react-icons/bi";
-import { FaAngleRight, FaPlus } from "react-icons/fa";
+import { FaAngleRight, FaPlus, FaShopify } from "react-icons/fa";
 import { FiPlus } from "react-icons/fi";
 import { GoChevronRight } from "react-icons/go";
-import { IoCalendar, IoCalendarClear } from "react-icons/io5";
+import { IoCalendar, IoCalendarClear, IoFastFood } from "react-icons/io5";
 // import Datepicker from "tailwind-datepicker-react";
 import { auth } from "../firebase";
 import { db } from "../firebase";
@@ -20,6 +20,17 @@ import "react-multi-date-picker/styles/colors/teal.css";
 import Button from "react-multi-date-picker/components/button";
 import { IoMdCloudUpload } from "react-icons/io";
 import { Label } from "recharts";
+import { HiReceiptRefund, HiShoppingBag } from "react-icons/hi2";
+import { FaTruckMedical } from "react-icons/fa6";
+import { GiAutoRepair, GiPartyPopper } from "react-icons/gi";
+import {
+  MdElectricBolt,
+  MdOutlineAirplanemodeActive,
+  MdOutlinePets,
+  MdSchool,
+} from "react-icons/md";
+import { BsFillFuelPumpFill, BsTaxiFrontFill } from "react-icons/bs";
+import { PiSealQuestionFill } from "react-icons/pi";
 
 const options = {
   title: "Demo Title",
@@ -88,30 +99,53 @@ const AddIndependentTransaction = () => {
   const [mode, setMode] = useState("");
   const [bill, setBill] = useState("");
 
-  useEffect(() => {
-    const currentDate = new Date();
-    setPreDate(currentDate.getDate());
-    console.log(value?.day + "/" + value?.month?.number + "/" + value?.year);
-  }, []);
+  // useEffect(() => {
+  //   const currentDate = new Date();
+  //   setPreDate(currentDate.getDate());
+  //   console.log(value?.day + "/" + value?.month?.number + "/" + value?.year);
+  // }, []);
 
-  const [value, setValue] = useState(new Date());
+  const [value, setValue] = useState(
+    new Date().getDate() +
+      "/" +
+      parseInt(parseInt(new Date().getMonth()) + 1) +
+      "/" +
+      new Date().getFullYear()
+  );
 
   function addToFirebase() {
     const user = firebase.auth().currentUser;
-    db.collection("Expense")
-      .doc(user.uid)
-      .update({
-        NormalTransaction: arrayUnion({
-          Lable: label,
-          Date: value?.day + "/" + value?.month?.number + "/" + value?.year,
-          Amount: price,
-          TransactionType: "Single",
-          Members: "0",
-          Category: category,
-          Mode: mode,
-          BillUrl: bill,
-        }),
-      });
+    if (value.length == undefined) {
+      db.collection("Expense")
+        .doc(user.uid)
+        .update({
+          NormalTransaction: arrayUnion({
+            Lable: label,
+            Date: value?.day + "/" + value?.month?.number + "/" + value?.year,
+            Amount: price,
+            TransactionType: "Single",
+            Members: "0",
+            Category: category,
+            Mode: mode,
+            BillUrl: bill,
+          }),
+        });
+    } else {
+      db.collection("Expense")
+        .doc(user.uid)
+        .update({
+          NormalTransaction: arrayUnion({
+            Lable: label,
+            Date: value,
+            Amount: price,
+            TransactionType: "Single",
+            Members: "0",
+            Category: category,
+            Mode: mode,
+            BillUrl: bill,
+          }),
+        });
+    }
 
     setLabel("");
     setPrice("");
@@ -129,6 +163,11 @@ const AddIndependentTransaction = () => {
   // };
   // let [value, setValue] = useState(new Date());
 
+  useEffect(() => {
+    console.log(value);
+    console.log(value.length);
+  }, [value]);
+
   function isNumeric(str) {
     if (typeof str !== "string") return false;
     if (str === "") return true;
@@ -140,7 +179,7 @@ const AddIndependentTransaction = () => {
       {addNewTransaction === true ? (
         <>
           <div className="w-full h-[100svh] fixed z-30 bg-[#68686871] top-0 left-0 flex justify-center items-end p-[20px] ">
-            <div className="w-full max-h-[70%] py-[27px] bg-[#fff5ee] rounded-3xl flex flex-col justify-center items-start z-40">
+            <div className="w-full max-h-[calc(100svh-40px)] py-[27px] bg-[#fff5ee] rounded-3xl flex flex-col justify-center items-start z-40">
               <div className="w-full h-auto px-[30px] bg-transparent overflow-y-scroll flex flex-col justify-start items-start z-40">
                 <span className="w-full text-[25px] text-black font-[google] font-normal flex justify-start items-center ">
                   Transaction{" "}
@@ -198,8 +237,8 @@ const AddIndependentTransaction = () => {
                       disableMonthPicker
                       weekDays={weekDays}
                       months={months}
-                      minDate={new Date().setDate(0)}
-                      maxDate={new Date().setDate(preDate)}
+                      // minDate={new Date().setDate(0)}
+                      // maxDate={new Date().setDate(preDate)}
                       // render={<InputIcon />}
                       buttons={false}
                       value={value}
@@ -279,7 +318,7 @@ const AddIndependentTransaction = () => {
                   <div className="w-full flex justify-start items-center flex-wrap text-[#535353]  mt-[10px]">
                     <span
                       className={
-                        "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                        "cursor-pointer p-[10px]  mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
                         (category == "Shopping"
                           ? " bg-[#ffddc5] text-[black]"
                           : " text-[#535353]")
@@ -288,24 +327,13 @@ const AddIndependentTransaction = () => {
                         setCategory("Shopping");
                       }}
                     >
+                      <FaShopify className="mr-[10px]" />
                       Shopping
                     </span>
+
                     <span
                       className={
-                        "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
-                        (category == "Medical"
-                          ? " bg-[#ffddc5] text-[black]"
-                          : " text-[#535353]")
-                      }
-                      onClick={() => {
-                        setCategory("Medical");
-                      }}
-                    >
-                      Medical
-                    </span>
-                    <span
-                      className={
-                        "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                        "cursor-pointer p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
                         (category == "Grocery"
                           ? " bg-[#ffddc5] text-[black]"
                           : " text-[#535353]")
@@ -314,38 +342,11 @@ const AddIndependentTransaction = () => {
                         setCategory("Grocery");
                       }}
                     >
-                      Grocery
+                      <HiShoppingBag className="mr-[10px]" /> Grocery
                     </span>
                     <span
                       className={
-                        "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
-                        (category == "Travel"
-                          ? " bg-[#ffddc5] text-[black]"
-                          : " text-[#535353]")
-                      }
-                      onClick={() => {
-                        setCategory("Travel");
-                      }}
-                    >
-                      Travel
-                    </span>
-
-                    <span
-                      className={
-                        "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
-                        (category == "Entertainment"
-                          ? " bg-[#ffddc5] text-[black]"
-                          : " text-[#535353]")
-                      }
-                      onClick={() => {
-                        setCategory("Entertainment");
-                      }}
-                    >
-                      Entertainment
-                    </span>
-                    <span
-                      className={
-                        "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                        "cursor-pointer p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
                         (category == "Food & Drinks"
                           ? " bg-[#ffddc5] text-[black]"
                           : " text-[#535353]")
@@ -354,11 +355,131 @@ const AddIndependentTransaction = () => {
                         setCategory("Food & Drinks");
                       }}
                     >
-                      Food & Drinks
+                      <IoFastFood className="mr-[10px]" /> Food & Drinks
                     </span>
                     <span
                       className={
-                        "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                        "cursor-pointer p-[10px]  mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                        (category == "Medical"
+                          ? " bg-[#ffddc5] text-[black]"
+                          : " text-[#535353]")
+                      }
+                      onClick={() => {
+                        setCategory("Medical");
+                      }}
+                    >
+                      <FaTruckMedical className="mr-[10px]" /> Medical
+                    </span>
+
+                    <span
+                      className={
+                        "cursor-pointer p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                        (category == "Entertainment"
+                          ? " bg-[#ffddc5] text-[black]"
+                          : " text-[#535353]")
+                      }
+                      onClick={() => {
+                        setCategory("Entertainment");
+                      }}
+                    >
+                      <GiPartyPopper className="mr-[10px]" /> Entertainment
+                    </span>
+                    <span
+                      className={
+                        "cursor-pointer p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                        (category == "Electricity Bill"
+                          ? " bg-[#ffddc5] text-[black]"
+                          : " text-[#535353]")
+                      }
+                      onClick={() => {
+                        setCategory("Electricity Bill");
+                      }}
+                    >
+                      <MdElectricBolt className="mr-[10px]" /> Electricity Bill
+                    </span>
+                    <span
+                      className={
+                        "cursor-pointer p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                        (category == "Petrol / Diesel"
+                          ? " bg-[#ffddc5] text-[black]"
+                          : " text-[#535353]")
+                      }
+                      onClick={() => {
+                        setCategory("Petrol / Diesel");
+                      }}
+                    >
+                      <BsFillFuelPumpFill className="mr-[10px]" /> Petrol /
+                      Diesel
+                    </span>
+                    <span
+                      className={
+                        "cursor-pointer p-[10px]  mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                        (category == "Travel"
+                          ? " bg-[#ffddc5] text-[black]"
+                          : " text-[#535353]")
+                      }
+                      onClick={() => {
+                        setCategory("Travel");
+                      }}
+                    >
+                      <MdOutlineAirplanemodeActive className="rotate-45 mr-[10px]" />{" "}
+                      Travel
+                    </span>
+                    <span
+                      className={
+                        "cursor-pointer p-[10px]  mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                        (category == "Taxi Fare"
+                          ? " bg-[#ffddc5] text-[black]"
+                          : " text-[#535353]")
+                      }
+                      onClick={() => {
+                        setCategory("Taxi Fare");
+                      }}
+                    >
+                      <BsTaxiFrontFill className="mr-[10px]" /> Taxi Fare
+                    </span>
+                    <span
+                      className={
+                        "cursor-pointer p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                        (category == "Car Maintanance"
+                          ? " bg-[#ffddc5] text-[black]"
+                          : " text-[#535353]")
+                      }
+                      onClick={() => {
+                        setCategory("Car Maintanance");
+                      }}
+                    >
+                      <GiAutoRepair className="mr-[10px]" /> Car Maintanance
+                    </span>
+                    <span
+                      className={
+                        "cursor-pointer p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                        (category == "Education"
+                          ? " bg-[#ffddc5] text-[black]"
+                          : " text-[#535353]")
+                      }
+                      onClick={() => {
+                        setCategory("Education");
+                      }}
+                    >
+                      <MdSchool className="mr-[10px]" /> Education
+                    </span>
+                    <span
+                      className={
+                        "cursor-pointer p-[10px]  mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                        (category == "Pet Care"
+                          ? " bg-[#ffddc5] text-[black]"
+                          : " text-[#535353]")
+                      }
+                      onClick={() => {
+                        setCategory("Pet Care");
+                      }}
+                    >
+                      <MdOutlinePets className="mr-[10px]" /> Pet Care
+                    </span>
+                    <span
+                      className={
+                        "cursor-pointer p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
                         (category == "Other"
                           ? " bg-[#ffddc5] text-[black]"
                           : " text-[#535353]")
@@ -367,7 +488,7 @@ const AddIndependentTransaction = () => {
                         setCategory("Other");
                       }}
                     >
-                      Other
+                      <PiSealQuestionFill className="mr-[10px]" /> Others
                     </span>
                   </div>
                 </div>
@@ -379,7 +500,7 @@ const AddIndependentTransaction = () => {
                   <div className="w-full flex justify-start items-center flex-wrap text-[#535353] choose mt-[10px]">
                     <span
                       className={
-                        "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                        "cursor-pointer p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
                         (mode == "Online UPI"
                           ? " bg-[#ffddc5] text-[black]"
                           : " text-[#535353]")
@@ -392,7 +513,7 @@ const AddIndependentTransaction = () => {
                     </span>
                     <span
                       className={
-                        "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                        "cursor-pointer p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
                         (mode == "Offline Cash"
                           ? " bg-[#ffddc5] text-[black]"
                           : " text-[#535353]")
@@ -484,7 +605,7 @@ const AddIndependentTransaction = () => {
         <></>
       )}
       <div
-        className="w-[calc(100%-40px)] h-[60px]  px-[10px] font-[google] font-normal text-[15px] bg-[#ffeadc] rounded-2xl border-[1px] border-[#ffe6d7]  text-[#000000] cursor-pointer flex justify-center items-center"
+        className="w-[calc(100%-40px)] h-[60px]  px-[10px] font-[google] font-normal text-[15px] bg-[#ffeadc] rounded-3xl border-[1px] border-[#ffe6d7]  text-[#000000] cursor-pointer flex justify-center items-center"
         onClick={() => {
           setAddNewTransaction(true);
         }}

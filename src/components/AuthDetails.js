@@ -41,7 +41,7 @@ const AuthDetails = () => {
   const [segment, setSegment] = useState(1);
 
   return (
-    <div className="w-full h-[100svh] flex-col flex ">
+    <div className="w-full h-[100svh] flex-col flex select-none">
       {authUser ? (
         <>
           {/* <div className="w-full h-[100svh]"> */}

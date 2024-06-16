@@ -22,6 +22,21 @@ import {
   where,
 } from "firebase/firestore";
 
+import { GiAutoRepair } from "react-icons/gi";
+import { FaKitMedical, FaTruckMedical } from "react-icons/fa6";
+import { BsFillFuelPumpFill, BsTaxiFrontFill } from "react-icons/bs";
+import {
+  MdElectricBolt,
+  MdOutlineAirplanemodeActive,
+  MdOutlinePets,
+  MdSchool,
+} from "react-icons/md";
+// import AboutTransaction from "./AboutTransaction";
+import { HiReceiptRefund, HiShoppingBag } from "react-icons/hi2";
+import { FiArrowDownLeft, FiArrowUpRight } from "react-icons/fi";
+import { BiSolidPlaneTakeOff } from "react-icons/bi";
+import { PiMapPinLineFill, PiSealQuestionFill } from "react-icons/pi";
+
 const MemberProfile = () => {
   return (
     <>
@@ -200,14 +215,33 @@ const AboutTransaction = (props) => {
             <IoFastFood />
           ) : props?.data?.Category === "Shopping" ? (
             <FaShopify />
+          ) : props?.data?.Category === "Grocery" ? (
+            <HiShoppingBag />
           ) : props?.data?.Category === "Medical" ? (
-            <MdMedication />
+            <FaTruckMedical />
           ) : props?.data?.Category === "Travel" ? (
-            <MdOutlineTravelExplore />
+            // <MdOutlineTravelExplore />
+            // <PiMapPinLineFill />
+            // <BiSolidPlaneTakeOff />
+            <MdOutlineAirplanemodeActive className="rotate-45" />
           ) : props?.data?.Category === "Entertainment" ? (
             <GiPartyPopper />
+          ) : props?.data?.Category === "Electricity Bill" ? (
+            <MdElectricBolt />
+          ) : props?.data?.Category === "Petrol / Diesel" ? (
+            <BsFillFuelPumpFill />
+          ) : props?.data?.Category === "Taxi Fare" ? (
+            <BsTaxiFrontFill />
+          ) : props?.data?.Category === "Car Maintanance" ? (
+            <GiAutoRepair />
+          ) : props?.data?.Category === "Education" ? (
+            <MdSchool />
+          ) : props?.data?.Category === "Pet Care" ? (
+            <MdOutlinePets />
           ) : (
-            <></>
+            <>
+              <PiSealQuestionFill />
+            </>
           )}
           {/* <IoFastFood className="text-[55px] text-[#98d832]" /> */}
         </div>

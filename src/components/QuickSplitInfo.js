@@ -62,7 +62,7 @@ const QuickSplitInfo = (props) => {
           Total you to pay
         </span>
         <span className=" font-[google] font-normal text-[22px] text-[#000000] flex justify-start items-center">
-          <span className=" flex justify-start items-center text-[#de8544]">
+          <span className=" flex justify-start items-center text-[#c43b31]">
             <BiRupee className="ml-[-3px] " /> {props?.willPay}
           </span>
         </span>

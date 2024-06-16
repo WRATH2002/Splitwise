@@ -27,7 +27,7 @@ const monthNames = [
   "December",
 ];
 
-const QuickInfo = () => {
+const QuickInfo = (props) => {
   const [month, setMonth] = useState(0);
   const [monthlyExpense, setMonthlyExpense] = useState(0);
   const [income, setIncome] = useState(0);
@@ -113,7 +113,7 @@ const QuickInfo = () => {
 
   useEffect(() => {
     sumAmountsByCurrentMonth();
-  }, [transactionHistory]);
+  }, [transactionHistory, props?.month, props?.year]);
 
   function sumAmountsByCurrentMonth() {
     if (transactionHistory) {
@@ -124,8 +124,10 @@ const QuickInfo = () => {
       setMonthlyExpense(
         transactionHistory
           .filter((obj) => {
-            const [day, month, year] = obj.Date.split("/").map(Number);
-            return month - 1 === currentMonth && year === currentYear;
+            // const [day, month, year] = obj.Date.split("/").map(Number);
+            const dateArr = obj.Date.split("/").map(Number);
+            return dateArr[1] === props?.month && dateArr[2] === props?.year;
+            // return month - 1 === currentMonth && year === currentYear;
           })
           .reduce((sum, obj) => {
             if (obj?.MoneyIsAdded) {
@@ -612,7 +614,7 @@ const QuickInfo = () => {
                   )}{" "}
                 </span>
 
-                <span className=" text-[13px] ml-[6px] h-[25px] flex justify-start items-end text-[#de8544] ">
+                <span className=" text-[13px] ml-[6px] h-[25px] flex justify-start items-end text-[#c43b31] ">
                   <FaLongArrowAltUp className="mb-[4px] mr-[5px] text-[15px]" />{" "}
                   <BiRupee className="ml-[-3px] mb-[3px]" />
                   {formatAmountWithCommas(monthlyExpense - budget)}
@@ -626,7 +628,7 @@ const QuickInfo = () => {
               strokeWidth={6}
               trailColor="#b7b7b7"
               trailWidth={2}
-              strokeColor={"" + (percent < 75 ? " #00bb00" : " #de8544")}
+              strokeColor={"" + (percent < 75 ? " #00bb00" : " #c43b31")}
               className="h-[4px]"
             />{" "}
             <span

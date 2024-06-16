@@ -1,12 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { FaShopify } from "react-icons/fa";
-import { GiPartyPopper } from "react-icons/gi";
+import { GiAutoRepair, GiPartyPopper } from "react-icons/gi";
 import { IoFastFood } from "react-icons/io5";
-import { MdMedication, MdOutlineTravelExplore } from "react-icons/md";
+import { FaKitMedical, FaTruckMedical } from "react-icons/fa6";
+import { BsFillFuelPumpFill, BsTaxiFrontFill } from "react-icons/bs";
+import {
+  MdElectricBolt,
+  MdMedication,
+  MdOutlineAirplanemodeActive,
+  MdOutlineModeOfTravel,
+  MdOutlinePets,
+  MdOutlineTravelExplore,
+  MdSchool,
+} from "react-icons/md";
 import AboutTransaction from "./AboutTransaction";
-import { HiReceiptRefund } from "react-icons/hi2";
+import { HiReceiptRefund, HiShoppingBag } from "react-icons/hi2";
 import { FiArrowDownLeft, FiArrowUpRight } from "react-icons/fi";
-import { BiRupee } from "react-icons/bi";
+import { BiRupee, BiSolidPlaneTakeOff } from "react-icons/bi";
 import { auth } from "../firebase";
 import { db } from "../firebase";
 import firebase from "../firebase";
@@ -16,6 +26,8 @@ import {
   onSnapshot,
   where,
 } from "firebase/firestore";
+
+import { PiMapPinLineFill, PiSealQuestionFill } from "react-icons/pi";
 
 const IndependentTransaction = (props) => {
   const [showTransaction, setShowTransaction] = useState(false);
@@ -118,15 +130,32 @@ const IndependentTransaction = (props) => {
             <IoFastFood />
           ) : props?.data?.Category === "Shopping" ? (
             <FaShopify />
+          ) : props?.data?.Category === "Grocery" ? (
+            <HiShoppingBag />
           ) : props?.data?.Category === "Medical" ? (
-            <MdMedication />
+            <FaTruckMedical />
           ) : props?.data?.Category === "Travel" ? (
-            <MdOutlineTravelExplore />
+            // <MdOutlineTravelExplore />
+            // <PiMapPinLineFill />
+            // <BiSolidPlaneTakeOff />
+            <MdOutlineAirplanemodeActive className="rotate-45" />
           ) : props?.data?.Category === "Entertainment" ? (
             <GiPartyPopper />
+          ) : props?.data?.Category === "Electricity Bill" ? (
+            <MdElectricBolt />
+          ) : props?.data?.Category === "Petrol / Diesel" ? (
+            <BsFillFuelPumpFill />
+          ) : props?.data?.Category === "Taxi Fare" ? (
+            <BsTaxiFrontFill />
+          ) : props?.data?.Category === "Car Maintanance" ? (
+            <GiAutoRepair />
+          ) : props?.data?.Category === "Education" ? (
+            <MdSchool />
+          ) : props?.data?.Category === "Pet Care" ? (
+            <MdOutlinePets />
           ) : (
             <>
-              <HiReceiptRefund />{" "}
+              <PiSealQuestionFill />
             </>
           )}
         </div>
@@ -153,7 +182,7 @@ const IndependentTransaction = (props) => {
               " flex justify-end items-center whitespace-nowrap " +
               (props?.data?.MoneyIsAdded
                 ? " text-[#00bb00]"
-                : " text-[#de8544]")
+                : " text-[#c43b31]")
             }
           >
             <BiRupee />
@@ -164,7 +193,7 @@ const IndependentTransaction = (props) => {
               </>
             ) : (
               <>
-                <FiArrowUpRight className="text-[#de8544] ml-[5px] text-[19px]" />
+                <FiArrowUpRight className="text-[#c43b31] ml-[5px] text-[19px]" />
               </>
             )}
           </div>
