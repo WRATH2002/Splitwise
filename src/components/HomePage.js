@@ -13,6 +13,8 @@ import { AiOutlineSwap } from "react-icons/ai";
 import { FaFilter } from "react-icons/fa";
 import { LuArrowDown } from "react-icons/lu";
 import OutsideClickHandler from "react-outside-click-handler";
+import { MdKeyboardArrowDown } from "react-icons/md";
+import Tutorial from "./Tutorial";
 
 const monthNames = [
   "January",
@@ -254,7 +256,7 @@ const HomePage = () => {
                     setShowFilterModal(!showFilterModal);
                   }}
                 >
-                  Date Asc
+                  Date in Ascending Order
                 </span>
                 <span
                   className="mt-[12px] h-[15px] flex justify-start items-center w-full cursor-pointer"
@@ -263,7 +265,7 @@ const HomePage = () => {
                     setShowFilterModal(!showFilterModal);
                   }}
                 >
-                  Date Desc
+                  Date in Descending Order
                 </span>
                 <span
                   className="mt-[12px] h-[15px] flex justify-start items-center w-full cursor-pointer"
@@ -272,7 +274,7 @@ const HomePage = () => {
                     setShowFilterModal(!showFilterModal);
                   }}
                 >
-                  Price (Low - High)
+                  Price from Low to High
                 </span>
                 <span
                   className="mt-[12px] h-[15px] flex justify-start items-center w-full cursor-pointer"
@@ -281,7 +283,7 @@ const HomePage = () => {
                     setShowFilterModal(!showFilterModal);
                   }}
                 >
-                  Price (High - Low)
+                  Price from High to Low
                 </span>
                 <span
                   className="mt-[12px] h-[15px] flex justify-start items-center w-full cursor-pointer"
@@ -327,14 +329,14 @@ const HomePage = () => {
 
                 <div
                   className={
-                    "w-[calc(100%/2)] h-full flex justify-center items-center z-40 " +
+                    "w-[calc(100%/2)] h-full flex justify-center items-center z-40 pb-[5px] " +
                     (!section
                       ? " bg-[#c1b9b4] pt-0 pl-0 p-[5px] rounded-br-[25px] rounded-tr-[25px]"
                       : " bg-[#fff5ee] p-0 rounded-t-full cursor-pointer")
                   }
                 >
                   <div
-                    className="w-full h-full flex justify-center items-center rounded-full bg-[#fff5ee] cursor-pointer"
+                    className="w-full h-full flex justify-center items-center rounded-full bg-[#fff5ee] cursor-pointer  text-[16px]"
                     onClick={() => {
                       setSection(true);
                     }}
@@ -344,14 +346,14 @@ const HomePage = () => {
                 </div>
                 <div
                   className={
-                    "w-[calc(100%/2)] h-full flex justify-center items-center z-40  " +
+                    "w-[calc(100%/2)] h-full flex justify-center items-center z-40 pb-[5px] " +
                     (section
                       ? " bg-[#c1b9b4] pt-0 pr-0 p-[5px] rounded-bl-[25px] rounded-tl-[25px]"
                       : " bg-[#fff5ee] p-0 rounded-t-[20px] cursor-pointer")
                   }
                 >
                   <div
-                    className="w-full rounded-full h-full flex justify-center items-center z-50 bg-[#fff5ee] cursor-pointer"
+                    className="w-full rounded-full h-full flex justify-center items-center z-50 bg-[#fff5ee] cursor-pointer text-[16px]"
                     onClick={() => {
                       setSection(false);
                     }}
@@ -437,6 +439,8 @@ const HomePage = () => {
       ) : (
         <></>
       )}
+
+      <Tutorial />
       <div className="w-full h-[calc(100svh-60px)] bg-[#FFF5EE] flex flex-col justify-start items-center pt-[20px]">
         <TopNavbar />
         <QuickInfo month={month} year={year} />
@@ -445,12 +449,13 @@ const HomePage = () => {
           <div className="flex justify-start items-center">
             Transaction History,{" "}
             <span
-              className=" ml-[4px] text-[black] cursor-pointer"
+              className=" ml-[4px] text-[black] cursor-pointer flex justify-start items-center"
               onClick={() => {
                 setChooseMonth(true);
               }}
             >
-              {monthNames[month - 1]} - {year}
+              {monthNames[month - 1]} - {year}{" "}
+              <MdKeyboardArrowDown className="text-[21px]" />
             </span>
           </div>
           {tempTransactionHistory?.length !== 0 ? (

@@ -11,13 +11,27 @@ import OutsideClickHandler from "react-outside-click-handler";
 
 import firebase from "../firebase";
 import { arrayUnion, onSnapshot } from "firebase/firestore";
-
+const monthNames = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 const Settings = () => {
   const [pop, setPop] = useState(false);
   const [permission, setPermission] = useState(false);
   const [income, setIncome] = useState("");
   const [budget, setBudget] = useState("");
   const [transactionHistory, setTransactionHistory] = useState([]);
+  const [monthWiseData, setMonthWiseData] = useState([]);
   const userSignOut = () => {
     signOut(auth)
       .then(() => console.log("Signed Out Successfully"))
@@ -55,6 +69,58 @@ const Settings = () => {
     return amount.toLocaleString(undefined, {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
+    });
+  }
+
+  useEffect(() => {
+    if (transactionHistory !== undefined) {
+      fetchMonthWiseData();
+    }
+  }, [transactionHistory]);
+
+  function fetchMonthWiseData() {
+    console.log("MonthWise Data function");
+    let arr = [];
+
+    transactionHistory?.map((data, index) => {
+      let dateArr = data?.Date?.split("/");
+      if (dateArr[2] == new Date().getFullYear()) {
+        if (arr[parseInt(parseInt(dateArr[1]) - 1)] === undefined) {
+          if (data?.MoneyIsAdded === true) {
+            arr[parseInt(parseInt(dateArr[1]) - 1)] = {
+              Budget: parseFloat(budget),
+              Expense: -parseFloat(data?.Amount),
+              TransactionCount: 1,
+            };
+          } else {
+            arr[parseInt(parseInt(dateArr[1]) - 1)] = {
+              Budget: parseFloat(budget),
+              Expense: parseFloat(data?.Amount),
+              TransactionCount: 1,
+            };
+          }
+        } else {
+          if (data?.MoneyIsAdded === true) {
+            arr[parseInt(parseInt(dateArr[1]) - 1)].Expense =
+              arr[parseInt(parseInt(dateArr[1]) - 1)].Expense -
+              parseFloat(data?.Amount);
+            arr[parseInt(parseInt(dateArr[1]) - 1)].TransactionCount =
+              arr[parseInt(parseInt(dateArr[1]) - 1)].TransactionCount + 1;
+          } else {
+            arr[parseInt(parseInt(dateArr[1]) - 1)].Expense =
+              arr[parseInt(parseInt(dateArr[1]) - 1)].Expense +
+              parseFloat(data?.Amount);
+            arr[parseInt(parseInt(dateArr[1]) - 1)].TransactionCount =
+              arr[parseInt(parseInt(dateArr[1]) - 1)].TransactionCount + 1;
+          }
+        }
+      }
+    });
+
+    console.log(arr);
+    setMonthWiseData(arr);
+    arr.map((data, index) => {
+      console.log(index);
     });
   }
   return (
@@ -149,9 +215,9 @@ const Settings = () => {
                   <tr className="w-full h-[35px] bg-[#ffe6d7]">
                     {/* <th className="h-full w-[calc(100%/6)] px-[5px] ">Year</th> */}
                     <th className="h-full w-[calc(100%/5)] px-[5px] ">Date</th>
-                    <th className="h-full w-[calc(100%/5)] px-[5px] border-l-[1px] border-[#ffbb91]">
+                    {/* <th className="h-full w-[calc(100%/5)] px-[5px] border-l-[1px] border-[#ffbb91]">
                       Income
-                    </th>
+                    </th> */}
                     <th className="h-full w-[calc(100%/5)] px-[5px] border-l-[1px] border-[#ffbb91]">
                       Budget
                     </th>
@@ -161,34 +227,50 @@ const Settings = () => {
                     <th className="h-full w-[calc(100%/5)] px-[5px] border-l-[1px] border-[#ffbb91]">
                       Savings
                     </th>
+                    <th className="h-full w-[calc(100%/5)] px-[5px] border-l-[1px] border-[#ffbb91]">
+                      Transactions
+                    </th>
                   </tr>
-                  {transactionHistory?.map((data) => {
+                  {monthWiseData?.map((data, index) => {
                     return (
                       <>
                         <tr className="w-full h-[35px] ">
                           <td className="h-full w-[calc(100%/5)] px-[5px] border-l-[1px] border-[#ffbb91] text-center">
-                            {data?.Date}
+                            {/* {data?.Date} */}
+                            {monthNames[index]}
                           </td>
-                          <td className="h-full w-[calc(100%/5)] px-[5px] border-l-[1px] border-[#ffbb91] text-center ">
-                            {formatAmountWithCommas(income)}
+
+                          <td className="h-full w-[calc(100%/5)] px-[5px] border-l-[1px] border-[#ffbb91] text-center">
+                            {formatAmountWithCommas(data?.Budget)}
                           </td>
                           <td className="h-full w-[calc(100%/5)] px-[5px] border-l-[1px] border-[#ffbb91] text-center">
-                            {formatAmountWithCommas(budget)}
+                            {formatAmountWithCommas(data?.Expense)}
                           </td>
                           <td
                             className={
                               "h-full w-[calc(100%/5)] px-[5px] border-l-[1px] border-[#ffbb91] text-center" +
-                              (data?.TransactionType == "Split"
-                                ? " text-[#c43b31]"
-                                : " text-[#00bb00]")
+                              (data?.Budget - data?.Expense >= 0
+                                ? " text-[#00bb00]"
+                                : " text-[#c43b31]")
                             }
                           >
-                            {formatAmountWithCommas(data?.Amount)}
-                          </td>
-                          <td className="h-full w-[calc(100%/5)] px-[5px] border-l-[1px] border-[#ffbb91] text-center">
-                            {formatAmountWithCommas(
-                              parseFloat(income) - parseFloat(data?.Amount)
+                            {data?.Budget - data?.Expense >= 0 ? (
+                              <>
+                                {formatAmountWithCommas(
+                                  data?.Budget - data?.Expense
+                                )}
+                              </>
+                            ) : (
+                              <>
+                                {formatAmountWithCommas(
+                                  Math.abs(data?.Budget - data?.Expense)
+                                )}
+                              </>
                             )}
+                          </td>
+                          <td className="h-full w-[calc(100%/5)] px-[5px] border-l-[1px] border-[#ffbb91] text-center ">
+                            {/* {formatAmountWithCommas(income)} */}
+                            {data?.TransactionCount}
                           </td>
                         </tr>
                       </>

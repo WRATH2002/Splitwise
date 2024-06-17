@@ -19,6 +19,16 @@
   margin-top: 0px;
 }
 
+tr:nth-child(odd) {
+  background-color: #feecdf;
+}
+
+tr:nth-child(1) {
+  background-color: #ffdfcb;
+}
+tr:last-child {
+  border-bottom: 1px solid #ffbb91;
+}
 input::placeholder {
   color: #8b8b8b;
   font-size: 15px;

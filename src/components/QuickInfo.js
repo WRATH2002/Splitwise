@@ -224,9 +224,9 @@ const QuickInfo = (props) => {
                 setIncomeModal(false);
               }}
             > */}
-            <div className="min-w-[100%] z-50 h-auto bg-[#fff5ee] drop-shadow-sm   text-black  rounded-[20px] font-[google] font-normal text-[14px] flex flex-col justify-center items-start p-[30px]">
+            <div className="min-w-[100%] z-50 h-auto bg-[#fff5ee] drop-shadow-sm   text-black  rounded-[20px] font-[google] font-normal text-[14px] flex flex-col justify-center items-start p-[20px]">
               <span className="w-full text-[22px] text-black font-[google] font-normal flex justify-start items-center ">
-                Set New <span className="text-[#de8544] ml-[10px]">Budget</span>
+                Set New Budget
               </span>
               <div className="flex w-full justify-start items-center mt-[10px]">
                 <div className="w-[30px] h-full flex justify-center items-center mr-[-30px]">
@@ -245,7 +245,10 @@ const QuickInfo = (props) => {
               </div>
               {error.length > 0 ? (
                 <>
-                  <div className="flex w-full justify-between items-center mt-[6px] text-[#ff6c00] text-[13px]">
+                  <div
+                    className="flex w-full justify-between items-center mt-[6px] text-[#c43b31] text-[13px]"
+                    // style={{ transition: ".3s" }}
+                  >
                     * {error}
                   </div>
                 </>
@@ -260,15 +263,15 @@ const QuickInfo = (props) => {
                     : " text-[#a8a8a8]")
                 }
               >
-                Enable Category Budget{" "}
                 {parseFloat(newBudget) >= 0 ? (
                   <>
+                    Enable Category Budget{" "}
                     <div
                       className={
-                        "w-[27px] h-[19px]  rounded-full flex justify-start items-center border  ml-[9px]" +
+                        "w-[27px] h-[19px]  rounded-full flex justify-start items-center border  ml-[9px] cursor-pointer" +
                         (categoryBudgetIndicator
                           ? " pl-[9.8px] border-[#de8544]"
-                          : " pl-[1.5px] border-[#ffffff]")
+                          : " pl-[1.5px] border-[#ffcaa5]")
                       }
                       onClick={() => {
                         setCategoryBudgetIndicator(!categoryBudgetIndicator);
@@ -280,7 +283,7 @@ const QuickInfo = (props) => {
                           "w-[14px] h-[14px] rounded-full " +
                           (categoryBudgetIndicator
                             ? " bg-[#de8544]"
-                            : " bg-[#ffffff]")
+                            : " bg-[#ffd8bd]")
                         }
                         style={{ transition: ".3s" }}
                       ></div>
@@ -292,11 +295,12 @@ const QuickInfo = (props) => {
               </span>
               <div
                 className={
-                  "w-full flex flex-col justify-start items-start mt-[7px] overflow-hidden" +
+                  "w-full flex flex-col justify-start items-start  overflow-hidden" +
                   (categoryBudgetIndicator && newBudget.length != 0
-                    ? " h-auto"
-                    : " h-0")
+                    ? " h-[322px] mt-[7px]"
+                    : " h-0 mt-[0px]")
                 }
+                style={{ transition: ".4s" }}
               >
                 <div className="w-full h-[40px] flex justify-start items-center">
                   <div className=" w-[145px] rounded-l-md h-[40px] flex justify-start items-center bg-transparent border border-r-0 border-[#ffd8be] px-[10px] text-[#de8544] font-[google] font-normal text-[14px] ">
@@ -431,7 +435,7 @@ const QuickInfo = (props) => {
                 <>
                   {categoryBudgetIndicator && newBudget.length != 0 ? (
                     <>
-                      <div className="flex w-full justify-between items-center mt-[6px] text-[#ff6c00] text-[13px]">
+                      <div className="flex w-full justify-between items-center mt-[6px] text-[#c43b31] text-[13px]">
                         * {subError}
                       </div>
                     </>
@@ -442,7 +446,12 @@ const QuickInfo = (props) => {
               ) : (
                 <></>
               )}
-              <div className="w-full flex justify-end items-end font-[google] font-normal text-[15px] text-black h-[20px] mt-[20px]">
+              <div
+                className={
+                  "w-full flex justify-end items-end font-[google] font-normal text-[15px] text-black h-[20px] " +
+                  (parseFloat(newBudget) >= 0 ? " mt-[20px]" : " mt-[0px]")
+                }
+              >
                 <div
                   className="h-full mr-[25px] flex justify-center items-center  cursor-pointer "
                   onClick={() => {
@@ -453,7 +462,8 @@ const QuickInfo = (props) => {
                 >
                   Cancel
                 </div>
-                {newBudget.length !== 0 ? (
+                {newBudget.length > 0 &&
+                parseInt(newBudget) <= parseInt(income) ? (
                   <>
                     <div
                       className="h-full  flex justify-center items-center text-[#de8544] cursor-pointer "
@@ -506,7 +516,7 @@ const QuickInfo = (props) => {
               }}
             > */}
             <div
-              className="min-w-[100%] z-50 h-auto bg-[#fff5ee] drop-shadow-sm   text-black  rounded-[20px] font-[google] font-normal text-[14px] flex flex-col justify-center items-start p-[30px]"
+              className="min-w-[100%] z-50 h-auto bg-[#fff5ee] drop-shadow-sm   text-black  rounded-[20px] font-[google] font-normal text-[14px] flex flex-col justify-center items-start p-[20px]"
               style={{ zIndex: 100 }}
             >
               <span className="w-full text-[22px] text-black font-[google] font-normal flex justify-start items-center ">
