@@ -10,7 +10,6 @@ export const Profile = (props) => {
       props?.setAddedMember(
         props?.addedMember?.filter((data) => data != props?.data)
       );
-      // (props?.data?.UserID);
     } else {
       props?.setAddedMember((prevMembers) => [
         ...prevMembers,
