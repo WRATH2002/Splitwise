@@ -31,6 +31,7 @@ import {
 } from "react-icons/md";
 import { BsFillFuelPumpFill, BsTaxiFrontFill } from "react-icons/bs";
 import { PiSealQuestionFill } from "react-icons/pi";
+import { HiOutlinePlus } from "react-icons/hi";
 
 const options = {
   title: "Demo Title",
@@ -178,15 +179,44 @@ const AddIndependentTransaction = () => {
     <>
       {addNewTransaction === true ? (
         <>
-          <div className="w-full h-[100svh] fixed z-30 bg-[#68686871] top-0 left-0 flex justify-center items-end p-[20px] ">
-            <div className="w-full max-h-[calc(100svh-40px)] py-[27px] bg-[#fff5ee] rounded-3xl flex flex-col justify-center items-start z-40">
-              <div className="w-full h-auto px-[30px] bg-transparent overflow-y-scroll flex flex-col justify-start items-start z-40">
+          <div className="w-full h-[100svh] fixed z-30 bg-[#68686871] top-0 left-0 flex flex-col justify-end items-start p-[20px] ">
+            <div className="w-full flex flex-col justify-end items-start h-[40px]">
+              <div className="w-[calc(100%-40px)] h-[20px] bg-[#FFF5EE] fixed z-20"></div>
+              <div className="w-full h-auto flex justify-start items-center z-30">
+                <div className=" w-auto text-[22px] whitespace-nowrap font-[google] font-normal  p-[20px] py-[9px] h-[40px] bg-[#FFF5EE] flex  justify-start items-center rounded-t-[22px]">
+                  {/* {part + 1}/
+                  {props?.budget == 0 && props?.income == 0 ? (
+                    <>{Info.length}</>
+                  ) : (
+                    <>{Info.length - 1}</>
+                  )} */}
+                  <span className="mt-[10px]">Transaction Info</span>
+                </div>
+                <div className="w-[calc(100%-80px)] bg-[#bcb6b3] h-[40px] rounded-bl-[22px] ">
+                  <div
+                    className="h-[35px] aspect-square rounded-full bg-[#fff5ee] ml-[5px] mb-[5px] flex justify-center items-center text-[20px] "
+                    onClick={() => {
+                      setAddNewTransaction(false);
+                      setLabel("");
+                      setPrice("");
+                      setCategory("");
+                      setMode("");
+                      setBill("");
+                    }}
+                  >
+                    <HiOutlinePlus className="rotate-45" />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="w-full h-[calc(100svh-80px)] py-[20px] bg-[#fff5ee] rounded-b-3xl rounded-tr-3xl flex flex-col justify-center items-start z-40">
+              <div className="w-full h-auto px-[20px] bg-transparent overflow-y-scroll flex flex-col justify-start items-start z-40">
                 <span className="w-full text-[25px] text-black font-[google] font-normal flex justify-start items-center ">
-                  Transaction{" "}
-                  <span className="text-[#de8544] ml-[10px]">Info</span>
+                  {/* Transaction{" "}
+                  <span className="text-[#de8544] ml-[10px]">Info</span> */}
                 </span>
 
-                <div className="flex flex-col w-full justify-between items-start mt-[20px]">
+                <div className="flex flex-col w-full justify-between items-start ">
                   <span className="text-[#000000] font-[google] font-normal text-[15px] mb-[10px]">
                     About Transaction{" "}
                     <span className="text-[#ff6c00] h-auto pt-[3px]">*</span>
@@ -315,7 +345,7 @@ const AddIndependentTransaction = () => {
                     Select Category{" "}
                     <span className="text-[#ff6c00] h-auto pt-[3px]">*</span>
                   </span>
-                  <div className="w-full flex justify-start items-center flex-wrap text-[#535353]  mt-[10px]">
+                  <div className="w-[calc(100%+5px)] flex justify-start items-center flex-wrap text-[#535353] ml-[-5px] mt-[10px]">
                     <span
                       className={
                         "cursor-pointer p-[10px]  mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
@@ -514,15 +544,28 @@ const AddIndependentTransaction = () => {
                     <span
                       className={
                         "cursor-pointer p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
-                        (mode == "Offline Cash"
+                        (mode == "Credit/Debit Card"
                           ? " bg-[#ffddc5] text-[black]"
                           : " text-[#535353]")
                       }
                       onClick={() => {
-                        setMode("Offline Cash");
+                        setMode("Credit/Debit Card");
                       }}
                     >
-                      Offline Cash
+                      Credit/Debit Card
+                    </span>
+                    <span
+                      className={
+                        "cursor-pointer p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                        (mode == "Cash"
+                          ? " bg-[#ffddc5] text-[black]"
+                          : " text-[#535353]")
+                      }
+                      onClick={() => {
+                        setMode("Cash");
+                      }}
+                    >
+                      Cash
                     </span>
                   </div>
                 </div>
@@ -571,7 +614,7 @@ const AddIndependentTransaction = () => {
                           // }
                         }}
                       >
-                        Add
+                        Update
                       </div>
                     </>
                   ) : (
@@ -592,7 +635,7 @@ const AddIndependentTransaction = () => {
                           // }
                         }}
                       >
-                        Add
+                        Update
                       </div>
                     </>
                   )}

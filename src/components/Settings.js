@@ -25,7 +25,7 @@ const monthNames = [
   "November",
   "December",
 ];
-const Settings = () => {
+const Settings = (props) => {
   const [pop, setPop] = useState(false);
   const [permission, setPermission] = useState(false);
   const [income, setIncome] = useState("");
@@ -37,6 +37,14 @@ const Settings = () => {
       .then(() => console.log("Signed Out Successfully"))
       .catch((error) => console.log(error));
   };
+
+  function doneTutorial() {
+    props?.setSegment(1);
+    const user = firebase.auth().currentUser;
+    const userRef = db.collection("Expense").doc(user.uid).update({
+      Tutorial: true,
+    });
+  }
 
   useEffect(() => {
     fetchTransactionData();
@@ -353,6 +361,16 @@ const Settings = () => {
         >
           <MdSavings className="mr-[10px] text-[20px] text-[#de8544]" /> Total
           Savings
+        </div>
+
+        <div
+          className="w-auto flex justify-start items-center my-[7px]"
+          onClick={() => {
+            doneTutorial();
+          }}
+        >
+          <MdSavings className="mr-[10px] text-[20px] text-[#de8544]" />{" "}
+          Tutorial
         </div>
         <div className="w-auto flex justify-start items-center my-[7px]">
           <BiSolidReport className="mr-[10px] text-[20px] text-[#de8544]" /> Get

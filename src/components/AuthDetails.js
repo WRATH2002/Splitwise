@@ -17,14 +17,31 @@ import BottomNavbar from "./BottomNavbar";
 import Settings from "./Settings";
 import TopNavbar from "./TopNavbar";
 import ReminderPage from "./ReminderPage";
+import Tutorial from "./Tutorial";
 
 const AuthDetails = () => {
   const [authUser, setAuthUser] = useState(null);
+  const [tutorialMode, setTutorialMode] = useState("");
+  const [budget, setBudget] = useState(0);
+  const [newBudget, setNewBudget] = useState(0);
+  const [income, setIncome] = useState(0);
+  useEffect(() => {}, []);
+
+  function fetchSplitTransaction() {
+    const user = firebase.auth().currentUser;
+    const userRef = db.collection("Expense").doc(user?.uid);
+    onSnapshot(userRef, (snapshot) => {
+      setTutorialMode(snapshot?.data()?.Tutorial);
+      setBudget(snapshot?.data()?.Budget);
+      setIncome(snapshot?.data()?.TotalIncome);
+    });
+  }
 
   useEffect(() => {
     const listen = onAuthStateChanged(auth, (user) => {
       if (user) {
         setAuthUser(user);
+        fetchSplitTransaction();
       } else setAuthUser(null);
     });
     return () => {
@@ -44,6 +61,17 @@ const AuthDetails = () => {
     <div className="w-full h-[100svh] flex-col flex select-none">
       {authUser ? (
         <>
+          {tutorialMode ? (
+            <Tutorial
+              setSegment={setSegment}
+              segment={segment}
+              budget={budget}
+              income={income}
+            />
+          ) : (
+            <>{/* <Tutorial setSegment={setSegment} segment={segment} /> */}</>
+          )}
+
           {/* <div className="w-full h-[100svh]"> */}
           <div className="w-full h-[calc(100svh-60px)] flex flex-col justify-center items-center ">
             {/* <LandingPage /> */}
@@ -65,7 +93,7 @@ const AuthDetails = () => {
               </>
             ) : (
               <>
-                <Settings />
+                <Settings setSegment={setSegment} segment={segment} />
               </>
             )}
           </div>

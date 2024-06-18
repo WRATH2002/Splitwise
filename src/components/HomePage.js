@@ -15,6 +15,8 @@ import { LuArrowDown } from "react-icons/lu";
 import OutsideClickHandler from "react-outside-click-handler";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import Tutorial from "./Tutorial";
+import { HiOutlinePlus } from "react-icons/hi";
+import { TbArrowBigLeftLinesFilled } from "react-icons/tb";
 
 const monthNames = [
   "January",
@@ -41,6 +43,7 @@ const HomePage = () => {
   const [month, setMonth] = useState(0);
   const [year, setYear] = useState(parseInt(new Date().getFullYear()));
   const [reminderCount, setReminderCount] = useState(0);
+  const [filterPos, setFilterPos] = useState(1);
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [end, setEnd] = useState(false);
   const [chooseMonth, setChooseMonth] = useState(false);
@@ -232,7 +235,7 @@ const HomePage = () => {
       {showFilterModal ? (
         <>
           <div
-            className="w-full h-[100svh]  flex justify-center items-end bg-[#0000003e] p-[20px] fixed top-0 left-0  z-40"
+            className="w-full h-[100svh]  flex flex-col justify-end items-start bg-[#0000003e] p-[20px] fixed top-0 left-0  z-40"
             style={{ zIndex: 70 }}
             onClick={() => {
               setShowFilterModal(false);
@@ -244,8 +247,31 @@ const HomePage = () => {
               }}
             > */}
             <>
+              <div className="w-full flex flex-col justify-end items-start h-[44px]">
+                <div className="w-[calc(100%-40px)] h-[20px] bg-[#FFF5EE] fixed z-20"></div>
+                <div className="w-full h-auto flex justify-start items-center z-30">
+                  <div className=" w-auto text-[22px] whitespace-nowrap font-[google] font-normal  p-[20px] py-[9px] h-[40px] bg-[#FFF5EE] flex  justify-start items-center rounded-t-[24px]">
+                    {/* {part + 1}/
+                  {props?.budget == 0 && props?.income == 0 ? (
+                    <>{Info.length}</>
+                  ) : (
+                    <>{Info.length - 1}</>
+                  )} */}
+                    <span className="mt-[10px]">Filter By</span>
+                  </div>
+                  <div className="w-[calc(100%-80px)] bg-[#c1b9b4] h-[40px] rounded-bl-[24px] ">
+                    {/* <div
+                      className="h-[39px] aspect-square rounded-full bg-[#fff5ee] ml-[5px] mb-[5px] flex justify-center items-center text-[20px] "
+                      onClick={() => {
+                      }}
+                    >
+                      <HiOutlinePlus className="rotate-45" />
+                    </div> */}
+                  </div>
+                </div>
+              </div>
               <div
-                className="min-w-full z-50 h-auto bg-[#fff5ee] drop-shadow-sm   text-black  rounded-[20px] font-[google] font-normal text-[14px] flex flex-col justify-center items-start p-[30px]"
+                className="min-w-full z-50 h-auto bg-[#fff5ee] drop-shadow-sm   text-black  rounded-b-3xl rounded-tr-3xl font-[google] font-normal text-[14px] flex flex-col justify-center items-start p-[20px]"
                 style={{ zIndex: 100 }}
                 onClick={() => {}}
               >
@@ -254,45 +280,85 @@ const HomePage = () => {
                   onClick={() => {
                     sortObjectsByDateAsc();
                     setShowFilterModal(!showFilterModal);
+                    setFilterPos(1);
                   }}
                 >
-                  Date in Ascending Order
+                  Date in Ascending Order{" "}
+                  {filterPos == 1 ? (
+                    <>
+                      <TbArrowBigLeftLinesFilled className=" ml-[7px]" />{" "}
+                    </>
+                  ) : (
+                    <></>
+                  )}
                 </span>
                 <span
                   className="mt-[12px] h-[15px] flex justify-start items-center w-full cursor-pointer"
                   onClick={() => {
                     sortObjectsByDateDesc();
                     setShowFilterModal(!showFilterModal);
+                    setFilterPos(2);
                   }}
                 >
-                  Date in Descending Order
+                  Date in Descending Order{" "}
+                  {filterPos == 2 ? (
+                    <>
+                      <TbArrowBigLeftLinesFilled className=" ml-[7px]" />{" "}
+                    </>
+                  ) : (
+                    <></>
+                  )}
                 </span>
                 <span
                   className="mt-[12px] h-[15px] flex justify-start items-center w-full cursor-pointer"
                   onClick={() => {
                     sortObjectsByAmountAsc();
                     setShowFilterModal(!showFilterModal);
+                    setFilterPos(3);
                   }}
                 >
-                  Price from Low to High
+                  Price from Low to High{" "}
+                  {filterPos == 3 ? (
+                    <>
+                      <TbArrowBigLeftLinesFilled className=" ml-[7px]" />{" "}
+                    </>
+                  ) : (
+                    <></>
+                  )}
                 </span>
                 <span
                   className="mt-[12px] h-[15px] flex justify-start items-center w-full cursor-pointer"
                   onClick={() => {
                     sortObjectsByAmountDesc();
                     setShowFilterModal(!showFilterModal);
+                    setFilterPos(4);
                   }}
                 >
-                  Price from High to Low
+                  Price from High to Low{" "}
+                  {filterPos == 4 ? (
+                    <>
+                      <TbArrowBigLeftLinesFilled className=" ml-[7px]" />{" "}
+                    </>
+                  ) : (
+                    <></>
+                  )}
                 </span>
                 <span
                   className="mt-[12px] h-[15px] flex justify-start items-center w-full cursor-pointer"
                   onClick={() => {
                     getObjectsForCurrentMonthAndYear();
                     setShowFilterModal(!showFilterModal);
+                    setFilterPos(5);
                   }}
                 >
-                  Normal
+                  Normal{" "}
+                  {filterPos == 5 ? (
+                    <>
+                      <TbArrowBigLeftLinesFilled className=" ml-[7px]" />{" "}
+                    </>
+                  ) : (
+                    <></>
+                  )}
                 </span>
               </div>
             </>
@@ -324,19 +390,19 @@ const HomePage = () => {
                   setChooseMonth(false);
                 }}
               ></div>
-              <div className="w-full h-[45px] flex justify-between items-end bg-transparent rounded-t-[20px] font-[google] font-normal text-[14px]">
-                <div className="w-[calc(100%-40px)] h-[20px] bg-[#fff5ee] rounded-t-[-20px]  fixed z-30"></div>
+              <div className="w-full h-[45px] flex justify-between items-end bg-transparent rounded-t-3xl font-[google] font-normal text-[14px]">
+                <div className="w-[calc(100%-40px)] h-[20px] bg-[#fff5ee]  fixed z-30"></div>
 
                 <div
                   className={
                     "w-[calc(100%/2)] h-full flex justify-center items-center z-40 pb-[5px] " +
                     (!section
-                      ? " bg-[#c1b9b4] pt-0 pl-0 p-[5px] rounded-br-[25px] rounded-tr-[25px]"
-                      : " bg-[#fff5ee] p-0 rounded-t-full cursor-pointer")
+                      ? " bg-[#c1b9b4] pt-0 pl-0 p-[5px] rounded-br-3xl rounded-tr-3xl"
+                      : " bg-[#fff5ee] p-0 rounded-t-3xl cursor-pointer")
                   }
                 >
                   <div
-                    className="w-full h-full flex justify-center items-center rounded-full bg-[#fff5ee] cursor-pointer  text-[16px]"
+                    className="w-full h-full flex justify-center items-center rounded-[20px] bg-[#fff5ee] cursor-pointer  text-[16px]"
                     onClick={() => {
                       setSection(true);
                     }}
@@ -348,12 +414,12 @@ const HomePage = () => {
                   className={
                     "w-[calc(100%/2)] h-full flex justify-center items-center z-40 pb-[5px] " +
                     (section
-                      ? " bg-[#c1b9b4] pt-0 pr-0 p-[5px] rounded-bl-[25px] rounded-tl-[25px]"
-                      : " bg-[#fff5ee] p-0 rounded-t-[20px] cursor-pointer")
+                      ? " bg-[#c1b9b4] pt-0 pr-0 p-[5px] rounded-bl-3xl rounded-tl-3xl"
+                      : " bg-[#fff5ee] p-0 rounded-t-3xl cursor-pointer")
                   }
                 >
                   <div
-                    className="w-full rounded-full h-full flex justify-center items-center z-50 bg-[#fff5ee] cursor-pointer text-[16px]"
+                    className="w-full rounded-[20px] h-full flex justify-center items-center z-50 bg-[#fff5ee] cursor-pointer text-[16px]"
                     onClick={() => {
                       setSection(false);
                     }}
@@ -365,8 +431,8 @@ const HomePage = () => {
 
               <div
                 className={
-                  "min-w-full z-50 h-auto bg-[#fff5ee] drop-shadow-sm   text-black  rounded-b-[20px] font-[google] font-normal text-[14px] flex flex-wrap justify-start items-start py-[17.5px]  px-[17.5px]" +
-                  (section ? " rounded-tr-[20px]" : " rounded-tl-[20px]")
+                  "min-w-full z-50 h-auto bg-[#fff5ee] drop-shadow-sm   text-black  rounded-b-3xl font-[google] font-normal text-[14px] flex flex-wrap justify-start items-start py-[17.5px]  px-[17.5px]" +
+                  (section ? " rounded-tr-3xl" : " rounded-tl-3xl")
                 }
                 style={{ zIndex: 100 }}
                 onClick={() => {}}
@@ -440,7 +506,7 @@ const HomePage = () => {
         <></>
       )}
 
-      <Tutorial />
+      {/* <Tutorial /> */}
       <div className="w-full h-[calc(100svh-60px)] bg-[#FFF5EE] flex flex-col justify-start items-center pt-[20px]">
         <TopNavbar />
         <QuickInfo month={month} year={year} />

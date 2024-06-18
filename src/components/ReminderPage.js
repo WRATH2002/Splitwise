@@ -174,19 +174,19 @@ const ReminderPage = () => {
                   setChooseMonth(false);
                 }}
               ></div>
-              <div className="w-full h-[45px] flex justify-between items-end bg-transparent rounded-t-[20px] font-[google] font-normal text-[14px]">
-                <div className="w-[calc(100%-40px)] h-[20px] bg-[#fff5ee] rounded-t-[-20px]  fixed z-30"></div>
+              <div className="w-full h-[45px] flex justify-between items-end bg-transparent rounded-t-3xl font-[google] font-normal text-[14px]">
+                <div className="w-[calc(100%-40px)] h-[20px] bg-[#fff5ee]  fixed z-30"></div>
 
                 <div
                   className={
                     "w-[calc(100%/2)] h-full flex justify-center items-center z-40 pb-[5px] " +
                     (!section
-                      ? " bg-[#c1b9b4] pt-0 pl-0 p-[5px] rounded-br-[25px] rounded-tr-[25px]"
-                      : " bg-[#fff5ee] p-0 rounded-t-full cursor-pointer")
+                      ? " bg-[#c1b9b4] pt-0 pl-0 p-[5px] rounded-br-3xl rounded-tr-3xl"
+                      : " bg-[#fff5ee] p-0 rounded-t-3xl cursor-pointer")
                   }
                 >
                   <div
-                    className="w-full h-full flex justify-center items-center rounded-full bg-[#fff5ee] cursor-pointer  text-[16px]"
+                    className="w-full h-full flex justify-center items-center rounded-[20px] bg-[#fff5ee] cursor-pointer  text-[16px]"
                     onClick={() => {
                       setSection(true);
                     }}
@@ -198,12 +198,12 @@ const ReminderPage = () => {
                   className={
                     "w-[calc(100%/2)] h-full flex justify-center items-center z-40 pb-[5px] " +
                     (section
-                      ? " bg-[#c1b9b4] pt-0 pr-0 p-[5px] rounded-bl-[25px] rounded-tl-[25px]"
-                      : " bg-[#fff5ee] p-0 rounded-t-[20px] cursor-pointer")
+                      ? " bg-[#c1b9b4] pt-0 pr-0 p-[5px] rounded-bl-3xl rounded-tl-3xl"
+                      : " bg-[#fff5ee] p-0 rounded-t-3xl cursor-pointer")
                   }
                 >
                   <div
-                    className="w-full rounded-full h-full flex justify-center items-center z-50 bg-[#fff5ee] cursor-pointer text-[16px]"
+                    className="w-full rounded-[20px] h-full flex justify-center items-center z-50 bg-[#fff5ee] cursor-pointer text-[16px]"
                     onClick={() => {
                       setSection(false);
                     }}
@@ -215,8 +215,8 @@ const ReminderPage = () => {
 
               <div
                 className={
-                  "min-w-full z-50 h-auto bg-[#fff5ee] drop-shadow-sm   text-black  rounded-b-[20px] font-[google] font-normal text-[14px] flex flex-wrap justify-start items-start py-[17.5px]  px-[17.5px]" +
-                  (section ? " rounded-tr-[20px]" : " rounded-tl-[20px]")
+                  "min-w-full z-50 h-auto bg-[#fff5ee] drop-shadow-sm   text-black  rounded-b-3xl font-[google] font-normal text-[14px] flex flex-wrap justify-start items-start py-[17.5px]  px-[17.5px]" +
+                  (section ? " rounded-tr-3xl" : " rounded-tl-3xl")
                 }
                 style={{ zIndex: 100 }}
                 onClick={() => {}}

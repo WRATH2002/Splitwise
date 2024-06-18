@@ -36,7 +36,7 @@ const COLORS = [
 //   return <></>;
 // };
 
-const renderActiveShape = (props) => {
+export const renderActiveShape = (props) => {
   const RADIAN = Math.PI / 180;
   const {
     cx,

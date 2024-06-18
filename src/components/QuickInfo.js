@@ -11,6 +11,7 @@ import { Line, Circle } from "rc-progress";
 import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
 import ExpenseBarGraph from "./ExpenseBarGraph";
 import OutsideClickHandler from "react-outside-click-handler";
+import { HiOutlinePlus } from "react-icons/hi";
 
 const monthNames = [
   "January",
@@ -213,7 +214,7 @@ const QuickInfo = (props) => {
       {budgetModal === true ? (
         <>
           <div
-            className="w-full h-[100svh]  flex justify-center items-end bg-[#0000003e] p-[20px] fixed top-0 left-0  z-40"
+            className="w-full h-[100svh]  flex flex-col justify-end items-center bg-[#0000003e] p-[20px] fixed top-0 left-0  z-40"
             // onClick={() => {
             //   // updateBudget();
             //   setBudgetModal(false);
@@ -224,11 +225,37 @@ const QuickInfo = (props) => {
                 setIncomeModal(false);
               }}
             > */}
-            <div className="min-w-[100%] z-50 h-auto bg-[#fff5ee] drop-shadow-sm   text-black  rounded-[20px] font-[google] font-normal text-[14px] flex flex-col justify-center items-start p-[20px]">
-              <span className="w-full text-[22px] text-black font-[google] font-normal flex justify-start items-center ">
+            <div className="w-full flex flex-col justify-end items-start h-[40px]">
+              <div className="w-[calc(100%-40px)] h-[20px] bg-[#FFF5EE] fixed z-20"></div>
+              <div className="w-full h-auto flex justify-start items-center z-30">
+                <div className=" w-auto text-[22px] whitespace-nowrap font-[google] font-normal  p-[20px] py-[9px] h-[40px] bg-[#FFF5EE] flex  justify-start items-center rounded-t-[22px]">
+                  {/* {part + 1}/
+                  {props?.budget == 0 && props?.income == 0 ? (
+                    <>{Info.length}</>
+                  ) : (
+                    <>{Info.length - 1}</>
+                  )} */}
+                  <span className="mt-[10px]">Set New Budget</span>
+                </div>
+                <div className="w-[calc(100%-80px)] bg-[#c1b9b4] h-[40px] rounded-bl-[22px] ">
+                  <div
+                    className="h-[35px] aspect-square rounded-full bg-[#fff5ee] ml-[5px] mb-[5px] flex justify-center items-center text-[20px] "
+                    onClick={() => {
+                      setBudgetModal(false);
+                      setNewBudget("");
+                      setError("");
+                    }}
+                  >
+                    <HiOutlinePlus className="rotate-45" />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="min-w-[100%] z-50 h-auto bg-[#fff5ee] drop-shadow-sm   text-black  rounded-b-3xl rounded-tr-3xl font-[google] font-normal text-[14px] flex flex-col justify-center items-start p-[20px]">
+              {/* <span className="w-full text-[22px] text-black font-[google] font-normal flex justify-start items-center ">
                 Set New Budget
-              </span>
-              <div className="flex w-full justify-start items-center mt-[10px]">
+              </span> */}
+              <div className="flex w-full justify-start items-center">
                 <div className="w-[30px] h-full flex justify-center items-center mr-[-30px]">
                   <BiRupee className="text-black" />
                 </div>
@@ -507,7 +534,7 @@ const QuickInfo = (props) => {
       {incomeModal === true ? (
         <>
           <div
-            className="w-full h-[100svh]  flex justify-center items-end bg-[#0000003e] p-[20px] fixed top-0 left-0  z-40"
+            className="w-full h-[100svh]  flex flex-col justify-end items-center bg-[#0000003e] p-[20px] fixed top-0 left-0  z-40"
             style={{ zIndex: 70 }}
           >
             {/* <OutsideClickHandler
@@ -515,14 +542,40 @@ const QuickInfo = (props) => {
                 setIncomeModal(false);
               }}
             > */}
+            <div className="w-full flex flex-col justify-end items-start h-[40px]">
+              <div className="w-[calc(100%-40px)] h-[20px] bg-[#FFF5EE] fixed z-20"></div>
+              <div className="w-full h-auto flex justify-start items-center z-30">
+                <div className=" w-auto text-[22px] whitespace-nowrap font-[google] font-normal  p-[20px] py-[9px] h-[40px] bg-[#FFF5EE] flex  justify-start items-center rounded-t-[22px]">
+                  {/* {part + 1}/
+                  {props?.budget == 0 && props?.income == 0 ? (
+                    <>{Info.length}</>
+                  ) : (
+                    <>{Info.length - 1}</>
+                  )} */}
+                  <span className="mt-[10px]">Set New Income</span>
+                </div>
+                <div className="w-[calc(100%-80px)] bg-[#c1b9b4] h-[40px] rounded-bl-[22px] ">
+                  <div
+                    className="h-[35px] aspect-square rounded-full bg-[#fff5ee] ml-[5px] mb-[5px] flex justify-center items-center text-[20px] "
+                    onClick={() => {
+                      setIncomeModal(false);
+                      setNewIncome("");
+                      setError("");
+                    }}
+                  >
+                    <HiOutlinePlus className="rotate-45" />
+                  </div>
+                </div>
+              </div>
+            </div>
             <div
-              className="min-w-[100%] z-50 h-auto bg-[#fff5ee] drop-shadow-sm   text-black  rounded-[20px] font-[google] font-normal text-[14px] flex flex-col justify-center items-start p-[20px]"
+              className="min-w-[100%] z-50 h-auto bg-[#fff5ee] drop-shadow-sm   text-black  rounded-b-3xl rounded-tr-3xl  font-[google] font-normal text-[14px] flex flex-col justify-center items-start p-[20px]"
               style={{ zIndex: 100 }}
             >
-              <span className="w-full text-[22px] text-black font-[google] font-normal flex justify-start items-center ">
+              {/* <span className="w-full text-[22px] text-black font-[google] font-normal flex justify-start items-center ">
                 Set New Income
-              </span>
-              <div className="flex w-full justify-start items-center mt-[10px]">
+              </span> */}
+              <div className="flex w-full justify-start items-center ">
                 <div className="flex justify-center items-center w-[30px] h-full mr-[-30px]">
                   <BiRupee className="" />
                 </div>
@@ -647,7 +700,7 @@ const QuickInfo = (props) => {
                 setBudgetModal(true);
               }}
             >
-              {budget === 0 ? (
+              {budget == 0 ? (
                 <>Set Budget</>
               ) : (
                 <>
@@ -678,7 +731,7 @@ const QuickInfo = (props) => {
               }}
             />
           </span>
-          {income === 0 ? (
+          {income == 0 ? (
             <span
               className="font-[google] font-normal text-[13px] text-[#83b933] flex justify-end items-center cursor-pointer mt-[5px]"
               onClick={() => {

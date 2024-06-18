@@ -102,6 +102,7 @@ const Signup = (props) => {
       Reminders: [],
       CategoryBudget: [],
       MonthlyData: [],
+      Tutorial: true,
     });
     console.log("done");
   }
