@@ -58,9 +58,6 @@ const Settings = (props) => {
       setTransactionHistory(snapshot?.data()?.NormalTransaction);
       setIncome(snapshot?.data()?.TotalIncome);
       setBudget(snapshot?.data()?.Budget);
-      // setTempTransactionHistory(snapshot?.data()?.NormalTransaction);
-      // setIncome(snapshot?.data()?.TotalIncome);
-      // console.log(snapshot?.data()?.Online);
     });
   }
 
