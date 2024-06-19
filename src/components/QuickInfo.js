@@ -644,9 +644,12 @@ const QuickInfo = (props) => {
       )}
       <div className="w-full h-[120px] flex justify-between items-center font-[google] font-normal px-[20px]">
         <div className="w-[calc(100%/2)] flex flex-col justify-center items-start ">
-          <span className=" flex justify-center items-center text-[14px] text-[#828282]">
-            <IoCalendarSharp className="text-[12px] mr-[8px]" />
-            {monthNames[month - 1]}, Total Expense
+          <span className=" flex justify-center items-center text-[14px] text-[#989898]">
+            <span className="text-black flex justify-start items-center mr-[5px]">
+              <IoCalendarSharp className="text-[12px] mr-[8px]" />
+              {monthNames[month - 1]},
+            </span>{" "}
+            Total Expense
           </span>
           <span className=" font-[google] font-normal text-[22px] text-[#000000] flex justify-start items-center">
             {parseFloat(monthlyExpense) <= budget ? (
@@ -689,9 +692,9 @@ const QuickInfo = (props) => {
             <Line
               percent={percent}
               strokeWidth={6}
-              trailColor="#b7b7b7"
+              trailColor="#989898"
               trailWidth={2}
-              strokeColor={"" + (percent < 75 ? " #00bb00" : " #c43b31")}
+              strokeColor={"" + (percent < 75 ? " #00bb00" : " #e61d0f")}
               className="h-[4px]"
             />{" "}
             <span
@@ -722,7 +725,7 @@ const QuickInfo = (props) => {
               {formatAmountWithCommas(income)}
             </span>
           </span>
-          <span className=" font-[google] font-normal text-[22px] text-[#828282] flex justify-start items-center">
+          <span className=" font-[google] font-normal text-[22px] text-[#000000] flex justify-start items-center">
             <span className="opacity-0">{transactionHistory.length}</span>
             <RiDonutChartFill className="mr-[9px]" />{" "}
             <MdOutlineBarChart

@@ -181,9 +181,9 @@ const AddIndependentTransaction = () => {
         <>
           <div className="w-full h-[100svh] fixed z-30 bg-[#68686871] top-0 left-0 flex flex-col justify-end items-start p-[20px] ">
             <div className="w-full flex flex-col justify-end items-start h-[40px]">
-              <div className="w-[calc(100%-40px)] h-[20px] bg-[#FFF5EE] fixed z-20"></div>
+              <div className="w-[calc(100%-40px)] h-[20px] bg-[#ffffff] fixed z-20"></div>
               <div className="w-full h-auto flex justify-start items-center z-30">
-                <div className=" w-auto text-[22px] whitespace-nowrap font-[google] font-normal  p-[20px] py-[9px] h-[40px] bg-[#FFF5EE] flex  justify-start items-center rounded-t-[22px]">
+                <div className=" w-auto text-[22px] whitespace-nowrap font-[google] font-normal  p-[20px] py-[9px] h-[40px] bg-[#ffffff] flex  justify-start items-center rounded-t-[22px]">
                   {/* {part + 1}/
                   {props?.budget == 0 && props?.income == 0 ? (
                     <>{Info.length}</>
@@ -194,7 +194,7 @@ const AddIndependentTransaction = () => {
                 </div>
                 <div className="w-[calc(100%-80px)] bg-[#bcb6b3] h-[40px] rounded-bl-[22px] ">
                   <div
-                    className="h-[35px] aspect-square rounded-full bg-[#fff5ee] ml-[5px] mb-[5px] flex justify-center items-center text-[20px] "
+                    className="h-[35px] aspect-square rounded-full bg-[#ffffff] ml-[5px] mb-[5px] flex justify-center items-center text-[20px] "
                     onClick={() => {
                       setAddNewTransaction(false);
                       setLabel("");
@@ -209,7 +209,7 @@ const AddIndependentTransaction = () => {
                 </div>
               </div>
             </div>
-            <div className="w-full h-[calc(100svh-80px)] py-[20px] bg-[#fff5ee] rounded-b-3xl rounded-tr-3xl flex flex-col justify-center items-start z-40">
+            <div className="w-full h-[calc(100svh-80px)] py-[20px] bg-[#ffffff]  rounded-b-3xl rounded-tr-3xl flex flex-col justify-center items-start z-40">
               <div className="w-full h-auto px-[20px] bg-transparent overflow-y-scroll flex flex-col justify-start items-start z-40">
                 <span className="w-full text-[25px] text-black font-[google] font-normal flex justify-start items-center ">
                   {/* Transaction{" "}
@@ -233,7 +233,7 @@ const AddIndependentTransaction = () => {
                     Label
                   </div>
                   <input
-                    className="outline-none rounded-md w-full h-[40px] bg-transparent border border-[#ffd8be] px-[10px] text-black font-[google] font-normal text-[15px] z-40"
+                    className="outline-none rounded-md w-full h-[40px] bg-transparent border border-[#acebff] px-[10px] text-black font-[google] font-normal text-[15px] z-40"
                     // placeholder="Label"
                     value={label}
                     onChange={(e) => {
@@ -278,7 +278,7 @@ const AddIndependentTransaction = () => {
                       render={(value, openCalendar) => {
                         return (
                           <button
-                            className="border-[1px] border-[#ffd8be] flex justify-start items-center px-[10px] font-[google] text-[15px] w-[125px] h-[40px] rounded-md text-black z-40"
+                            className="border-[1px] border-[#acebff] flex justify-start items-center px-[10px] font-[google] text-[15px] w-[125px] h-[40px] rounded-md text-black z-40"
                             onClick={openCalendar}
                           >
                             {value}
@@ -308,7 +308,7 @@ const AddIndependentTransaction = () => {
                         <BiRupee className="text-[17px]" />
                       </div>
                       <input
-                        className="outline-none w-full h-[40px] rounded-md pl-[25px] bg-transparent border border-[#ffd8be] px-[10px] text-black font-[google] font-normal text-[14px] z-40"
+                        className="outline-none w-full h-[40px] rounded-md pl-[25px] bg-transparent border border-[#acebff] px-[10px] text-black font-[google] font-normal text-[14px] z-40"
                         // placeholder="Price"
                         value={price}
                         onChange={(e) => {
@@ -348,90 +348,90 @@ const AddIndependentTransaction = () => {
                   <div className="w-[calc(100%+5px)] flex justify-start items-center flex-wrap text-[#535353] ml-[-5px] mt-[10px]">
                     <span
                       className={
-                        "cursor-pointer p-[10px]  mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                        "cursor-pointer p-[10px]  mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#acebff] flex justify-center items-center" +
                         (category == "Shopping"
-                          ? " bg-[#ffddc5] text-[black]"
-                          : " text-[#535353]")
+                          ? " bg-[#acebff] text-[black]"
+                          : " text-[#000000]")
                       }
                       onClick={() => {
                         setCategory("Shopping");
                       }}
                     >
-                      <FaShopify className="mr-[10px]" />
+                      <FaShopify className="mr-[10px] " />
                       Shopping
                     </span>
 
                     <span
                       className={
-                        "cursor-pointer p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                        "cursor-pointer p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#acebff] flex justify-center items-center" +
                         (category == "Grocery"
-                          ? " bg-[#ffddc5] text-[black]"
-                          : " text-[#535353]")
+                          ? " bg-[#acebff] text-[black]"
+                          : " text-[#000000]")
                       }
                       onClick={() => {
                         setCategory("Grocery");
                       }}
                     >
-                      <HiShoppingBag className="mr-[10px]" /> Grocery
+                      <HiShoppingBag className="mr-[10px] " /> Grocery
                     </span>
                     <span
                       className={
-                        "cursor-pointer p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                        "cursor-pointer p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#acebff] flex justify-center items-center" +
                         (category == "Food & Drinks"
-                          ? " bg-[#ffddc5] text-[black]"
-                          : " text-[#535353]")
+                          ? " bg-[#acebff] text-[black]"
+                          : " text-[#000000]")
                       }
                       onClick={() => {
                         setCategory("Food & Drinks");
                       }}
                     >
-                      <IoFastFood className="mr-[10px]" /> Food & Drinks
+                      <IoFastFood className="mr-[10px] " /> Food & Drinks
                     </span>
                     <span
                       className={
-                        "cursor-pointer p-[10px]  mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                        "cursor-pointer p-[10px]  mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#acebff] flex justify-center items-center" +
                         (category == "Medical"
-                          ? " bg-[#ffddc5] text-[black]"
-                          : " text-[#535353]")
+                          ? " bg-[#acebff] text-[black]"
+                          : " text-[#000000]")
                       }
                       onClick={() => {
                         setCategory("Medical");
                       }}
                     >
-                      <FaTruckMedical className="mr-[10px]" /> Medical
+                      <FaTruckMedical className="mr-[10px] " /> Medical
                     </span>
 
                     <span
                       className={
-                        "cursor-pointer p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                        "cursor-pointer p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#acebff] flex justify-center items-center" +
                         (category == "Entertainment"
-                          ? " bg-[#ffddc5] text-[black]"
-                          : " text-[#535353]")
+                          ? " bg-[#acebff] text-[black]"
+                          : " text-[#000000]")
                       }
                       onClick={() => {
                         setCategory("Entertainment");
                       }}
                     >
-                      <GiPartyPopper className="mr-[10px]" /> Entertainment
+                      <GiPartyPopper className="mr-[10px] " /> Entertainment
                     </span>
                     <span
                       className={
-                        "cursor-pointer p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                        "cursor-pointer p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#acebff] flex justify-center items-center" +
                         (category == "Electricity Bill"
-                          ? " bg-[#ffddc5] text-[black]"
-                          : " text-[#535353]")
+                          ? " bg-[#acebff] text-[black]"
+                          : " text-[#000000]")
                       }
                       onClick={() => {
                         setCategory("Electricity Bill");
                       }}
                     >
-                      <MdElectricBolt className="mr-[10px]" /> Electricity Bill
+                      <MdElectricBolt className="mr-[10px] " /> Electricity Bill
                     </span>
                     <span
                       className={
-                        "cursor-pointer p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                        "cursor-pointer p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#acebff] flex justify-center items-center" +
                         (category == "Petrol / Diesel"
-                          ? " bg-[#ffddc5] text-[black]"
+                          ? " bg-[#acebff] text-[black]"
                           : " text-[#535353]")
                       }
                       onClick={() => {
@@ -443,9 +443,9 @@ const AddIndependentTransaction = () => {
                     </span>
                     <span
                       className={
-                        "cursor-pointer p-[10px]  mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                        "cursor-pointer p-[10px]  mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#acebff] flex justify-center items-center" +
                         (category == "Travel"
-                          ? " bg-[#ffddc5] text-[black]"
+                          ? " bg-[#acebff] text-[black]"
                           : " text-[#535353]")
                       }
                       onClick={() => {
@@ -457,9 +457,9 @@ const AddIndependentTransaction = () => {
                     </span>
                     <span
                       className={
-                        "cursor-pointer p-[10px]  mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                        "cursor-pointer p-[10px]  mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#acebff] flex justify-center items-center" +
                         (category == "Taxi Fare"
-                          ? " bg-[#ffddc5] text-[black]"
+                          ? " bg-[#acebff] text-[black]"
                           : " text-[#535353]")
                       }
                       onClick={() => {
@@ -470,9 +470,9 @@ const AddIndependentTransaction = () => {
                     </span>
                     <span
                       className={
-                        "cursor-pointer p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                        "cursor-pointer p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#acebff] flex justify-center items-center" +
                         (category == "Car Maintanance"
-                          ? " bg-[#ffddc5] text-[black]"
+                          ? " bg-[#acebff] text-[black]"
                           : " text-[#535353]")
                       }
                       onClick={() => {
@@ -483,9 +483,9 @@ const AddIndependentTransaction = () => {
                     </span>
                     <span
                       className={
-                        "cursor-pointer p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                        "cursor-pointer p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#acebff] flex justify-center items-center" +
                         (category == "Education"
-                          ? " bg-[#ffddc5] text-[black]"
+                          ? " bg-[#acebff] text-[black]"
                           : " text-[#535353]")
                       }
                       onClick={() => {
@@ -496,9 +496,9 @@ const AddIndependentTransaction = () => {
                     </span>
                     <span
                       className={
-                        "cursor-pointer p-[10px]  mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                        "cursor-pointer p-[10px]  mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#acebff] flex justify-center items-center" +
                         (category == "Pet Care"
-                          ? " bg-[#ffddc5] text-[black]"
+                          ? " bg-[#acebff] text-[black]"
                           : " text-[#535353]")
                       }
                       onClick={() => {
@@ -509,9 +509,9 @@ const AddIndependentTransaction = () => {
                     </span>
                     <span
                       className={
-                        "cursor-pointer p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                        "cursor-pointer p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#acebff] flex justify-center items-center" +
                         (category == "Other"
-                          ? " bg-[#ffddc5] text-[black]"
+                          ? " bg-[#acebff] text-[black]"
                           : " text-[#535353]")
                       }
                       onClick={() => {
@@ -530,9 +530,9 @@ const AddIndependentTransaction = () => {
                   <div className="w-full flex justify-start items-center flex-wrap text-[#535353] choose mt-[10px]">
                     <span
                       className={
-                        "cursor-pointer p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                        "cursor-pointer p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#acebff] flex justify-center items-center" +
                         (mode == "Online UPI"
-                          ? " bg-[#ffddc5] text-[black]"
+                          ? " bg-[#acebff] text-[black]"
                           : " text-[#535353]")
                       }
                       onClick={() => {
@@ -543,9 +543,9 @@ const AddIndependentTransaction = () => {
                     </span>
                     <span
                       className={
-                        "cursor-pointer p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                        "cursor-pointer p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#acebff] flex justify-center items-center" +
                         (mode == "Credit/Debit Card"
-                          ? " bg-[#ffddc5] text-[black]"
+                          ? " bg-[#acebff] text-[black]"
                           : " text-[#535353]")
                       }
                       onClick={() => {
@@ -556,9 +556,9 @@ const AddIndependentTransaction = () => {
                     </span>
                     <span
                       className={
-                        "cursor-pointer p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                        "cursor-pointer p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#acebff] flex justify-center items-center" +
                         (mode == "Cash"
-                          ? " bg-[#ffddc5] text-[black]"
+                          ? " bg-[#acebff] text-[black]"
                           : " text-[#535353]")
                       }
                       onClick={() => {
@@ -572,7 +572,7 @@ const AddIndependentTransaction = () => {
                 <div className="flex flex-col w-full justify-center items-start mt-[15px] font-[google] font-normal text-black text-[15px]">
                   <span className="text-[#000000]">Upload Reciept / Bill</span>
                   <div className="w-full flex justify-start items-center flex-wrap text-[#535353] choose mt-[10px]">
-                    <span className="p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md w-[80px] h-[80px] border border-[#ffd8be] flex justify-center items-center text-[#535353]">
+                    <span className="p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md w-[80px] h-[80px] border border-[#acebff] flex justify-center items-center text-[#535353]">
                       <IoMdCloudUpload className="text-[25px]" />{" "}
                       <span className="ml-[10px]">Upload Photo</span>
                     </span>
@@ -648,7 +648,7 @@ const AddIndependentTransaction = () => {
         <></>
       )}
       <div
-        className="w-[calc(100%-40px)] h-[60px]  px-[10px] font-[google] font-normal text-[15px] bg-[#ffeadc] rounded-3xl border-[1px] border-[#ffe6d7]  text-[#000000] cursor-pointer flex justify-center items-center"
+        className="w-[calc(100%-40px)] h-[60px]  px-[10px] font-[google] font-normal text-[15px] bg-[#e4f2ff] rounded-3xl text-[#000000] cursor-pointer flex justify-center items-center"
         onClick={() => {
           setAddNewTransaction(true);
         }}

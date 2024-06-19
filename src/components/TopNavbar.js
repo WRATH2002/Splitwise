@@ -30,7 +30,7 @@ const TopNavbar = () => {
   return (
     <div className="w-full h-[40px] flex justify-between items-center px-[20px]">
       <div className="flex justify-start items-center">
-        <div className="w-[40px] aspect-square  rounded-full flex justify-center items-center text-[22px] text-[#ffffff] bg-[#de8544] font-[google]  ">
+        <div className="w-[40px] aspect-square  rounded-full flex justify-center items-center text-[22px] text-[#000000] bg-[#e4f2ff] font-[google]  ">
           {photo === "nophoto" ? <>{userName.trim().charAt(0)}</> : <></>}
         </div>{" "}
         <span className=" ml-[10px] font-[google] font-normal text-[18px] text-[#828282]">

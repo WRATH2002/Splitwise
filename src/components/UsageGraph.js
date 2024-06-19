@@ -126,7 +126,7 @@ export default class UsageGraph extends PureComponent {
 
   render() {
     return (
-      <div className="w-full h-full bg-[#fff5ee] flex flex-col justify-start items-center overflow-y-scroll">
+      <div className="w-full h-full bg-[#ffffff] flex flex-col justify-start items-center overflow-y-scroll">
         <div className="w-full h-[270px] ">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart width={400} height={400}>

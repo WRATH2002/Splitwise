@@ -167,7 +167,7 @@ const SplitExpense = () => {
           Lable: "Split : " + label,
           Date: value?.day + "/" + value?.month?.number + "/" + value?.year,
           Amount: price,
-          TransactionType: "Single",
+          TransactionType: "Split",
           Members: addedMember,
           Category: category,
           Mode: mode,
@@ -878,7 +878,7 @@ const SplitExpense = () => {
       <div className="pt-[20px] w-full h-[60px] flex justify-center items-center bg-[#fff5ee] border-none">
         <TopNavbar />
       </div>
-      <div className="h-[calc(100%-60px)] w-full bg-[#fff5ee] flex justify-start items-center flex-col  text-white pb-[20px] border-none">
+      <div className="h-[calc(100%-60px)] w-full bg-[#ffffff] flex justify-start items-center flex-col  text-white pb-[20px] border-none">
         <QuickSplitInfo
           willGet={formatAmountWithCommas(amountToGet()?.amount)}
           count={amountToGet()?.count}

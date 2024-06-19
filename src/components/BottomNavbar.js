@@ -9,7 +9,7 @@ import { RiDonutChartFill, RiDonutChartLine } from "react-icons/ri";
 
 const BottomNavbar = (props) => {
   return (
-    <div className="w-full h-[60px] flex justify-between items-center px-[20px] bg-[#FFF5EE] mt-0">
+    <div className="w-full h-[60px] flex justify-between items-center px-[20px] bg-[#ffffff] mt-0">
       <div className="flex w-[calc(100%-40px)] h-[60px] justify-start items-center text-[24px] fixed bottom-0">
         {props?.segment == 1 ? (
           <div
@@ -17,7 +17,7 @@ const BottomNavbar = (props) => {
             style={{ transition: ".3s" }}
           >
             {/* <div className="w-full h-[10px] rounded-t-full bg-[#ffe6d5] mb-[-4px]"></div> */}
-            <div className="w-[30px] h-[0px] border-[3px] rounded-t-full border-[#de8544] z-0"></div>
+            <div className="w-[30px] h-[6px] bg-gradient-to-r from-[#5fdfe8] to-[#23a8d2] rounded-t-full  z-0"></div>
           </div>
         ) : props?.segment == 2 ? (
           <div
@@ -25,7 +25,7 @@ const BottomNavbar = (props) => {
             style={{ transition: ".3s" }}
           >
             {/* <div className="w-full h-[10px] rounded-t-full bg-[#ffe6d5] mb-[-4px]"></div> */}
-            <div className="w-[30px] h-[0px] border-[3px] rounded-t-full border-[#de8544] z-0 "></div>
+            <div className="w-[30px] h-[6px] bg-gradient-to-r from-[#5fdfe8] to-[#23a8d2] rounded-t-full  z-0 "></div>
           </div>
         ) : props?.segment == 3 ? (
           <div
@@ -33,7 +33,7 @@ const BottomNavbar = (props) => {
             style={{ transition: ".3s" }}
           >
             {/* <div className="w-full h-[10px] rounded-t-full bg-[#ffe6d5] mb-[-4px]"></div> */}
-            <div className="w-[30px] h-[0px] border-[3px] rounded-t-full border-[#de8544] z-0"></div>
+            <div className="w-[30px] h-[6px] bg-gradient-to-r from-[#5fdfe8] to-[#23a8d2] rounded-t-full  z-0"></div>
           </div>
         ) : props?.segment == 4 ? (
           <div
@@ -41,7 +41,7 @@ const BottomNavbar = (props) => {
             style={{ transition: ".3s" }}
           >
             {/* <div className="w-full h-[10px] rounded-t-full bg-[#ffe6d5] mb-[-4px]"></div> */}
-            <div className="w-[30px] h-[0px] border-[3px] rounded-t-full border-[#de8544] z-0"></div>
+            <div className="w-[30px] h-[6px] bg-gradient-to-r from-[#5fdfe8] to-[#23a8d2] rounded-t-full  z-0"></div>
           </div>
         ) : (
           <div
@@ -49,7 +49,7 @@ const BottomNavbar = (props) => {
             style={{ transition: ".3s" }}
           >
             {/* <div className="w-full h-[10px] rounded-t-full bg-[#ffe6d5] mb-[-4px]"></div> */}
-            <div className="w-[30px] h-[0px] border-[3px] rounded-t-full border-[#de8544] z-0"></div>
+            <div className="w-[30px] h-[6px] bg-gradient-to-r from-[#5fdfe8] to-[#23a8d2] rounded-t-full  z-0"></div>
           </div>
         )}
       </div>
@@ -58,7 +58,7 @@ const BottomNavbar = (props) => {
           <MdHistory
             className={
               "text-[27px] cursor-pointer" +
-              (props?.segment === 1 ? " text-[#de8544]" : " text-[#b2b2b2]")
+              (props?.segment === 1 ? " text-[#23a8d2]" : " text-[#000000]")
             }
             onClick={() => {
               if (props?.segment !== 1) {
@@ -71,7 +71,7 @@ const BottomNavbar = (props) => {
           <RiDonutChartLine
             className={
               " cursor-pointer" +
-              (props?.segment === 2 ? " text-[#de8544]" : " text-[#b2b2b2]")
+              (props?.segment === 2 ? " text-[#23a8d2]" : " text-[#000000]")
             }
             onClick={() => {
               if (props?.segment !== 2) {
@@ -84,7 +84,7 @@ const BottomNavbar = (props) => {
           <MdOutlineTipsAndUpdates
             className={
               " cursor-pointer" +
-              (props?.segment === 3 ? " text-[#de8544]" : " text-[#b2b2b2]")
+              (props?.segment === 3 ? " text-[#23a8d2]" : " text-[#000000]")
             }
             onClick={() => {
               if (props?.segment !== 3) {
@@ -98,7 +98,7 @@ const BottomNavbar = (props) => {
           <MdCallSplit
             className={
               " cursor-pointer" +
-              (props?.segment === 4 ? " text-[#de8544]" : " text-[#b2b2b2]")
+              (props?.segment === 4 ? " text-[#23a8d2]" : " text-[#000000]")
             }
             onClick={() => {
               if (props?.segment !== 4) {
@@ -111,7 +111,7 @@ const BottomNavbar = (props) => {
           <LuSettings2
             className={
               " cursor-pointer" +
-              (props?.segment === 5 ? " text-[#de8544]" : " text-[#b2b2b2]")
+              (props?.segment === 5 ? " text-[#23a8d2]" : " text-[#000000]")
             }
             onClick={() => {
               if (props?.segment !== 5) {

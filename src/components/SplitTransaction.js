@@ -510,7 +510,7 @@ export const MoreAboutTransaction = (props) => {
               }}
             >
               <div
-                className="w-full z-50 h-auto bg-[#fff5ee] drop-shadow-sm   text-black  rounded-[20px] font-[google] font-normal text-[14px] flex flex-col justify-center items-start p-[30px]"
+                className="w-full z-50 h-auto bg-[#ffffff] drop-shadow-sm   text-black  rounded-[20px] font-[google] font-normal text-[14px] flex flex-col justify-center items-start p-[20px]"
                 style={{ zIndex: 100 }}
                 onClick={() => {
                   // setNotificationModal(true);
@@ -566,7 +566,7 @@ export const MoreAboutTransaction = (props) => {
       ) : (
         <></>
       )}
-      <div className="w-full h-[100svh] fixed top-0 left-0 flex justify-start items-center flex-col p-[20px] bg-[#fff5ee] font-[google] font-normal z-30 overflow-y-scroll pt-[50px] pb-[10px]">
+      <div className="w-full h-[100svh] fixed top-0 left-0 flex justify-start items-center flex-col p-[20px] bg-[#ffffff] font-[google] font-normal z-30 overflow-y-scroll pt-[50px] pb-[10px]">
         <div className="w-[calc(100%-40px)] h-[40px] flex justify-between items-center fixed top-[20px] ">
           <div
             className="w-[40px] aspect-square flex justify-start items-center cursor-pointer"
@@ -586,8 +586,8 @@ export const MoreAboutTransaction = (props) => {
           </div> */}
         </div>
 
-        <div className="w-full h-[60px] flex justify-center items-center">
-          <IoFastFood className="text-[55px] text-[#de8544]" />
+        <div className="w-full h-[60px] flex justify-center items-center text-[#23a8d2]">
+          <IoFastFood className="text-[55px] " />
         </div>
         <div className="font-[google] font-normal h-[50px]  text-black mt-[15px] text-[24px] w-full flex flex-col justify-center items-center">
           <span>{props?.data?.Lable}</span>
@@ -601,7 +601,7 @@ export const MoreAboutTransaction = (props) => {
           </span>
         </div>
         {/* <div className="w-full border-[.7px] border-[#fee6d7] my-[30px]"></div> */}
-        <div className="w-full flex justify-between items-start bg-[#ffeadc] border-[1px] border-[#ffe6d7] rounded-2xl p-[20px] mt-[30px] text-black">
+        <div className="w-full flex justify-between items-start bg-[#e4f2ff] border-[1px] border-[#e4f2ff] rounded-2xl p-[20px] mt-[30px] text-black">
           <div className="w-[calc(100%/2)] flex flex-col justify-center items-start">
             <span className=" flex justify-center items-center text-[14px] text-[#828282]">
               {props?.owner ? (
@@ -736,7 +736,7 @@ export const MoreAboutTransaction = (props) => {
                   {props?.owner ? <>You</> : <>{name}</>}
                 </span>
               </span>
-              <div className="w-full h-[60px] rounded-2xl bg-[#ffeadc]  border-[1px] border-[#ffe6d7] cursor-pointer mt-[20px] flex justify-between items-center text-[14px] text-black px-[20px]">
+              <div className="w-full h-[60px] rounded-2xl bg-[#e4f2ff]  border-[1px] border-[#e4f2ff] cursor-pointer mt-[20px] flex justify-between items-center text-[14px] text-black px-[20px]">
                 <div className="flex justify-start items-center">
                   <FaReceipt className="text-[20px] mr-[9px]" /> View Reciept /
                   Bill
@@ -781,14 +781,14 @@ export const MoreAboutTransaction = (props) => {
           <></>
         ) : (
           <>
-            <div className="w-full h-[55px] flex justify-center items-center font-[google] bg-[#fff5ee] z-40 font-normal fixed  bottom-0 left-0 text-[#ffffff]  text-[16px]">
+            <div className="w-full h-[55px] flex justify-center items-center font-[google] bg-[#ffffff] z-40 font-normal fixed  bottom-0 left-0 text-[#ffffff]  text-[16px]">
               {props?.data?.Paid === true ? (
                 <div className="w-auto h-[40px] flex justify-center items-center rounded-full px-[15px] bg-[#8c8c8c] cursor-default">
                   Paid
                 </div>
               ) : (
                 <div
-                  className="w-auto h-[40px] flex justify-center items-center rounded-full px-[15px] bg-[#de8544] cursor-pointer"
+                  className="w-auto h-[40px] flex justify-center items-center rounded-full px-[15px] bg-[#e4f2ff] cursor-pointer"
                   onClick={() => {
                     setConfirmModal(true);
                   }}

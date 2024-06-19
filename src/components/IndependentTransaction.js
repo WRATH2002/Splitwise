@@ -5,6 +5,7 @@ import { IoFastFood } from "react-icons/io5";
 import { FaKitMedical, FaTruckMedical } from "react-icons/fa6";
 import { BsFillFuelPumpFill, BsTaxiFrontFill } from "react-icons/bs";
 import {
+  MdCallSplit,
   MdElectricBolt,
   MdMedication,
   MdOutlineAirplanemodeActive,
@@ -28,24 +29,25 @@ import {
 } from "firebase/firestore";
 
 import { PiMapPinLineFill, PiSealQuestionFill } from "react-icons/pi";
+import { AiOutlineSwap } from "react-icons/ai";
 
 const IndependentTransaction = (props) => {
   const [showTransaction, setShowTransaction] = useState(false);
   const [name, setName] = useState("");
   function formatDate(dateStr) {
     const months = [
-      "January",
-      "February",
-      "March",
-      "April",
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
       "May",
       "June",
       "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
+      "Aug",
+      "Sept",
+      "Oct",
+      "Nov",
+      "Dec",
     ];
 
     // Split the input date string
@@ -120,12 +122,29 @@ const IndependentTransaction = (props) => {
         <></>
       )}
       <div
-        className="w-[calc(100%-40px)] min-h-[60px]  font-[google] font-normal text-[15px] text-white flex justify-center items-center border-b-[.7px] border-[#ffede2] cursor-pointer hover:bg-[#fff0e6]"
+        className="w-[calc(100%-40px)] min-h-[60px]  font-[google] font-normal text-[15px] text-white flex justify-center items-center border-b-[.7px] border-[#ffede2] cursor-pointer "
         onClick={() => {
           setShowTransaction(true);
         }}
       >
-        <div className="w-[30px] flex justify-start items-center text-[22px] text-[#de8544]">
+        {props?.data?.TransactionType == "Split" ? (
+          <div
+            className={
+              "w-[30px] h-full flex justify-end items-center text-[19px] z-10 mr-[-30px]  " +
+              (props?.data?.MoneyIsAdded
+                ? " text-[#00bb00]"
+                : " text-[#e61d0f]")
+            }
+          >
+            {/* <AiOutlineSwap /> */}
+            <div className="bg-[#ffffff] mt-[20px] w-[18px] h-[18px] aspect-square rounded-full flex justify-center items-center">
+              <MdCallSplit />
+            </div>
+          </div>
+        ) : (
+          <></>
+        )}
+        <div className="w-[30px] flex justify-start items-center text-[22px] text-[#23a8d2] z-0 ">
           {props?.data?.Category === "Food & Drinks" ? (
             <IoFastFood />
           ) : props?.data?.Category === "Shopping" ? (
@@ -165,37 +184,44 @@ const IndependentTransaction = (props) => {
           </span>
           {props?.data?.Sender ? (
             <>
-              <span className="w-full flex justify-start items-center text-[14px] text-[#828282] ">
+              <span className="w-full flex justify-start items-center text-[14px] text-[#989898] ">
                 By, {name}
               </span>
+              {/* <div className="text-[12px] text-[#828282] w-full flex justify-start items-center">
+                {formatDate(props?.data?.Date)}
+              </div> */}
             </>
           ) : (
             <></>
           )}
+          {/* <div className="text-[12px] text-[#828282] w-full flex justify-start items-center">
+            {formatDate(props?.data?.Date)}
+          </div> */}
         </div>
         <div className="w-[100px]  flex flex-col justify-center items-end">
-          <div className="text-[12px] text-[#828282]">
-            {formatDate(props?.data?.Date)}
-          </div>
           <div
             className={
               " flex justify-end items-center whitespace-nowrap " +
               (props?.data?.MoneyIsAdded
                 ? " text-[#00bb00]"
-                : " text-[#c43b31]")
+                : " text-[#e61d0f]")
             }
           >
             <BiRupee />
             {formatAmountWithCommas(parseFloat(props?.data?.Amount))}{" "}
             {props?.data?.MoneyIsAdded ? (
               <>
-                <FiArrowDownLeft className="text-[#00bb00] ml-[5px] text-[19px]" />
+                <FiArrowDownLeft className="text-[#00bb00] ml-[2px] text-[19px] mr-[-3px]" />
               </>
             ) : (
               <>
-                <FiArrowUpRight className="text-[#c43b31] ml-[5px] text-[19px]" />
+                <FiArrowUpRight className="text-[#e61d0f] ml-[2px] text-[19px] mr-[-3px]" />
               </>
             )}
+          </div>
+          <div className="text-[13px] text-[#989898]">
+            {/* {props?.data?.Date} */}
+            {formatDate(props?.data?.Date)}
           </div>
         </div>
       </div>

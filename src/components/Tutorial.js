@@ -139,9 +139,9 @@ const Tutorial = (props) => {
   return (
     <div className="w-full h-[100svh] fixed top-0 left-0 bg-[#0000003e] z-50 font-[google] font-normal text-[15px] flex flex-col justify-end p-[20px] items-center">
       <div className="w-full flex flex-col justify-end items-start h-auto">
-        <div className="w-[calc(100%-40px)] h-[17px] bg-[#FFF5EE] fixed z-20"></div>
+        <div className="w-[calc(100%-40px)] h-[17px] bg-[#ffffff] fixed z-20"></div>
         <div className="w-full h-auto flex justify-start items-center z-30">
-          <div className=" w-[80px] p-[20px] py-[9px] h-[34px] bg-[#FFF5EE] flex  justify-start items-center rounded-t-[20px]">
+          <div className=" w-[80px] p-[20px] py-[9px] h-[34px] bg-[#ffffff] flex  justify-start items-center rounded-t-[20px]">
             {part + 1}/
             {props?.budget == 0 && props?.income == 0 ? (
               <>{Info.length}</>
@@ -155,7 +155,7 @@ const Tutorial = (props) => {
                 {part < 11 ? (
                   <>
                     <div
-                      className="h-[29px] aspect-square rounded-full bg-[#fff5ee] ml-[5px] mb-[5px] flex justify-center items-center text-[15px] px-[10px] cursor-pointer "
+                      className="h-[29px] aspect-square rounded-full bg-[#ffffff] ml-[5px] mb-[5px] flex justify-center items-center text-[15px] px-[10px] cursor-pointer "
                       onClick={() => {
                         if (props?.budget == 0 && props?.income == 0) {
                           setPart(11);
@@ -179,7 +179,7 @@ const Tutorial = (props) => {
                 {part < 10 ? (
                   <>
                     <div
-                      className="h-[29px] aspect-square rounded-full bg-[#fff5ee] ml-[5px] mb-[5px] flex justify-center items-center text-[15px] px-[10px] cursor-pointer "
+                      className="h-[29px] aspect-square rounded-full bg-[#ffffff] ml-[5px] mb-[5px] flex justify-center items-center text-[15px] px-[10px] cursor-pointer "
                       onClick={() => {
                         if (props?.budget == 0 && props?.income == 0) {
                           setPart(11);
@@ -202,7 +202,7 @@ const Tutorial = (props) => {
           </div>
         </div>
       </div>
-      <div className=" w-full p-[20px] h-auto bg-[#FFF5EE] flex flex-col justify-start items-center rounded-b-[20px] rounded-tr-[20px]">
+      <div className=" w-full p-[20px] h-auto bg-[#ffffff] flex flex-col justify-start items-center rounded-b-[20px] rounded-tr-[20px]">
         {/* <span>
           This shows total expense you have done in the month (left) and total
           budget remaining this month (right).
@@ -337,7 +337,7 @@ const Tutorial = (props) => {
       </div>
       {part == 0 ? (
         <div
-          className="w-[calc((100%-40px)/2)] fixed h-[35px] left-[10px] top-[101px] border-[2px] border-[#ffffff] bg-[#fff5ee] pl-[8px] rounded-[10px] flex justify-start items-center"
+          className="w-[calc((100%-40px)/2)] fixed h-[35px] left-[10px] top-[101px] border-[2px] border-[#ffffff] bg-[#ffffff] pl-[8px] rounded-[10px] flex justify-start items-center"
           style={{ transition: ".3s" }}
         >
           <span className=" font-[google] font-normal text-[22px] text-[#000000] flex justify-start items-center">
@@ -354,7 +354,7 @@ const Tutorial = (props) => {
         </div>
       ) : part == 1 ? (
         <div
-          className="w-[calc((100%-0px)/2)] fixed h-[35px] left-[10px] top-[132px] border-[2px] border-[#ffffff] bg-[#fff5ee] pl-[10px] flex justify-start items-center pt-0 rounded-[10px]"
+          className="w-[calc((100%-0px)/2)] fixed h-[35px] left-[10px] top-[132px] border-[2px] border-[#ffffff] bg-[#ffffff] pl-[10px] flex justify-start items-center pt-0 rounded-[10px]"
           style={{ transition: ".3s" }}
         >
           <span className="font-[google]  text-[13px] text-[#000000]   flex justify-start items-center ">
@@ -376,7 +376,7 @@ const Tutorial = (props) => {
         </div>
       ) : part == 2 ? (
         <div
-          className="w-[calc((100%-40px)/2)] fixed h-[40px] right-[10px] top-[129px] border-[2px] border-[#ffffff] bg-[#fff5ee] rounded-[10px] flex justify-end items-center pr-[9px]"
+          className="w-[calc((100%-40px)/2)] fixed h-[40px] right-[10px] top-[129px] border-[2px] border-[#ffffff] bg-[#ffffff] rounded-[10px] flex justify-end items-center pr-[9px]"
           style={{ transition: ".3s" }}
         >
           <span
@@ -392,13 +392,13 @@ const Tutorial = (props) => {
         </div>
       ) : part == 3 ? (
         <div
-          className="w-[calc((100%-20px))] bg-[#fff5ee] fixed h-[148px] right-[10px] top-[192px] border-[2px] border-[#ffffff] rounded-[10px] flex flex-col justify-center items-start px-[8px] pr-[10px] overflow-hidden"
+          className="w-[calc((100%-20px))] bg-[#ffffff] fixed h-[148px] right-[10px] top-[192px] border-[2px] border-[#ffffff] rounded-[10px] flex flex-col justify-center items-start px-[8px] pr-[10px] overflow-hidden"
           style={{ transition: ".3s" }}
         >
           <span className="text-[#828282] font-[google] font-normal text-[14px] w-full  flex justify-between h-[30px] items-start ">
             <div className="flex justify-start items-center">
               Transaction History,{" "}
-              <span className=" ml-[4px] text-[black] cursor-pointer flex justify-start items-center">
+              <span className=" ml-[4px] text-[black] cursor-pointer flex justify-start items-center px-[6px] pl-[8px] h-full rounded-full bg-[#e4f2ff] py-[2px]">
                 {"June"} - {2024}{" "}
                 <MdKeyboardArrowDown className="text-[21px]" />
               </span>
@@ -407,16 +407,16 @@ const Tutorial = (props) => {
               <FaFilter />
             </div>
           </span>
-          <span className=" w-full h-[100px] rounded-3xl border-[1px] border-[#ffe6d7] bg-[#ffe6d7]  flex justify-center items-center font-[google] font-normal text-[15px] text-[black]">
+          <span className=" w-full h-[100px] rounded-3xl border-[1px] border-[#e4f2ff] bg-[#e4f2ff]  flex justify-center items-center font-[google] font-normal text-[15px] text-[black]">
             No Transactions done this Month
           </span>
         </div>
       ) : part == 4 ? (
         <div
-          className="w-[calc((100%-20px))] bg-[#fff5ee] fixed h-[80px] left-[10px] top-[332px] border-[2px] border-[#ffffff] rounded-[10px] flex flex-col justify-center items-start px-[8px] "
+          className="w-[calc((100%-20px))] bg-[#ffffff] fixed h-[80px] left-[10px] top-[332px] border-[2px] border-[#ffffff] rounded-[10px] flex flex-col justify-center items-start px-[8px] "
           style={{ transition: ".3s" }}
         >
-          <div className="w-full h-[60px]  px-[10px] font-[google] font-normal text-[15px] bg-[#ffeadc] rounded-3xl border-[1px] border-[#ffe6d7]  text-[#000000] cursor-pointer flex justify-center items-center">
+          <div className="w-full h-[60px]  px-[10px] font-[google] font-normal text-[15px] bg-[#e4f2ff] rounded-3xl border-[1px] border-[#e4f2ff]  text-[#000000] cursor-pointer flex justify-center items-center">
             <div className="w-[30px]  flex justify-start items-center text-[20px] text-[#000000] ">
               <FiPlus />
             </div>
@@ -430,7 +430,7 @@ const Tutorial = (props) => {
         </div>
       ) : part == 5 ? (
         <div
-          className="w-[calc((100%-20px))] bg-[#fff5ee] fixed h-[250px] right-[10px] top-[10px] border-[2px] border-[#ffffff] rounded-[10px] flex flex-col justify-center items-start px-[8px] pr-[10px] overflow-hidden"
+          className="w-[calc((100%-20px))] bg-[#ffffff] fixed h-[250px] right-[10px] top-[10px] border-[2px] border-[#ffffff] rounded-[10px] flex flex-col justify-center items-start px-[8px] pr-[10px] overflow-hidden"
           style={{ transition: ".3s" }}
         >
           <div className="w-full h-[270px] ">
@@ -461,7 +461,7 @@ const Tutorial = (props) => {
         </div>
       ) : part == 6 ? (
         <div
-          className="w-[calc((100%-20px)/2)] bg-[#fff5ee]  fixed h-[240px] right-[10px] top-[260px] border-[2px] border-[#ffffff] rounded-[10px] flex flex-col justify-center items-start px-[8px] pr-[10px] overflow-hidden py-[10px]"
+          className="w-[calc((100%-20px)/2)] bg-[#ffffff]  fixed h-[240px] right-[10px] top-[260px] border-[2px] border-[#ffffff] rounded-[10px] flex flex-col justify-center items-start px-[8px] pr-[10px] overflow-hidden py-[10px]"
           style={{ transition: ".3s" }}
         >
           <div className="w-full h-full bg-[#ffeadc] rounded-2xl p-[20px] flex flex-col justify-center items-center">
@@ -508,11 +508,11 @@ const Tutorial = (props) => {
         </div>
       ) : part == 7 ? (
         <div
-          className="w-[calc((100%-20px))] bg-[#fff5ee] fixed h-[155px] right-[10px] top-[70px] border-[2px] border-[#ffffff] rounded-[10px] flex  justify-start items-center p-[8px] overflow-hidden"
+          className="w-[calc((100%-20px))] bg-[#ffffff] fixed h-[155px] right-[10px] top-[70px] border-[2px] border-[#ffffff] rounded-[10px] flex  justify-start items-center p-[8px] overflow-hidden"
           style={{ transition: ".3s" }}
         >
           {" "}
-          <div className="w-full h-[135px] flex  justify-between items-center p-[20px] bg-[#ffeadc] rounded-3xl border-[1px] border-[#ffe6d7] ">
+          <div className="w-full h-[135px] flex  justify-between items-center p-[20px] bg-[#e4f2ff] rounded-3xl border-[1px] border-[#e4f2ff] ">
             <div className="w-full  flex flex-col justify-center items-start font-[google] font-normal text-[22px] text-white ">
               <span className="text-[#6c6c6c] text-[14px]">
                 Total Due till June
@@ -529,7 +529,7 @@ const Tutorial = (props) => {
             </div>
             <div className="w-auto h-full flex flex-col justify-center items-center font-[google] font-normal text-black">
               {/* <span className="text-[14px] whitespace-nowrap">New Reminder</span> */}
-              <div className="w-[40px] h-[40px] rounded-2xl bg-[#ffcba5] flex justify-center items-center">
+              <div className="w-[40px] h-[40px] rounded-2xl bg-[#c3e2ff] flex justify-center items-center">
                 <FiPlus className="text-black text-[20px]" />
               </div>
             </div>
@@ -537,13 +537,13 @@ const Tutorial = (props) => {
         </div>
       ) : part == 8 ? (
         <div
-          className="w-[calc((100%-20px))] bg-[#fff5ee] fixed h-[149px] right-[10px] top-[226px] border-[2px] border-[#ffffff] rounded-[10px] flex flex-col justify-center items-start px-[8px] pr-[10px] overflow-hidden"
+          className="w-[calc((100%-20px))] bg-[#ffffff] fixed h-[149px] right-[10px] top-[226px] border-[2px] border-[#ffffff] rounded-[10px] flex flex-col justify-center items-start px-[8px] pr-[10px] overflow-hidden"
           style={{ transition: ".3s" }}
         >
           <span className="text-[#828282] font-[google] font-normal text-[14px] w-full  flex justify-between h-[30px] items-start ">
             <div className="flex justify-start items-center">
               Reminders,{" "}
-              <span className=" ml-[4px] text-[black] cursor-pointer flex justify-start items-center">
+              <span className=" ml-[4px] text-[black] cursor-pointer flex justify-start items-center  px-[6px] pl-[8px] h-full rounded-full bg-[#e4f2ff] py-[2px]">
                 {"June"} - {2024}{" "}
                 <MdKeyboardArrowDown className="text-[21px]" />
               </span>
@@ -552,13 +552,13 @@ const Tutorial = (props) => {
               <FaFilter />
             </div>
           </span>
-          <span className=" w-full h-[100px] rounded-3xl border-[1px] border-[#ffe6d7] bg-[#ffe6d7]  flex justify-center items-center font-[google] font-normal text-[15px] text-[black]">
+          <span className=" w-full h-[100px] rounded-3xl border-[1px] border-[#e4f2ff] bg-[#e4f2ff]  flex justify-center items-center font-[google] font-normal text-[15px] text-[black]">
             No Reminders remaining this Month
           </span>
         </div>
       ) : part == 9 ? (
         <div
-          className="w-[calc((100%-20px))] bg-[#fff5ee] fixed h-[95px] right-[10px] top-[72px] border-[2px] border-[#ffffff] rounded-[10px] flex flex-col justify-center items-start px-[8px] pr-[10px] overflow-hidden"
+          className="w-[calc((100%-20px))] bg-[#ffffff] fixed h-[95px] right-[10px] top-[72px] border-[2px] border-[#ffffff] rounded-[10px] flex flex-col justify-center items-start px-[8px] pr-[10px] overflow-hidden"
           style={{ transition: ".3s" }}
         >
           {" "}
@@ -604,13 +604,13 @@ const Tutorial = (props) => {
         </div>
       ) : part == 10 ? (
         <div
-          className="w-[calc((100%-20px))] bg-[#fff5ee] fixed h-[148px] right-[10px] top-[192px] border-[2px] border-[#ffffff] rounded-[10px] flex flex-col justify-center items-start px-[8px] pr-[10px] overflow-hidden"
+          className="w-[calc((100%-20px))] bg-[#ffffff] fixed h-[148px] right-[10px] top-[192px] border-[2px] border-[#ffffff] rounded-[10px] flex flex-col justify-center items-start px-[8px] pr-[10px] overflow-hidden"
           style={{ transition: ".3s" }}
         >
           <span className="text-[#828282] font-[google] font-normal text-[14px] w-full  flex justify-between h-[30px] items-start ">
             <div className="flex justify-start items-center">
               Split Transaction History,{" "}
-              <span className=" ml-[4px] text-[black] cursor-pointer flex justify-start items-center">
+              <span className=" ml-[4px] text-[black] cursor-pointer flex justify-start items-center px-[6px] pl-[8px] h-full rounded-full bg-[#e4f2ff] py-[2px]">
                 {"June"} - {2024}{" "}
                 <MdKeyboardArrowDown className="text-[21px]" />
               </span>
@@ -619,7 +619,7 @@ const Tutorial = (props) => {
               <FaFilter />
             </div>
           </span>
-          <span className=" w-full h-[100px] rounded-3xl border-[1px] border-[#ffe6d7] bg-[#ffe6d7]  flex justify-center items-center font-[google] font-normal text-[15px] text-[black]">
+          <span className=" w-full h-[100px] rounded-3xl border-[1px] border-[#e4f2ff] bg-[#e4f2ff]  flex justify-center items-center font-[google] font-normal text-[15px] text-[black]">
             No Transactions have been splitted this Month
           </span>
         </div>

@@ -43,7 +43,7 @@ const HomePage = () => {
   const [month, setMonth] = useState(0);
   const [year, setYear] = useState(parseInt(new Date().getFullYear()));
   const [reminderCount, setReminderCount] = useState(0);
-  const [filterPos, setFilterPos] = useState(1);
+  const [filterPos, setFilterPos] = useState(5);
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [end, setEnd] = useState(false);
   const [chooseMonth, setChooseMonth] = useState(false);
@@ -248,9 +248,9 @@ const HomePage = () => {
             > */}
             <>
               <div className="w-full flex flex-col justify-end items-start h-[44px]">
-                <div className="w-[calc(100%-40px)] h-[20px] bg-[#FFF5EE] fixed z-20"></div>
+                <div className="w-[calc(100%-40px)] h-[20px] bg-[#ffffff] fixed z-20"></div>
                 <div className="w-full h-auto flex justify-start items-center z-30">
-                  <div className=" w-auto text-[22px] whitespace-nowrap font-[google] font-normal  p-[20px] py-[9px] h-[40px] bg-[#FFF5EE] flex  justify-start items-center rounded-t-[24px]">
+                  <div className=" w-auto text-[22px] whitespace-nowrap font-[google] font-normal  p-[20px] py-[9px] h-[40px] bg-[#ffffff] flex  justify-start items-center rounded-t-[24px]">
                     {/* {part + 1}/
                   {props?.budget == 0 && props?.income == 0 ? (
                     <>{Info.length}</>
@@ -271,7 +271,7 @@ const HomePage = () => {
                 </div>
               </div>
               <div
-                className="min-w-full z-50 h-auto bg-[#fff5ee] drop-shadow-sm   text-black  rounded-b-3xl rounded-tr-3xl font-[google] font-normal text-[14px] flex flex-col justify-center items-start p-[20px]"
+                className="min-w-full z-50 h-auto bg-[#ffffff] drop-shadow-sm   text-black  rounded-b-3xl rounded-tr-3xl font-[google] font-normal text-[14px] flex flex-col justify-center items-start p-[20px]"
                 style={{ zIndex: 100 }}
                 onClick={() => {}}
               >
@@ -286,7 +286,7 @@ const HomePage = () => {
                   Date in Ascending Order{" "}
                   {filterPos == 1 ? (
                     <>
-                      <TbArrowBigLeftLinesFilled className=" ml-[7px]" />{" "}
+                      <TbArrowBigLeftLinesFilled className=" ml-[7px] text-[#23a8d2]" />{" "}
                     </>
                   ) : (
                     <></>
@@ -303,7 +303,7 @@ const HomePage = () => {
                   Date in Descending Order{" "}
                   {filterPos == 2 ? (
                     <>
-                      <TbArrowBigLeftLinesFilled className=" ml-[7px]" />{" "}
+                      <TbArrowBigLeftLinesFilled className=" ml-[7px] text-[#23a8d2]" />{" "}
                     </>
                   ) : (
                     <></>
@@ -320,7 +320,7 @@ const HomePage = () => {
                   Price from Low to High{" "}
                   {filterPos == 3 ? (
                     <>
-                      <TbArrowBigLeftLinesFilled className=" ml-[7px]" />{" "}
+                      <TbArrowBigLeftLinesFilled className=" ml-[7px] text-[#23a8d2]" />{" "}
                     </>
                   ) : (
                     <></>
@@ -337,7 +337,7 @@ const HomePage = () => {
                   Price from High to Low{" "}
                   {filterPos == 4 ? (
                     <>
-                      <TbArrowBigLeftLinesFilled className=" ml-[7px]" />{" "}
+                      <TbArrowBigLeftLinesFilled className=" ml-[7px] text-[#23a8d2]" />{" "}
                     </>
                   ) : (
                     <></>
@@ -354,7 +354,7 @@ const HomePage = () => {
                   Normal{" "}
                   {filterPos == 5 ? (
                     <>
-                      <TbArrowBigLeftLinesFilled className=" ml-[7px]" />{" "}
+                      <TbArrowBigLeftLinesFilled className=" ml-[7px] text-[#23a8d2]" />{" "}
                     </>
                   ) : (
                     <></>
@@ -391,18 +391,18 @@ const HomePage = () => {
                 }}
               ></div>
               <div className="w-full h-[45px] flex justify-between items-end bg-transparent rounded-t-3xl font-[google] font-normal text-[14px]">
-                <div className="w-[calc(100%-40px)] h-[20px] bg-[#fff5ee]  fixed z-30"></div>
+                <div className="w-[calc(100%-40px)] h-[20px] bg-[#ffffff]  fixed z-30"></div>
 
                 <div
                   className={
                     "w-[calc(100%/2)] h-full flex justify-center items-center z-40 pb-[5px] " +
                     (!section
-                      ? " bg-[#c1b9b4] pt-0 pl-0 p-[5px] rounded-br-3xl rounded-tr-3xl"
-                      : " bg-[#fff5ee] p-0 rounded-t-3xl cursor-pointer")
+                      ? " bg-[#c1c1c1] pt-0 pl-0 p-[5px] rounded-br-3xl rounded-tr-3xl"
+                      : " bg-[#ffffff] p-0 rounded-t-3xl cursor-pointer")
                   }
                 >
                   <div
-                    className="w-full h-full flex justify-center items-center rounded-[20px] bg-[#fff5ee] cursor-pointer  text-[16px]"
+                    className="w-full h-full flex justify-center items-center rounded-[20px] bg-[#ffffff] cursor-pointer  text-[16px]"
                     onClick={() => {
                       setSection(true);
                     }}
@@ -414,12 +414,12 @@ const HomePage = () => {
                   className={
                     "w-[calc(100%/2)] h-full flex justify-center items-center z-40 pb-[5px] " +
                     (section
-                      ? " bg-[#c1b9b4] pt-0 pr-0 p-[5px] rounded-bl-3xl rounded-tl-3xl"
-                      : " bg-[#fff5ee] p-0 rounded-t-3xl cursor-pointer")
+                      ? " bg-[#c1c1c1] pt-0 pr-0 p-[5px] rounded-bl-3xl rounded-tl-3xl"
+                      : " bg-[#ffffff] p-0 rounded-t-3xl cursor-pointer")
                   }
                 >
                   <div
-                    className="w-full rounded-[20px] h-full flex justify-center items-center z-50 bg-[#fff5ee] cursor-pointer text-[16px]"
+                    className="w-full rounded-[20px] h-full flex justify-center items-center z-50 bg-[#ffffff] cursor-pointer text-[16px]"
                     onClick={() => {
                       setSection(false);
                     }}
@@ -431,7 +431,7 @@ const HomePage = () => {
 
               <div
                 className={
-                  "min-w-full z-50 h-auto bg-[#fff5ee] drop-shadow-sm   text-black  rounded-b-3xl font-[google] font-normal text-[14px] flex flex-wrap justify-start items-start py-[17.5px]  px-[17.5px]" +
+                  "min-w-full z-50 h-auto bg-[#ffffff] drop-shadow-sm   text-black  rounded-b-3xl font-[google] font-normal text-[14px] flex flex-wrap justify-start items-start py-[17.5px]  px-[17.5px]" +
                   (section ? " rounded-tr-3xl" : " rounded-tl-3xl")
                 }
                 style={{ zIndex: 100 }}
@@ -448,7 +448,7 @@ const HomePage = () => {
                           {monthNames[month - 1] === name ? (
                             <span
                               key={index}
-                              className=" w-[calc((100%-20px)/4)] mx-[2.5px] my-[2.5px]  border border-[#ffd8be] bg-[#ffd8be] rounded-md flex justify-center items-center min-h-[35px] cursor-pointer"
+                              className=" w-[calc((100%-20px)/4)] mx-[2.5px] my-[2.5px]  border border-[#acebff] bg-[#acebff] rounded-md flex justify-center items-center min-h-[35px] cursor-pointer"
                               onClick={() => {}}
                             >
                               {name}
@@ -456,7 +456,7 @@ const HomePage = () => {
                           ) : (
                             <span
                               key={index}
-                              className=" w-[calc((100%-20px)/4)] mx-[2.5px] my-[2.5px]  border border-[#ffd8be] rounded-md flex justify-center items-center min-h-[35px] cursor-pointer"
+                              className=" w-[calc((100%-20px)/4)] mx-[2.5px] my-[2.5px]  border border-[#acebff] rounded-md flex justify-center items-center min-h-[35px] cursor-pointer"
                               onClick={() => {
                                 setMonth(index + 1);
                               }}
@@ -476,7 +476,7 @@ const HomePage = () => {
                           {year === name ? (
                             <span
                               key={index}
-                              className=" w-[calc((100%-20px)/4)] mx-[2.5px] my-[2.5px]  border border-[#ffd8be] bg-[#ffd8be] rounded-md flex justify-center items-center min-h-[35px] cursor-pointer"
+                              className=" w-[calc((100%-20px)/4)] mx-[2.5px] my-[2.5px]  border border-[#acebff] bg-[#acebff] rounded-md flex justify-center items-center min-h-[35px] cursor-pointer"
                               onClick={() => {}}
                             >
                               {name}
@@ -484,7 +484,7 @@ const HomePage = () => {
                           ) : (
                             <span
                               key={index}
-                              className=" w-[calc((100%-20px)/4)] mx-[2.5px] my-[2.5px]  border border-[#ffd8be] rounded-md flex justify-center items-center min-h-[35px] cursor-pointer"
+                              className=" w-[calc((100%-20px)/4)] mx-[2.5px] my-[2.5px]  border border-[#acebff] rounded-md flex justify-center items-center min-h-[35px] cursor-pointer"
                               onClick={() => {
                                 setYear(name);
                               }}
@@ -507,15 +507,15 @@ const HomePage = () => {
       )}
 
       {/* <Tutorial /> */}
-      <div className="w-full h-[calc(100svh-60px)] bg-[#FFF5EE] flex flex-col justify-start items-center pt-[20px]">
+      <div className="w-full h-[calc(100svh-60px)] bg-[#ffffff] flex flex-col justify-start items-center pt-[20px]">
         <TopNavbar />
         <QuickInfo month={month} year={year} />
-        <div className="w-[calc(100%-40px)] border-[.7px] border-[#fee6d7]"></div>
-        <span className="text-[#828282] font-[google] font-normal text-[14px] w-full mt-[20px] flex justify-between h-[30px] items-start px-[20px] ">
+        <div className="w-[calc(100%-40px)] border-[.7px] border-[#eff7ff]"></div>
+        <span className="text-[#989898] font-[google] font-normal text-[14px] w-full mt-[20px] flex justify-between h-[30px] items-start px-[20px] ">
           <div className="flex justify-start items-center">
             Transaction History,{" "}
             <span
-              className=" ml-[4px] text-[black] cursor-pointer flex justify-start items-center"
+              className=" ml-[4px] text-[black] cursor-pointer flex justify-start items-center px-[6px] pl-[8px] h-full rounded-full bg-[#e4f2ff] py-[2px]"
               onClick={() => {
                 setChooseMonth(true);
               }}
@@ -557,7 +557,7 @@ const HomePage = () => {
           >
             {tempTransactionHistory?.length === 0 ? (
               <>
-                <span className=" w-[calc(100%-40px)] h-[100px] rounded-3xl border-[1px] border-[#ffe6d7] bg-[#ffe6d7]  flex justify-center items-center font-[google] font-normal text-[15px] text-[black]">
+                <span className=" w-[calc(100%-40px)] h-[100px] rounded-3xl border-[1px] border-[#e4f2ff] bg-[#e4f2ff]  flex justify-center items-center font-[google] font-normal text-[15px] text-[black]">
                   No Transactions done this Month
                 </span>
               </>
@@ -590,8 +590,8 @@ const HomePage = () => {
             {end ? (
               <></>
             ) : (
-              <div class="bg-[#de8544]  animate-bounce w-[30px] h-[30px] rounded-full flex justify-center items-center mt-[-30px]">
-                <LuArrowDown className="text-white text-[18px]" />
+              <div class="bg-[#c3e2ff]  animate-bounce w-[30px] h-[30px] rounded-full flex justify-center items-center mt-[-30px]">
+                <LuArrowDown className="text-[#000000] text-[18px]" />
               </div>
             )}
           </>

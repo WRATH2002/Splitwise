@@ -215,7 +215,7 @@ const ReminderPage = () => {
 
               <div
                 className={
-                  "min-w-full z-50 h-auto bg-[#fff5ee] drop-shadow-sm   text-black  rounded-b-3xl font-[google] font-normal text-[14px] flex flex-wrap justify-start items-start py-[17.5px]  px-[17.5px]" +
+                  "min-w-full z-50 h-auto bg-[#ffffff] drop-shadow-sm   text-black  rounded-b-3xl font-[google] font-normal text-[14px] flex flex-wrap justify-start items-start py-[17.5px]  px-[17.5px]" +
                   (section ? " rounded-tr-3xl" : " rounded-tl-3xl")
                 }
                 style={{ zIndex: 100 }}
@@ -289,11 +289,11 @@ const ReminderPage = () => {
       ) : (
         <></>
       )}
-      <div className="pt-[20px] w-full h-[60px] flex justify-center items-center bg-[#fff5ee] border-none">
+      <div className="pt-[20px] w-full h-[60px] flex justify-center items-center bg-[#ffffff] border-none">
         <TopNavbar />
       </div>
-      <div className="w-full h-full bg-[#fff5ee] py-[20px]">
-        <div className="w-[calc(100%-40px)] ml-[20px] h-[135px] flex  justify-between items-center p-[20px] bg-[#ffeadc] rounded-3xl border-[1px] border-[#ffe6d7] ">
+      <div className="w-full h-full bg-[#ffffff] py-[20px]">
+        <div className="w-[calc(100%-40px)] ml-[20px] h-[135px] flex  justify-between items-center p-[20px] bg-[#e4f2ff] rounded-3xl border-[1px] border-[#e4f2ff] ">
           <div className="w-full  flex flex-col justify-center items-start font-[google] font-normal text-[22px] text-white ">
             <span className="text-[#6c6c6c] text-[14px]">
               Total Due till June
@@ -312,7 +312,7 @@ const ReminderPage = () => {
           <div className="w-auto h-full flex flex-col justify-center items-center font-[google] font-normal text-black">
             {/* <span className="text-[14px] whitespace-nowrap">New Reminder</span> */}
             <div
-              className="w-[40px] h-[40px] rounded-2xl bg-[#ffcba5] flex justify-center items-center"
+              className="w-[40px] h-[40px] rounded-2xl bg-[#c3e2ff] flex justify-center items-center"
               onClick={() => {
                 setAddModal(true);
                 // setSplitModal(true);
@@ -325,7 +325,7 @@ const ReminderPage = () => {
         <div className="flex justify-start items-center text-[14px] font-[google] font-normal mt-[20px] px-[20px] text-[#828282]">
           Reminders,{" "}
           <span
-            className=" ml-[4px] text-black flex justify-start items-center"
+            className=" ml-[4px] text-black flex justify-start items-center px-[6px] pl-[8px] h-full rounded-full bg-[#e4f2ff] py-[2px]"
             onClick={() => {
               setChooseMonth(true);
               // setAddModal(true);
@@ -340,7 +340,7 @@ const ReminderPage = () => {
         <div className="contt w-full h-[calc(100%-225px)] flex flex-col justify-start items-center overflow-y-scroll mt-[10px] px-[20px]">
           {tempTransactionHistory.length === 0 ? (
             <>
-              <span className="mt-[30px] w-full h-[100px] rounded-3xl border-[1px] border-[#ffe6d7] bg-[#ffe6d7]  flex justify-center items-center font-[google] font-normal text-[15px] text-[black]">
+              <span className="mt-[30px] w-full h-[100px] rounded-3xl border-[1px] border-[#e4f2ff] bg-[#e4f2ff]  flex justify-center items-center font-[google] font-normal text-[15px] text-[black]">
                 No Reminders remaining this Month
               </span>
             </>

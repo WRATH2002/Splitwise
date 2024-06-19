@@ -336,9 +336,9 @@ const Settings = (props) => {
       ) : (
         <></>
       )}
-      <div className="w-full h-full bg-[#fff5ee] p-[20px] text-black font-[google] font-normal flex flex-col justify-start items-start">
+      <div className="w-full h-full bg-[#ffffff] p-[20px] text-black font-[google] font-normal flex flex-col justify-start items-start">
         <div className="w-full ">
-          <div className="w-[90px] aspect-square rounded-full object-cover bg-[#ffeadc]"></div>
+          <div className="w-[90px] aspect-square rounded-full object-cover bg-[#e4f2ff]"></div>
           <div></div>
         </div>
         <div className="w-full border-[.7px] border-[#fee6d7] my-[20px]"></div>
@@ -383,7 +383,7 @@ const Settings = (props) => {
         </div>
 
         <div
-          className="w-[calc(100%-40px)] fixed h-[100px] bottom-[60px] left-[20px] font-[google] font-normal text-black rounded-3xl flex flex-col justify-center items-center bg-[#ffe6d7] text-[14px]"
+          className="w-[calc(100%-40px)] fixed h-[100px] bottom-[60px] left-[20px] font-[google] font-normal text-black rounded-3xl flex flex-col justify-center items-center bg-[#e4f2ff] text-[14px]"
           onClick={() => {
             setPop(!pop);
             // setNewIncome("");

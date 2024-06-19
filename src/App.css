@@ -59,7 +59,7 @@ input::placeholder {
 ::-webkit-scrollbar-track {
   background: transparent;
   transition: 0.5s;
-  width: 2px;
+  width: 0px;
   border-radius: 50px;
   margin: 0px 550px;
   max-height: 50%;
@@ -68,7 +68,8 @@ input::placeholder {
 }
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #de8544;
+  /* background: #de8544; */
+  background-color: transparent;
   border-radius: 10px;
 }
 
