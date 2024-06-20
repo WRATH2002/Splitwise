@@ -114,6 +114,7 @@ const SplitExpense = () => {
   const [userList, setUserList] = useState([]);
   const [splitTransaction, setSplitTransaction] = useState([]);
   const [normalTransaction, setNormalTransaction] = useState([]);
+  const [finalTransaction, setFinalTransaction] = useState([]);
   const [searchName, setSearchName] = useState("");
   const [error, setError] = useState("");
 
@@ -346,20 +347,6 @@ const SplitExpense = () => {
           count++;
         } else {
         }
-        //  else {
-        //   acc =
-        //     acc +
-        //     parseFloat(curr?.Amount) -
-        //     (newArr?.length + 1) * parseFloat(newArr[0]?.Amount);
-
-        //   if (
-        //     parseFloat(curr?.Amount) -
-        //       (newArr?.length + 1) * parseFloat(newArr[0]?.Amount) !==
-        //     0
-        //   ) {
-        //     count++;
-        //   }
-        // }
         console.log("acc");
         console.log(acc);
       }
@@ -374,8 +361,90 @@ const SplitExpense = () => {
 
   useEffect(() => {
     // amountToGet();
+    processSplitTransactions();
     getAmountToPay();
   }, [splitTransaction]);
+
+  function processSplitTransactions() {
+    const user = firebase.auth().currentUser;
+    let DoneArray = [];
+    let LiveArray = [];
+    let DonetransactionCount = 0;
+    let LivetransactionCount = 0;
+    console.log(
+      "Going Inside Function to get date wise split data =----------------------"
+    );
+    splitTransaction?.map((data) => {
+      normalTransaction?.map((data2) => {
+        if (data?.Owner === user.uid) {
+          if (
+            data2?.TotalAmount == data?.Amount &&
+            data2?.BillUrl == data?.BillUrl &&
+            data2?.Category == data?.Category &&
+            data2?.SplitDate == data?.Date &&
+            (data2?.Lable).slice(12) == data?.Lable &&
+            data2?.MemberCount == data?.MemberCount &&
+            data2?.Owner == data?.Owner &&
+            data2?.TransactionType == data?.TransactionType
+          ) {
+            DonetransactionCount++;
+            // console.log(data2, data?.MemberCount);
+          }
+        } else {
+          if (
+            data2?.TotalAmount == data?.Amount &&
+            data2?.BillUrl == data?.BillUrl &&
+            data2?.Category == data?.Category &&
+            data2?.SplitDate == data?.Date &&
+            (data2?.Lable).slice(13) == data?.Lable &&
+            data2?.MemberCount == data?.MemberCount &&
+            data2?.Owner == data?.Owner &&
+            data2?.TransactionType == data?.TransactionType
+          ) {
+            LivetransactionCount++;
+            // console.log(data2);
+          }
+        }
+      });
+
+      if (data?.Owner === user?.uid) {
+        if (data?.MemberCount == DonetransactionCount + 1) {
+          DoneArray.push(data);
+        } else {
+          LiveArray.push(data);
+        }
+      } else {
+        if (LivetransactionCount >= 1) {
+          DoneArray.push(data);
+        } else {
+          LiveArray.push(data);
+        }
+      }
+      DonetransactionCount = 0;
+      LivetransactionCount = 0;
+    });
+
+    // console.log("Resulttttt-----------------------");
+
+    // console.log(DoneArray);
+    // console.log(LiveArray);
+    // console.log("Resulttttt-----------------------");
+    // console.log(
+    //   sortTransactions(LiveArray).concat(sortTransactions(DoneArray))
+    // );
+
+    setFinalTransaction(
+      sortTransactions(LiveArray).concat(sortTransactions(DoneArray))
+    );
+  }
+
+  function sortTransactions(transactions) {
+    return transactions.sort((a, b) => {
+      const dateA = new Date(a.Date.split("/").reverse().join("-"));
+      const dateB = new Date(b.Date.split("/").reverse().join("-"));
+      return dateB - dateA;
+    });
+  }
 
   return (
     <>
@@ -544,7 +613,7 @@ const SplitExpense = () => {
       )}
       {splitModal === true ? (
         <div className="w-full h-[100svh] fixed z-30 bg-[#68686871] top-0 left-0 flex justify-center items-center backdrop-blur-md">
-          <div className="w-[320px] max-h-[400px] py-[27px] bg-[#fff5ee] rounded-3xl flex flex-col justify-center items-start z-40">
+          <div className="w-[320px] max-h-[400px] py-[27px] bg-[#ffffff] rounded-3xl flex flex-col justify-center items-start z-40">
             <div className="w-full h-auto px-[30px] bg-transparent overflow-y-scroll flex flex-col justify-start items-start z-40">
               <span className="w-full text-[25px] text-black font-[google] font-normal flex justify-start items-center ">
                 Transaction{" "}
@@ -875,7 +944,7 @@ const SplitExpense = () => {
       ) : (
         <></>
       )}
-      <div className="pt-[20px] w-full h-[60px] flex justify-center items-center bg-[#fff5ee] border-none">
+      <div className="pt-[20px] w-full h-[60px] flex justify-center items-center bg-[#ffffff] border-none">
         <TopNavbar />
       </div>
       <div className="h-[calc(100%-60px)] w-full bg-[#ffffff] flex justify-start items-center flex-col  text-white pb-[20px] border-none">
@@ -885,7 +954,7 @@ const SplitExpense = () => {
           willPay={formatAmountWithCommas(getAmountToPay()?.amount)}
           payCount={getAmountToPay()?.count}
         />
-        <div className="w-[calc(100%-40px)] border-[.7px] border-[#fee6d7]"></div>
+        <div className="w-[calc(100%-40px)] border-[.7px] border-[#eff7ff]"></div>
         <span className="text-[#828282] font-[google] font-normal text-[14px] w-full mt-[20px] flex justify-between h-[30px] items-start px-[20px] ">
           <div className="flex justify-start items-center">
             Split Transaction History,{" "}
@@ -904,7 +973,7 @@ const SplitExpense = () => {
         </span>
 
         <div className="w-full flex flex-col justify-start items-center">
-          {splitTransaction?.map((data) => {
+          {finalTransaction?.map((data) => {
             return (
               <>
                 <SplitTransaction data={data} />

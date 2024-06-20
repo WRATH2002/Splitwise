@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { BiRupee } from "react-icons/bi";
-import { FaReceipt, FaShopify } from "react-icons/fa";
-import { FiArrowLeft } from "react-icons/fi";
-import { GiPartyPopper } from "react-icons/gi";
-import { HiMiniBell } from "react-icons/hi2";
-import { IoFastFood } from "react-icons/io5";
-import { LuChevronRight } from "react-icons/lu";
+
 import {
   MdCallSplit,
   MdMedication,
@@ -21,9 +15,15 @@ import {
   onSnapshot,
   where,
 } from "firebase/firestore";
-
+import { BiRupee } from "react-icons/bi";
+import { FaReceipt, FaShopify } from "react-icons/fa";
+import { FiArrowLeft } from "react-icons/fi";
+import { GiPartyPopper } from "react-icons/gi";
+import { HiMiniBell } from "react-icons/hi2";
+import { IoFastFood } from "react-icons/io5";
+import { LuChevronRight } from "react-icons/lu";
 import { GiAutoRepair } from "react-icons/gi";
-import { FaKitMedical, FaTruckMedical } from "react-icons/fa6";
+import { FaTruckMedical } from "react-icons/fa6";
 import { BsFillFuelPumpFill, BsTaxiFrontFill } from "react-icons/bs";
 import {
   MdElectricBolt,
@@ -31,11 +31,8 @@ import {
   MdOutlinePets,
   MdSchool,
 } from "react-icons/md";
-// import AboutTransaction from "./AboutTransaction";
-import { HiReceiptRefund, HiShoppingBag } from "react-icons/hi2";
-import { FiArrowDownLeft, FiArrowUpRight } from "react-icons/fi";
-import { BiSolidPlaneTakeOff } from "react-icons/bi";
-import { PiMapPinLineFill, PiSealQuestionFill } from "react-icons/pi";
+import { HiShoppingBag } from "react-icons/hi2";
+import { PiSealQuestionFill } from "react-icons/pi";
 
 const MemberProfile = () => {
   return (

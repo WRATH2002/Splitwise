@@ -26,6 +26,17 @@ import {
 import { IoMdInformationCircle } from "react-icons/io";
 import { AiFillInfoCircle } from "react-icons/ai";
 import { FaCircleExclamation } from "react-icons/fa6";
+import { GiAutoRepair } from "react-icons/gi";
+import { FaTruckMedical } from "react-icons/fa6";
+import { BsFillFuelPumpFill, BsTaxiFrontFill } from "react-icons/bs";
+import {
+  MdElectricBolt,
+  MdOutlineAirplanemodeActive,
+  MdOutlinePets,
+  MdSchool,
+} from "react-icons/md";
+import { HiShoppingBag } from "react-icons/hi2";
+import { PiSealQuestionFill } from "react-icons/pi";
 
 const MemberProfile = (props) => {
   const [name, setName] = useState("");
@@ -113,7 +124,7 @@ const MemberProfile = (props) => {
               ) : (
                 <>
                   Pending{" "}
-                  <FaCircleExclamation className="text-[15px] ml-[5px] text-[#de8544] z-40" />{" "}
+                  <FaCircleExclamation className="text-[15px] ml-[5px] text-[#e61d0f] z-40" />{" "}
                 </>
               )}
             </>
@@ -546,7 +557,7 @@ export const MoreAboutTransaction = (props) => {
                     </div>
                   )}
                   <div
-                    className=" cursor-pointer text-[#de8544]"
+                    className=" cursor-pointer text-[#6bb7ff]"
                     onClick={() => {
                       if (isPaid === true) {
                         setNotificationModal(false);
@@ -586,8 +597,39 @@ export const MoreAboutTransaction = (props) => {
           </div> */}
         </div>
 
-        <div className="w-full h-[60px] flex justify-center items-center text-[#23a8d2]">
-          <IoFastFood className="text-[55px] " />
+        <div className="w-full h-[60px] flex justify-center items-center text-[#23a8d2] text-[55px]">
+          {props?.data?.Category === "Food & Drinks" ? (
+            <IoFastFood />
+          ) : props?.data?.Category === "Shopping" ? (
+            <FaShopify />
+          ) : props?.data?.Category === "Grocery" ? (
+            <HiShoppingBag />
+          ) : props?.data?.Category === "Medical" ? (
+            <FaTruckMedical />
+          ) : props?.data?.Category === "Travel" ? (
+            // <MdOutlineTravelExplore />
+            // <PiMapPinLineFill />
+            // <BiSolidPlaneTakeOff />
+            <MdOutlineAirplanemodeActive className="rotate-45" />
+          ) : props?.data?.Category === "Entertainment" ? (
+            <GiPartyPopper />
+          ) : props?.data?.Category === "Electricity Bill" ? (
+            <MdElectricBolt />
+          ) : props?.data?.Category === "Petrol / Diesel" ? (
+            <BsFillFuelPumpFill />
+          ) : props?.data?.Category === "Taxi Fare" ? (
+            <BsTaxiFrontFill />
+          ) : props?.data?.Category === "Car Maintanance" ? (
+            <GiAutoRepair />
+          ) : props?.data?.Category === "Education" ? (
+            <MdSchool />
+          ) : props?.data?.Category === "Pet Care" ? (
+            <MdOutlinePets />
+          ) : (
+            <>
+              <PiSealQuestionFill />
+            </>
+          )}
         </div>
         <div className="font-[google] font-normal h-[50px]  text-black mt-[15px] text-[24px] w-full flex flex-col justify-center items-center">
           <span>{props?.data?.Lable}</span>
@@ -601,7 +643,7 @@ export const MoreAboutTransaction = (props) => {
           </span>
         </div>
         {/* <div className="w-full border-[.7px] border-[#fee6d7] my-[30px]"></div> */}
-        <div className="w-full flex justify-between items-start bg-[#e4f2ff] border-[1px] border-[#e4f2ff] rounded-2xl p-[20px] mt-[30px] text-black">
+        <div className="w-full flex justify-between items-start bg-[#e4f2ff] border-[1px] border-[#e4f2ff] rounded-3xl p-[20px] mt-[30px] text-black">
           <div className="w-[calc(100%/2)] flex flex-col justify-center items-start">
             <span className=" flex justify-center items-center text-[14px] text-[#828282]">
               {props?.owner ? (
@@ -736,7 +778,7 @@ export const MoreAboutTransaction = (props) => {
                   {props?.owner ? <>You</> : <>{name}</>}
                 </span>
               </span>
-              <div className="w-full h-[60px] rounded-2xl bg-[#e4f2ff]  border-[1px] border-[#e4f2ff] cursor-pointer mt-[20px] flex justify-between items-center text-[14px] text-black px-[20px]">
+              <div className="w-full h-[60px] rounded-3xl bg-[#e4f2ff]  border-[1px] border-[#e4f2ff] cursor-pointer mt-[20px] flex justify-between items-center text-[14px] text-black px-[20px]">
                 <div className="flex justify-start items-center">
                   <FaReceipt className="text-[20px] mr-[9px]" /> View Reciept /
                   Bill
@@ -781,14 +823,14 @@ export const MoreAboutTransaction = (props) => {
           <></>
         ) : (
           <>
-            <div className="w-full h-[55px] flex justify-center items-center font-[google] bg-[#ffffff] z-40 font-normal fixed  bottom-0 left-0 text-[#ffffff]  text-[16px]">
+            <div className="w-full h-[55px] flex justify-center items-center font-[google] bg-[#ffffff] z-40 font-normal fixed  bottom-0 left-0 text-[#000000]  text-[16px]">
               {props?.data?.Paid === true ? (
-                <div className="w-auto h-[40px] flex justify-center items-center rounded-full px-[15px] bg-[#8c8c8c] cursor-default">
+                <div className="w-auto h-[40px] flex justify-center items-center rounded-full px-[14px] bg-[#e4f2ff] cursor-default">
                   Paid
                 </div>
               ) : (
                 <div
-                  className="w-auto h-[40px] flex justify-center items-center rounded-full px-[15px] bg-[#e4f2ff] cursor-pointer"
+                  className="w-auto h-[40px] flex justify-center items-center rounded-full px-[14px] bg-[#6bb7ff] cursor-pointer text-black"
                   onClick={() => {
                     setConfirmModal(true);
                   }}
@@ -828,7 +870,7 @@ const SplitTransaction = (props) => {
   useEffect(() => {
     fetchName(props?.data?.Owner);
     fetchNormalTransaction();
-  }, []);
+  }, [props?.data?.Owner]);
 
   useEffect(() => {
     getSameSplitTransaction();
@@ -904,7 +946,6 @@ const SplitTransaction = (props) => {
 
   function getSameSplitTransaction() {
     let newArr = normalTransaction?.filter((data) => {
-      // console.log((data?.Lable).slice(12));
       if (
         data?.TotalAmount == props?.data?.Amount &&
         data?.BillUrl == props?.data?.BillUrl &&
@@ -920,10 +961,6 @@ const SplitTransaction = (props) => {
         return data;
       }
     });
-
-    // console.log("newArr");
-    // console.log(newArr);
-    // console.log(newArr.length);
     setSplitRemaining(newArr);
   }
 
@@ -951,7 +988,7 @@ const SplitTransaction = (props) => {
       )}
 
       <div
-        className="w-[calc(100%-40px)] min-h-[60px] border-b-[.7px] border-[#ffede2] font-[google] font-normal text-[15px] flex justify-start  items-center cursor-pointer"
+        className="w-[calc(100%-40px)] min-h-[60px] border-b-[.7px] border-[#eff7ff] font-[google] font-normal text-[15px] flex justify-start  items-center cursor-pointer"
         onClick={() => {
           setShowMore(true);
         }}

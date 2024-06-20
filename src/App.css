@@ -104,3 +104,12 @@ input::placeholder {
     30;
   /* animation: borderRotate var(--d) linear infinite forwards; */
 }
+
+.inRound {
+  background-image: radial-gradient(
+    circle at 100% 100%,
+    #c2000000 20px,
+    #ffffff 20px
+  );
+  rotate: -90deg;
+}

@@ -31,7 +31,7 @@ const ReminderPage = () => {
   const [addModal, setAddModal] = useState(false);
   const [transactionHistory, setTransactionHistory] = useState([]);
   const [tempTransactionHistory, setTempTransactionHistory] = useState([]);
-  const [month, setMonth] = useState(0);
+  const [month, setMonth] = useState(parseInt(new Date().getMonth) + 1);
   const [year, setYear] = useState(parseInt(new Date().getFullYear()));
   const [chooseMonth, setChooseMonth] = useState(false);
   const [section, setSection] = useState(true);
@@ -52,7 +52,8 @@ const ReminderPage = () => {
     if (transactionHistory != undefined) {
       sortTransactionsByDate();
     }
-  }, [transactionHistory]);
+    console.log(transactionHistory);
+  }, [transactionHistory, month, year]);
 
   function sortTransactionsByDate() {
     setTempTransactionHistory(
@@ -64,16 +65,25 @@ const ReminderPage = () => {
           const dateB = new Date(yearB, monthB - 1, dayB);
           return dateA - dateB;
         })
+
+        // transactionHistory.filter((data) => {
+        //   if (
+        //     data.Date.split("/")[1] == month &&
+        //     data.Date.split("/")[2] == year
+        //   ) {
+        //     return data;
+        //   }
+        // })
       )
     );
   }
 
   function filterByPresentDate(data) {
-    let preMonth = new Date().getMonth() + 1;
+    // let preMonth = new Date().getMonth() + 1;
     const newData = data?.filter((obj) => {
       let dateArr = obj?.Date?.split("/");
       // console.log(preMonth);
-      if (parseInt(dateArr[1]) <= parseInt(preMonth)) {
+      if (parseInt(dateArr[1]) <= parseInt(month)) {
         // console.log("obj");
         return obj;
       }
@@ -349,7 +359,11 @@ const ReminderPage = () => {
               {tempTransactionHistory.map((dat) => {
                 return (
                   <>
-                    <IndividualReminder data={dat} />
+                    <IndividualReminder
+                      data={dat}
+                      setMonth={setMonth}
+                      setYear={setYear}
+                    />
                   </>
                 );
               })}

@@ -137,68 +137,81 @@ const Tutorial = (props) => {
   //   });
   // }
   return (
-    <div className="w-full h-[100svh] fixed top-0 left-0 bg-[#0000003e] z-50 font-[google] font-normal text-[15px] flex flex-col justify-end p-[20px] items-center">
+    <div
+      className="w-full h-[100svh] fixed top-0 left-0 backdrop-blur-sm bg-[#68777b7a] z-50 font-[google] font-normal text-[15px] flex flex-col justify-end p-[20px] items-center "
+      style={{ zIndex: "100" }}
+    >
       <div className="w-full flex flex-col justify-end items-start h-auto">
-        <div className="w-[calc(100%-40px)] h-[17px] bg-[#ffffff] fixed z-20"></div>
         <div className="w-full h-auto flex justify-start items-center z-30">
-          <div className=" w-[80px] p-[20px] py-[9px] h-[34px] bg-[#ffffff] flex  justify-start items-center rounded-t-[20px]">
-            {part + 1}/
-            {props?.budget == 0 && props?.income == 0 ? (
-              <>{Info.length}</>
-            ) : (
-              <>{Info.length - 1}</>
-            )}
-          </div>
-          <div className="w-[calc(100%-80px)] bg-[#c1b9b4] h-[34px] rounded-bl-[20px] ">
-            {props?.budget == 0 && props?.income == 0 ? (
-              <>
-                {part < 11 ? (
-                  <>
-                    <div
-                      className="h-[29px] aspect-square rounded-full bg-[#ffffff] ml-[5px] mb-[5px] flex justify-center items-center text-[15px] px-[10px] cursor-pointer "
-                      onClick={() => {
-                        if (props?.budget == 0 && props?.income == 0) {
-                          setPart(11);
-                          props?.setSegment(4);
-                        } else {
-                          setPart(10);
-                          props?.setSegment(4);
-                        }
-                      }}
-                    >
-                      {/* <HiOutlinePlus className="rotate-45" /> */}
-                      Skip <BsSkipEndFill className=" text-[18px] ml-[3px]" />
-                    </div>
-                  </>
-                ) : (
-                  <></>
-                )}
-              </>
-            ) : (
-              <>
-                {part < 10 ? (
-                  <>
-                    <div
-                      className="h-[29px] aspect-square rounded-full bg-[#ffffff] ml-[5px] mb-[5px] flex justify-center items-center text-[15px] px-[10px] cursor-pointer "
-                      onClick={() => {
-                        if (props?.budget == 0 && props?.income == 0) {
-                          setPart(11);
-                          props?.setSegment(4);
-                        } else {
-                          setPart(10);
-                          props?.setSegment(4);
-                        }
-                      }}
-                    >
-                      {/* <HiOutlinePlus className="rotate-45" /> */}
-                      Skip <BsSkipEndFill className=" text-[18px] ml-[3px]" />
-                    </div>
-                  </>
-                ) : (
-                  <></>
-                )}
-              </>
-            )}
+          <div className="w-full flex flex-col justify-end items-start h-[40px]">
+            <div className="w-full h-auto flex justify-start items-end z-30">
+              <div className=" w-auto text-[15px] whitespace-nowrap font-[google] font-normal  p-[20px] py-[9px] h-[40px] bg-[#ffffff] flex  justify-start items-center rounded-t-[22px]">
+                <span className="mt-[10px]">
+                  {part + 1}/
+                  {props?.budget == 0 && props?.income == 0 ? (
+                    <>{Info.length}</>
+                  ) : (
+                    <>{Info.length - 1}</>
+                  )}
+                </span>
+              </div>
+              <div className="h-[20px] aspect-square inRound"></div>
+              {/* <div
+                className="h-[35px]  aspect-square rounded-full cursor-pointer bg-[#e4f2ff] ml-[-15px] mb-[5px] flex justify-center items-center text-[20px] "
+                onClick={() => {
+                }}
+              > */}
+              {props?.budget == 0 && props?.income == 0 ? (
+                <>
+                  {part < 11 ? (
+                    <>
+                      <div
+                        className="h-[35px] w-auto px-[13px] text-[15px] rounded-full cursor-pointer bg-[#e4f2ff] ml-[-15px] mb-[5px] flex justify-center items-center  "
+                        onClick={() => {
+                          if (props?.budget == 0 && props?.income == 0) {
+                            setPart(11);
+                            props?.setSegment(4);
+                          } else {
+                            setPart(10);
+                            props?.setSegment(4);
+                          }
+                        }}
+                      >
+                        {" "}
+                        Skip <BsSkipEndFill className=" text-[18px] ml-[3px]" />
+                      </div>
+                    </>
+                  ) : (
+                    <></>
+                  )}
+                </>
+              ) : (
+                <>
+                  {part < 10 ? (
+                    <>
+                      <div
+                        className="h-[35px] w-auto px-[13px] text-[15px] rounded-full cursor-pointer bg-[#e4f2ff] ml-[-15px] mb-[5px] flex justify-center items-center  "
+                        onClick={() => {
+                          if (props?.budget == 0 && props?.income == 0) {
+                            setPart(11);
+                            props?.setSegment(4);
+                          } else {
+                            setPart(10);
+                            props?.setSegment(4);
+                          }
+                        }}
+                      >
+                        {" "}
+                        Skip <BsSkipEndFill className=" text-[18px] ml-[3px]" />
+                      </div>
+                    </>
+                  ) : (
+                    <></>
+                  )}
+                </>
+              )}
+              {/* </div> */}
+            </div>
           </div>
         </div>
       </div>

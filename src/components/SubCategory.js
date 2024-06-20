@@ -27,10 +27,14 @@ import { PiMapPinLineFill, PiSealQuestionFill } from "react-icons/pi";
 import { BiRupee } from "react-icons/bi";
 
 const SubCategory = (props) => {
-  const [expand, setExpand] = useState(false);
+  // const [expand, setExpand] = useState(false);
   const [updateModal, setUpdateModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   const [newBudget, setNewBudget] = useState("");
+  const [sCount, setSCount] = useState("");
+  const [sTotal, setSTotal] = useState("");
+  const [nCount, setNCount] = useState("");
+  const [nTotal, setNTotal] = useState("");
 
   function getCount(category) {
     const currentDate = new Date();
@@ -62,6 +66,10 @@ const SubCategory = (props) => {
     const currentYear = currentDate.getFullYear();
     let totalAmount = 0;
     let count = 0;
+    let splitCount = 0;
+    let splitAmount = 0;
+    let normalCount = 0;
+    let normalAmount = 0;
 
     props?.transactionHistory?.forEach((item) => {
       const [day, month, year] = item.Date.split("/").map(Number);
@@ -72,14 +80,36 @@ const SubCategory = (props) => {
         itemDate.getMonth() === currentMonth &&
         itemDate.getFullYear() === currentYear
       ) {
-        totalAmount += item.Amount;
+        if (item?.TransactionType === "Single") {
+          normalCount++;
+          if (item?.MoneyIsAdded) {
+            normalAmount = normalAmount - parseFloat(item?.Amount);
+          } else {
+            normalAmount = normalAmount + parseFloat(item?.Amount);
+          }
+        } else {
+          splitCount++;
+          if (item?.MoneyIsAdded) {
+            splitAmount = splitAmount - parseFloat(item?.Amount);
+          } else {
+            splitAmount = splitAmount + parseFloat(item?.Amount);
+          }
+        }
+        totalAmount += parseFloat(item.Amount);
         count++;
       }
     });
 
+    // console.log(splitCount, splitAmount, normalCount, normalAmount);
+
+    // setNCount(normalCount);
+    // setNTotal(normalAmount);
+    // setSCount(splitCount);
+    // setSTotal(splitAmount);
+
     // setCountt(count);
 
-    return totalAmount;
+    return [totalAmount, splitCount, splitAmount, normalCount, normalAmount];
   }
 
   function isNumeric(str) {
@@ -90,20 +120,18 @@ const SubCategory = (props) => {
 
   function update() {
     const user = firebase.auth().currentUser;
-    const userRef = db
-      .collection("Expense")
-      .doc(user?.uid)
-      .update({ "CategoryBudget.Entertainment": newBudget });
+    let updateData = {};
+    updateData[`CategoryBudget.${props?.data}`] = newBudget;
+    const userRef = db.collection("Expense").doc(user?.uid).update(updateData);
 
     setNewBudget("");
   }
 
   function deleteData() {
     const user = firebase.auth().currentUser;
-    const userRef = db
-      .collection("Expense")
-      .doc(user?.uid)
-      .update({ "CategoryBudget.Entertainment": "" });
+    let updateData = {};
+    updateData[`CategoryBudget.${props?.data}`] = "newBudget";
+    const userRef = db.collection("Expense").doc(user?.uid).update(updateData);
   }
 
   return (
@@ -111,39 +139,31 @@ const SubCategory = (props) => {
       {updateModal === true ? (
         <>
           <div
-            className="w-full h-[100svh]  flex flex-col justify-end items-center bg-[#0000003e] p-[20px] fixed top-0 left-0  z-50"
+            className="w-full h-[100svh]  flex flex-col justify-end items-center backdrop-blur-sm bg-[#68777b7a] p-[20px] fixed top-0 left-0  z-50"
             style={{ zIndex: 90 }}
           >
             <div className="w-full flex flex-col justify-end items-start h-[40px]">
-              <div className="w-[calc(100%-40px)] h-[20px] bg-[#ffffff] fixed z-30"></div>
-              <div className="w-full h-auto flex justify-start items-center z-40">
-                <div className=" w-auto text-[22px] whitespace-nowrap font-[google] font-normal  p-[20px] py-[9px] h-[40px] bg-[#ffffff] flex  justify-start items-center rounded-t-[22px]">
-                  {/* {part + 1}/
-                  {props?.budget == 0 && props?.income == 0 ? (
-                    <>{Info.length}</>
-                  ) : (
-                    <>{Info.length - 1}</>
-                  )} */}
-                  <span className="mt-[10px]">
-                    Sub-Budget for {props?.data}
-                  </span>
+              <div className="w-full h-auto flex justify-start items-end z-30">
+                <div className=" w-auto text-[22px] whitespace-nowrap font-[google] font-normal   h-[40px] bg-[#ffffff] flex  justify-start items-end rounded-t-[22px] px-[20px]">
+                  <span className="mt-[10px]">Update Sub-Budget</span>
                 </div>
-                <div className="w-[calc(100%-80px)] bg-[#c1c1c1] h-[40px] rounded-bl-[22px] ">
-                  <div
-                    className="h-[35px] aspect-square rounded-full bg-[#c3e2ff] ml-[5px] mb-[5px] flex justify-center items-center text-[20px] "
-                    onClick={() => {
-                      //   setBudgetModal(false);
-                      //   setNewBudget("");
-                      //   setError("");
-                      setUpdateModal(false);
-                    }}
-                  >
-                    <HiOutlinePlus className="rotate-45" />
-                  </div>
+                <div className="h-[20px] aspect-square inRound"></div>
+                <div
+                  className="h-[35px]  aspect-square rounded-full cursor-pointer bg-[#e4f2ff] ml-[-15px] mb-[5px] flex justify-center items-center text-[20px] "
+                  onClick={() => {
+                    setUpdateModal(false);
+                    setNewBudget("");
+                  }}
+                >
+                  <HiOutlinePlus className="rotate-45" />
                 </div>
               </div>
             </div>
             <div className="min-w-[100%]  h-auto bg-[#ffffff] drop-shadow-sm   text-black  rounded-b-3xl rounded-tr-3xl font-[google] font-normal text-[14px] flex flex-col justify-center items-start p-[20px]">
+              <div className="w-full flex justify-start items-center mb-[10px] text-[18px] mt-[-4px]">
+                <span className="mr-[4px] text-[#828282]">Category :</span> "
+                {props?.data}"
+              </div>
               <div className="flex w-full justify-start items-center">
                 <div className="w-[30px] h-full flex justify-center items-center mr-[-30px]">
                   <BiRupee className="text-black" />
@@ -165,6 +185,7 @@ const SubCategory = (props) => {
                   className="h-full mr-[25px] flex justify-center items-center  cursor-pointer "
                   onClick={() => {
                     setUpdateModal(false);
+                    setNewBudget("");
                   }}
                 >
                   Cancel
@@ -172,7 +193,7 @@ const SubCategory = (props) => {
                 {newBudget.length > 0 ? (
                   <>
                     <div
-                      className="h-full  flex justify-center items-center text-[#de8544] cursor-pointer "
+                      className="h-full  flex justify-center items-center text-[#6bb7ff] cursor-pointer "
                       onClick={() => {
                         setUpdateModal(false);
                         update();
@@ -183,7 +204,7 @@ const SubCategory = (props) => {
                   </>
                 ) : (
                   <div
-                    className="h-full  flex justify-center items-center text-[#ffc194] cursor-pointer "
+                    className="h-full  flex justify-center items-center text-[#c2e1ff] cursor-pointer "
                     onClick={() => {}}
                   >
                     Update
@@ -204,24 +225,22 @@ const SubCategory = (props) => {
             style={{ zIndex: 90 }}
           >
             <div className="w-full flex flex-col justify-end items-start h-[40px]">
-              <div className="w-[calc(100%-40px)] h-[20px] bg-[#ffffff] fixed z-30"></div>
-              <div className="w-full h-auto flex justify-start items-center z-40">
+              <div className="w-full h-auto flex justify-start items-end z-30">
                 <div className=" w-auto text-[22px] whitespace-nowrap font-[google] font-normal  p-[20px] py-[9px] h-[40px] bg-[#ffffff] flex  justify-start items-center rounded-t-[22px]">
                   <span className="mt-[10px]">Delete Sub-Budget</span>
                 </div>
-                <div className="w-[calc(100%-80px)] bg-[#c1c1c1] h-[40px] rounded-bl-[22px] ">
-                  <div
-                    className="h-[35px] aspect-square rounded-full bg-[#c3e2ff] ml-[5px] mb-[5px] flex justify-center items-center text-[20px] "
-                    onClick={() => {
-                      setDeleteModal(false);
-                    }}
-                  >
-                    <HiOutlinePlus className="rotate-45" />
-                  </div>
+                <div className="h-[20px] aspect-square inRound"></div>
+                <div
+                  className="h-[35px]  aspect-square rounded-full cursor-pointer bg-[#e4f2ff] ml-[-15px] mb-[5px] flex justify-center items-center text-[20px] "
+                  onClick={() => {
+                    setDeleteModal(false);
+                  }}
+                >
+                  <HiOutlinePlus className="rotate-45" />
                 </div>
               </div>
             </div>
-            <div className="min-w-[100%]  h-auto bg-[#ffffff] drop-shadow-sm   text-black  rounded-b-3xl rounded-tr-3xl font-[google] font-normal text-[14px] flex flex-col justify-center items-start p-[20px]">
+            <div className="min-w-[100%]  h-auto bg-[#ffffff] drop-shadow-sm   text-[#585858]  rounded-b-3xl rounded-tr-3xl font-[google] font-normal text-[14px] flex flex-col justify-center items-start p-[20px]">
               <div className="flex w-full justify-start items-center text-[14px]">
                 Categorical Budget for '{props?.data}' will be removed and you
                 will no lonher be able to track budget for this specific
@@ -239,7 +258,7 @@ const SubCategory = (props) => {
                 </div>
 
                 <div
-                  className="h-full  flex justify-center items-center text-[#de8544] cursor-pointer "
+                  className="h-full  flex justify-center items-center text-[#6bb7ff] cursor-pointer "
                   onClick={() => {
                     setDeleteModal(false);
                     deleteData();
@@ -256,25 +275,114 @@ const SubCategory = (props) => {
       )}
       <div
         className={
-          "w-full  bg-[#e4f2ff] rounded-3xl p-[20px] flex flex-col justify-start items-start mb-[5px] cursor-pointer" +
-          (expand ? " min-h-[130px]" : " min-h-[80px]")
+          "w-full  bg-[#e4f2ff] rounded-3xl p-[20px] flex flex-col justify-start items-start mb-[5px]  overflow-hidden" +
+          (props?.expand == props?.data ? " min-h-[180px]" : " min-h-[80px]") +
+          (props?.isNeeded === false
+            ? " max-h-[80px] cursor-default"
+            : " cursor-pointer")
         }
         onClick={() => {
-          setExpand(!expand);
+          if (props?.isNeeded === false) {
+          } else {
+            if (props?.data === props?.expand) {
+              props?.setExpand("");
+            } else {
+              props?.setExpand(props?.data);
+            }
+          }
         }}
         style={{ transition: ".4s" }}
       >
         <div className="w-full h-[40px] flex justify-start items-center ">
+          {props?.isNeeded === false ? (
+            <div className=" h-[40px] mr-[10px] flex text-[28px] justify-center items-center ">
+              <div className="text-[25px] text-[#23a8d2]">
+                {/* <FaShopify /> */}
+                {props?.data === "Food & Drinks" ? (
+                  <IoFastFood />
+                ) : props?.data === "Shopping" ? (
+                  <FaShopify />
+                ) : props?.data === "Grocery" ? (
+                  <HiShoppingBag />
+                ) : props?.data === "Medical" ? (
+                  <FaTruckMedical />
+                ) : props?.data === "Travel" ? (
+                  // <MdOutlineTravelExplore />
+                  // <PiMapPinLineFill />
+                  // <BiSolidPlaneTakeOff />
+                  <MdOutlineAirplanemodeActive className="rotate-45" />
+                ) : props?.data === "Entertainment" ? (
+                  <GiPartyPopper />
+                ) : props?.data === "Electricity Bill" ? (
+                  <MdElectricBolt />
+                ) : props?.data === "Petrol / Diesel" ? (
+                  <BsFillFuelPumpFill />
+                ) : props?.data === "Taxi Fare" ? (
+                  <BsTaxiFrontFill />
+                ) : props?.data === "Car Maintanance" ? (
+                  <GiAutoRepair />
+                ) : props?.data === "Education" ? (
+                  <MdSchool />
+                ) : props?.data === "Pet Care" ? (
+                  <MdOutlinePets />
+                ) : (
+                  <>
+                    <PiSealQuestionFill />
+                  </>
+                )}
+              </div>
+            </div>
+          ) : (
+            <></>
+          )}
           <div className="w-[calc(100%-40px)] h-full flex  justify-start items-start">
-            <div className="w-[30px] h-[30px] mt-[0px] mr-[15px] text-[14px] rounded-full bg-[#c3e2ff] text-[#000000] flex justify-center items-center">
+            <div
+              className={
+                "w-[30px] h-[30px] mt-[0px] mr-[15px] text-[14px] rounded-full bg-[#c3e2ff] text-[#000000]  justify-center items-center" +
+                (props?.isNeeded === false ? " hidden" : " flex")
+              }
+            >
               x{getCount(props?.data)}
             </div>
-            <span className="w-auto h-full  flex flex-col justify-start items-start">
+            <span
+              className={
+                "w-auto h-full   flex-col  items-start" +
+                (props?.isNeeded === false
+                  ? " flex justify-center mt-[0px] text-[15px]"
+                  : " flex justify-start mt-[-2px]")
+              }
+            >
               <span>{props?.data}</span>{" "}
-              <div className="w-auto text-[14px] flex justify-start items-center text-[#828282]">
+              {props?.isNeeded === false ? (
+                <>
+                  <div className="flex w-[calc(80%)] justify-start items-center h-[30px] mt-[5px] ">
+                    <div className="w-[30px] h-full flex justify-center items-center mr-[-30px]">
+                      <BiRupee className="text-black" />
+                    </div>
+                    <input
+                      className="outline-none w-full pl-[26px] rounded-md h-[30px] bg-transparent border border-[#51d6ff] px-[10px] text-black font-[google] font-normal text-[14px]"
+                      placeholder="Enter Budget"
+                      value={newBudget}
+                      onChange={(e) => {
+                        if (isNumeric(e.target.value) === true) {
+                          setNewBudget(e.target.value);
+                        }
+                      }}
+                    ></input>
+                  </div>
+                </>
+              ) : (
+                <></>
+              )}
+              <div
+                className={
+                  "w-auto text-[14px]  justify-start items-center text-[#929292]" +
+                  (props?.isNeeded === false ? " hidden" : " flex")
+                }
+              >
                 {/* <span> */}
                 {parseFloat(
-                  getTotalAmountForCurrentMonthAndCategory(props?.data)
+                  getTotalAmountForCurrentMonthAndCategory(props?.data)[0]
                 ).toFixed(2)}{" "}
                 <span className="ml-[3px] ">
                   / {Number(props?.subBudget[props?.data])}
@@ -282,7 +390,12 @@ const SubCategory = (props) => {
               </div>
             </span>
           </div>
-          <div className="w-[40px] h-[40px] mr-[-40px] flex justify-center items-center ">
+          <div
+            className={
+              "w-[40px] h-[40px] mr-[-40px] flex justify-center items-center " +
+              (props?.isNeeded === false ? " hidden" : " flex")
+            }
+          >
             <div className="text-[20px] text-[#23a8d2]">
               {/* <FaShopify /> */}
               {props?.data === "Food & Drinks" ? (
@@ -319,10 +432,37 @@ const SubCategory = (props) => {
               )}
             </div>
           </div>
-          <div className="w-[40px] h-[40px] flex justify-center items-center ">
+          {props?.isNeeded == false ? (
+            <>
+              <div
+                className={
+                  "h-full w-auto flex justify-end items-center" +
+                  (newBudget.length > 0 ? " opacity-100" : " opacity-0")
+                }
+              >
+                <span
+                  className="ml-[10px] w-auto px-[15px] h-[35px] font-[google] whitespace-nowrap font-normal text-[14px] rounded-[14px] bg-[#c3e2ff] hover:bg-[#b5dbff] flex justify-center items-center cursor-pointer"
+                  onClick={() => {
+                    update();
+                    // setUpdateModal(!updateModal);
+                  }}
+                >
+                  Add
+                </span>
+              </div>
+            </>
+          ) : (
+            <></>
+          )}
+          <div
+            className={
+              "w-[40px] h-[40px] justify-center items-center " +
+              (props?.isNeeded === false ? " hidden" : " flex")
+            }
+          >
             <CircularProgressbar
               value={parseFloat(
-                getTotalAmountForCurrentMonthAndCategory(props?.data)
+                getTotalAmountForCurrentMonthAndCategory(props?.data)[0]
               )}
               maxValue={parseFloat(props?.subBudget[props?.data])}
               strokeWidth={7}
@@ -330,8 +470,10 @@ const SubCategory = (props) => {
                 pathTransitionDuration: 2,
                 transition: "stroke-dashoffset 0.5s ease 0s",
                 pathColor:
-                  getTotalAmountForCurrentMonthAndCategory(props?.data) /
-                    props?.subBudget[props?.data] >=
+                  parseFloat(
+                    getTotalAmountForCurrentMonthAndCategory(props?.data)[0]
+                  ).toFixed(2) /
+                    Number(props?.subBudget[props?.data]) >=
                   75
                     ? "#e61d0f"
                     : "#00bb00",
@@ -342,13 +484,60 @@ const SubCategory = (props) => {
             />
           </div>
         </div>
-        {expand ? (
+        {props?.expand == props?.data ? (
+          <>
+            <div
+              className="w-full h-[60px] pl-[45px] flex flex-col justify-center items-start text-[14px] pt-[7px] text-[#3d3d3d] opacity-100 "
+              style={{ transition: ".2s", transitionDelay: ".3s" }}
+            >
+              <span className="w-full flex justify-start items-center whitespace-nowrap">
+                <div className="w-[20px] aspect-square rounded-full text-[12px] mr-[6px] bg-[#c3e2ff] text-[#000000] flex justify-center items-center">
+                  x{getTotalAmountForCurrentMonthAndCategory(props?.data)[1]}
+                </div>
+                Single Transactions :{" "}
+                {getTotalAmountForCurrentMonthAndCategory(
+                  props?.data
+                )[2].toFixed(2)}{" "}
+              </span>
+              <span className="w-full flex justify-start items-center whitespace-nowrap">
+                <div className="w-[20px] aspect-square rounded-full text-[12px] mr-[6px] bg-[#c3e2ff] text-[#000000] flex justify-center items-center">
+                  x{getTotalAmountForCurrentMonthAndCategory(props?.data)[3]}
+                </div>
+                Split Transactions :{" "}
+                {getTotalAmountForCurrentMonthAndCategory(
+                  props?.data
+                )[4].toFixed(2)}
+              </span>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="w-full h-[60px] pl-[45px] flex flex-col justify-center items-start text-[14px] pt-[7px] text-[#3d3d3d]  opacity-0 overflow-hidden">
+              <span className="w-full flex justify-start items-center">
+                <div className="w-[20px] aspect-square rounded-full text-[12px] mr-[6px] bg-[#c3e2ff] text-[#000000] flex justify-center items-center">
+                  x{getTotalAmountForCurrentMonthAndCategory(props?.data)[1]}
+                </div>
+                Single Transactions :{" "}
+                {getTotalAmountForCurrentMonthAndCategory(props?.data)[2]}{" "}
+              </span>
+              <span className="w-full flex justify-start items-center">
+                <div className="w-[20px] aspect-square rounded-full text-[12px] mr-[6px] bg-[#c3e2ff] text-[#000000] flex justify-center items-center">
+                  x{getTotalAmountForCurrentMonthAndCategory(props?.data)[3]}
+                </div>
+                Split Transactions :{" "}
+                {getTotalAmountForCurrentMonthAndCategory(props?.data)[4]}
+              </span>
+            </div>
+          </>
+        )}
+
+        {props?.expand == props?.data ? (
           <div
             className="w-full h-[50px] flex justify-end items-end opacity-100 "
             style={{ transition: ".2s", transitionDelay: ".3s" }}
           >
             <span
-              className="w-auto px-[15px] h-[35px] font-[google] font-normal text-[14px] rounded-[14px] bg-[#c3e2ff] flex justify-center items-center"
+              className="w-auto px-[15px] h-[35px] font-[google] font-normal text-[14px] rounded-[14px] bg-[#c3e2ff] hover:bg-[#b5dbff] flex justify-center items-center"
               onClick={() => {
                 setDeleteModal(true);
               }}
@@ -356,7 +545,7 @@ const SubCategory = (props) => {
               Delete
             </span>
             <span
-              className="ml-[10px] w-auto px-[15px] h-[35px] font-[google] font-normal text-[14px] rounded-[14px] bg-[#c3e2ff] flex justify-center items-center"
+              className="ml-[10px] w-auto px-[15px] h-[35px] font-[google] font-normal text-[14px] rounded-[14px] bg-[#c3e2ff] hover:bg-[#b5dbff] flex justify-center items-center"
               onClick={() => {
                 setUpdateModal(!updateModal);
               }}

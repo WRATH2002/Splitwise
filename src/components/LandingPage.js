@@ -21,7 +21,7 @@ const LandingPage = () => {
   return (
     <>
       {changePage ? (
-        <div className="w-full h-full bg-[#fff5ee] flex flex-col justify-between items-center p-[30px] py-[30px]">
+        <div className="w-full h-full bg-[#ffffff] flex flex-col justify-between items-center p-[30px] py-[30px]">
           {mode === 1 ? (
             <Login change={setMode} />
           ) : (
@@ -29,7 +29,7 @@ const LandingPage = () => {
           )}
         </div>
       ) : (
-        <div className="w-full h-full bg-[#fff5ee] flex flex-col justify-between items-start p-[30px] py-[70px] text-black">
+        <div className="w-full h-full bg-[#ffffff] flex flex-col justify-between items-start p-[30px] py-[70px] text-black">
           {/* <img src={bg} className="w-full "></img> */}
           {/* SPLITWISE */}
 
@@ -54,20 +54,20 @@ const LandingPage = () => {
             <div className="w-[90%]">
               {subPageNo === 1 ? (
                 <>
-                  <span className="font-[google] font-normal text-[30px] text-[#de8544] leading-[30px]">
+                  <span className="font-[google] font-normal text-[30px]  leading-[30px]  bg-gradient-to-t to-[#00cbff] from-[#437bff] bg-clip-text text-transparent">
                     <span className="text-black">welcome</span> to your world of
                     financial growth
                   </span>
                 </>
               ) : subPageNo === 2 ? (
                 <>
-                  <span className="font-[google] font-normal text-[30px] text-[#de8544] leading-[30px]">
+                  <span className="font-[google] font-normal text-[30px]  leading-[30px]  bg-gradient-to-t to-[#00cbff] from-[#437bff] bg-clip-text text-transparent">
                     <span className="text-black">easy</span> money management
                   </span>
                 </>
               ) : (
                 <>
-                  <span className="font-[google] font-normal text-[30px] text-[#de8544] leading-[30px] flex flex-col">
+                  <span className="font-[google] font-normal text-[30px]  leading-[30px] flex flex-col  bg-gradient-to-t to-[#00cbff] from-[#437bff] bg-clip-text text-transparent">
                     <span className="text-black blackspace-nowrap">
                       set reminders
                     </span>
@@ -81,15 +81,15 @@ const LandingPage = () => {
               <div className="flex justify-start items-center ">
                 {subPageNo === 1 ? (
                   <>
-                    <div className="font-[google] font-normal text-[30px] bg-[#de8544] w-[35px] h-[10px] rounded-full "></div>
+                    <div className="font-[google] font-normal text-[30px] bg-[#46a6ff] w-[35px] h-[10px] rounded-full "></div>
                     <div
-                      className="font-[google] font-normal text-[30px] border-[1.5px] border-[#de8544] w-[10px] h-[10px] rounded-full ml-[8px]"
+                      className="font-[google] font-normal text-[30px] border-[1.5px] border-[#46a6ff] w-[10px] h-[10px] rounded-full ml-[8px]"
                       onClick={() => {
                         setSubPageNo(2);
                       }}
                     ></div>
                     <div
-                      className="font-[google] font-normal text-[30px] border-[1.5px] border-[#de8544] w-[10px] h-[10px] rounded-full ml-[8px]"
+                      className="font-[google] font-normal text-[30px] border-[1.5px] border-[#46a6ff] w-[10px] h-[10px] rounded-full ml-[8px]"
                       onClick={() => {
                         setSubPageNo(3);
                       }}
@@ -98,14 +98,14 @@ const LandingPage = () => {
                 ) : subPageNo === 2 ? (
                   <>
                     <div
-                      className="font-[google] font-normal text-[30px] border-[1.5px] border-[#de8544] w-[10px] h-[10px] rounded-full "
+                      className="font-[google] font-normal text-[30px] border-[1.5px] border-[#46a6ff] w-[10px] h-[10px] rounded-full "
                       onClick={() => {
                         setSubPageNo(1);
                       }}
                     ></div>
-                    <div className="font-[google] font-normal text-[30px] bg-[#de8544] w-[35px] h-[10px] rounded-full ml-[8px]"></div>
+                    <div className="font-[google] font-normal text-[30px] bg-[#46a6ff] w-[35px] h-[10px] rounded-full ml-[8px]"></div>
                     <div
-                      className="font-[google] font-normal text-[30px] border-[1.5px] border-[#de8544] w-[10px] h-[10px] rounded-full ml-[8px]"
+                      className="font-[google] font-normal text-[30px] border-[1.5px] border-[#46a6ff] w-[10px] h-[10px] rounded-full ml-[8px]"
                       onClick={() => {
                         setSubPageNo(3);
                       }}
@@ -114,25 +114,25 @@ const LandingPage = () => {
                 ) : (
                   <>
                     <div
-                      className="font-[google] font-normal text-[30px] border-[1.5px] border-[#de8544] w-[10px] h-[10px] rounded-full "
+                      className="font-[google] font-normal text-[30px] border-[1.5px] border-[#46a6ff] w-[10px] h-[10px] rounded-full "
                       onClick={() => {
                         setSubPageNo(1);
                       }}
                     ></div>
                     <div
-                      className="font-[google] font-normal text-[30px] border-[1.5px] border-[#de8544] w-[10px] h-[10px] rounded-full ml-[8px]"
+                      className="font-[google] font-normal text-[30px] border-[1.5px] border-[#46a6ff] w-[10px] h-[10px] rounded-full ml-[8px]"
                       onClick={() => {
                         setSubPageNo(2);
                       }}
                     ></div>
-                    <div className="font-[google] font-normal text-[30px] bg-[#de8544] w-[35px] h-[10px] rounded-full ml-[8px]"></div>
+                    <div className="font-[google] font-normal text-[30px] bg-[#46a6ff] w-[35px] h-[10px] rounded-full ml-[8px]"></div>
                   </>
                 )}
               </div>
 
               {subPageNo === 3 ? (
                 <div
-                  className="w-[35px] h-[35px] rounded-full bg-[#de8544] flex justify-center items-center  text-[15px] text-[white] font-[google] font-normal  "
+                  className="w-[35px] h-[35px] rounded-full bg-[#46a6ff] flex justify-center items-center  text-[15px] text-[white] font-[google] font-normal  "
                   onClick={() => {
                     // if (subPageNo < 3) {
                     setChangePage(true);
@@ -143,7 +143,7 @@ const LandingPage = () => {
                 </div>
               ) : (
                 <div
-                  className="w-[35px] h-[35px] rounded-full bg-[#de8544] flex justify-center items-center  text-[18px] text-[black] font-[google] font-normal  "
+                  className="w-[35px] h-[35px] rounded-full bg-[#46a6ff] flex justify-center items-center  text-[18px] text-[black] font-[google] font-normal  "
                   onClick={() => {
                     if (subPageNo < 3) {
                       setSubPageNo(subPageNo + 1);

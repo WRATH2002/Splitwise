@@ -7,6 +7,7 @@ import { db } from "../firebase";
 import firebase from "../firebase";
 import { arrayRemove, arrayUnion, onSnapshot } from "firebase/firestore";
 import OutsideClickHandler from "react-outside-click-handler";
+import { HiOutlinePlus } from "react-icons/hi2";
 
 const monthNames = [
   "January",
@@ -155,108 +156,126 @@ const IndividualReminder = (props) => {
   return (
     <>
       {aprroveModal ? (
-        <div
-          className="w-full h-[100svh]  flex justify-center items-end bg-[#0000003e] p-[20px] fixed top-0 left-0  z-40"
-          // onClick={() => {
-          //   // updateBudget();
-          //   setBudgetModal(false);
-          // }}
-        >
-          <OutsideClickHandler
-            onOutsideClick={() => {
-              setApproveModal(false);
-            }}
+        <>
+          <div
+            className="w-full h-[100svh]  flex flex-col justify-end items-center backdrop-blur-sm bg-[#68777b7a] p-[20px] fixed top-0 left-0  z-40"
+            style={{ zIndex: 70 }}
+            // onClick={() => {
+            //   setNotificationModal(false);
+            // }}
           >
-            <div className="min-w-[100%] z-50 h-auto bg-[#fff5ee] drop-shadow-sm   text-black  rounded-[20px] font-[google] font-normal text-[14px] flex flex-col justify-center items-start p-[30px]">
-              <span className="w-full text-[22px] text-black font-[google] font-normal flex justify-start items-center ">
-                Confirm{" "}
-                <span className="text-[#de8544] ml-[10px]">Transaction</span>
-              </span>
-
-              <span className="w-full text-[14px] text-[#000000] font-[google] font-normal flex justify-center items-start whitespace-pre-wrap mt-[5px]  ">
-                Have you done this transaction already. If you dismiss this
-                reminder, you will not be notified later. Do you really want to
-                dismiss this reminder ?
-              </span>
-
-              <span className="w-full text-[14px] text-[#434343b5] font-[google] font-normal flex justify-start items-center mt-[10px]">
-                <span className="text-[22px] mr-[6px]">◍</span>{" "}
-                <span className="mr-[5px] text-[#000000]">Label :</span>{" "}
-                {props?.data?.Lable}
-              </span>
-              <span className="w-full text-[14px] text-[#434343b5] font-[google]  mt-[-9px]  font-normal flex justify-start items-center ">
-                <span className="text-[22px] mr-[6px]">◍</span>{" "}
-                <span className="mr-[5px] text-[#000000]">Amount :</span>{" "}
-                <BiRupee /> {formatAmountWithCommas(props?.data?.Amount)}
-              </span>
-
-              <span
-                className="w-full text-[14px] text-[#000000] font-[google] font-normal flex justify-start items-center whitespace-pre-wrap mt-[5px]  cursor-pointer"
+            <OutsideClickHandler
+              onOutsideClick={() => {
+                setApproveModal(false);
+              }}
+            >
+              <div className="w-full flex flex-col justify-end items-start h-[40px]">
+                <div className="w-full h-auto flex justify-start items-end z-30">
+                  <div className=" w-auto text-[22px] whitespace-nowrap font-[google] font-normal   h-[40px] bg-[#ffffff] flex  justify-start items-end rounded-t-[22px] px-[20px]">
+                    <span className="mt-[10px]">Dismiss Reminder</span>
+                  </div>
+                  <div className="h-[20px] aspect-square inRound"></div>
+                  <div
+                    className="h-[35px]  aspect-square rounded-full cursor-pointer bg-[#e4f2ff] ml-[-15px] mb-[5px] flex justify-center items-center text-[20px] "
+                    onClick={() => {
+                      setApproveModal(false);
+                    }}
+                  >
+                    <HiOutlinePlus className="rotate-45" />
+                  </div>
+                </div>
+              </div>
+              <div
+                className="w-full z-50 h-auto bg-[#ffffff] drop-shadow-sm   text-black  rounded-b-3xl rounded-tr-3xl font-[google] font-normal text-[14px] flex flex-col justify-center items-start p-[20px]"
+                style={{ zIndex: 100 }}
                 onClick={() => {
-                  setInclude(!include);
-                  // setNewIncome("");
-                  // setError("");
+                  // setNotificationModal(true);
                 }}
               >
-                <div
-                  className={
-                    "w-[18px] h-[18px] rounded-md border-[1.5px] border-[#ffa43c] mr-[6px]  flex justify-center items-center" +
-                    (include ? " bg-[#ffa43c]" : " bg-transparent")
-                  }
-                  // onClick={() => {
-                  //   setInclude(!include);
-                  //   // setNewIncome("");
-                  //   // setError("");
-                  // }}
-                >
-                  {" "}
-                  <HiCheck className="text-[#fff5ee]" />
-                </div>
-                <span>Include this transaction in Budget</span>
-              </span>
+                {/* <span className="w-full text-[22px] text-black font-[google] font-normal flex justify-start items-center ">
+                  Confirm{" "}
+                  <span className="text-[#000000] ml-[5px]">Transaction</span>
+                </span> */}
 
-              <div className="w-full flex justify-end items-end font-[google] font-normal text-[15px] text-black h-[20px] mt-[20px]">
-                <div
-                  className="h-full mr-[25px] flex justify-center items-center cursor-pointer  "
+                <span className="w-full text-[14px] text-[#434343b5] font-[google] font-normal flex justify-center items-start whitespace-pre-wrap  ">
+                  Have you done this transaction already. If you dismiss this
+                  reminder, you will not be notified later. Do you really want
+                  to dismiss this reminder ?
+                </span>
+
+                <span className="w-full text-[14px] text-[#000000] font-[google] font-normal flex justify-start items-center mt-[10px]">
+                  {/* <span className="text-[22px] mr-[6px]">◍</span>{" "} */}
+                  <span className="mr-[5px] text-[#000000]">Label :</span>{" "}
+                  {props?.data?.Lable}
+                </span>
+                <span className="w-full text-[14px] text-[#000000] font-[google] mt-[0px] font-normal flex justify-start items-center ">
+                  {/* <span className="text-[22px] mr-[6px]">◍</span>{" "} */}
+                  <span className="mr-[5px] text-[#000000]">Amount :</span>{" "}
+                  <BiRupee /> {formatAmountWithCommas(props?.data?.Amount)}
+                </span>
+
+                <span
+                  className="w-full text-[14px] text-[#000000] font-[google] font-normal flex justify-start items-center whitespace-pre-wrap   cursor-pointer mt-[10px]"
                   onClick={() => {
-                    setApproveModal(false);
-                    setInclude(false);
+                    setInclude(!include);
                     // setNewIncome("");
                     // setError("");
                   }}
                 >
-                  Cancel
-                </div>
-                <div
-                  className="h-full  flex justify-center items-center text-[#de8544] cursor-pointer "
-                  onClick={() => {
-                    // updateIncome();
-                    deleteReminder();
-                    setApproveModal(false);
-                  }}
-                >
-                  Confirm
+                  <div
+                    className={
+                      "w-[18px] h-[18px] rounded-md border-[1.5px] border-[#6bb7ff] mr-[6px]  flex justify-center items-center" +
+                      (include ? " bg-[#6bb7ff]" : " bg-transparent")
+                    }
+                    // onClick={() => {
+                    //   setInclude(!include);
+                    //   // setNewIncome("");
+                    //   // setError("");
+                    // }}
+                  >
+                    {" "}
+                    <HiCheck className="text-[#fff5ee]" />
+                  </div>
+                  <span>Include this transaction in Budget</span>
+                </span>
+
+                <div className="w-full flex justify-end items-end font-[google] font-normal text-[15px] text-black h-[20px] mt-[20px]">
+                  <div
+                    className="h-full mr-[25px] flex justify-center items-center cursor-pointer  "
+                    onClick={() => {
+                      setApproveModal(false);
+                      setInclude(false);
+                      // setNewIncome("");
+                      // setError("");
+                    }}
+                  >
+                    Cancel
+                  </div>
+                  <div
+                    className="h-full  flex justify-center items-center text-[#3aa0ff] cursor-pointer "
+                    onClick={() => {
+                      // updateIncome();
+                      deleteReminder();
+                      setApproveModal(false);
+                    }}
+                  >
+                    Confirm
+                  </div>
                 </div>
               </div>
-            </div>
-          </OutsideClickHandler>
-          {/* <div
-          key={props?.index}
-          className="w-full h-[100svh] fixed z-50 bg-[#68686871] top-0 left-0 flex justify-center items-center backdrop-blur-md"
-        >
-          <div className="w-[320px] h-auto p-[30px] py-[23px] bg-[#fff5ee] rounded-3xl flex flex-col justify-center items-start"> */}
-
-          {/* </div> */}
-        </div>
+            </OutsideClickHandler>
+          </div>
+        </>
       ) : (
         <></>
       )}
+
       <div
         className={
-          "w-full min-h-[80px] my-[5px]  rounded-2xl flex font-[google] justify-center items-center font-normal border-[1px] border-[#ffe6d7]" +
+          "w-full min-h-[80px] mb-[5px]  rounded-2xl flex font-[google] justify-center items-center font-normal " +
           (getRemainingTime(props?.data?.Date).includes("due")
-            ? " bg-[#ffa43c]"
-            : " bg-[#ffddc5]")
+            ? " bg-[#6bb7ff]"
+            : " bg-[#c3e2ff]")
         }
       >
         <div className="w-[50px] h-full flex flex-col justify-center items-center">
@@ -271,8 +290,8 @@ const IndividualReminder = (props) => {
           className={
             "w-[calc(100%-150px)] h-[80px] flex flex-col justify-center items-start px-[10px] " +
             (getRemainingTime(props?.data?.Date).includes("due")
-              ? " bg-[#ffd29f] text-[#4a4a4a]"
-              : " bg-[#ffeadc] text-[#6a6a6a]")
+              ? " bg-[#aad6ff] text-[#4a4a4a]"
+              : " bg-[#e4f2ff] text-[#6a6a6a]")
           }
         >
           <div className="text-[14px] leading-[19px]  line-clamp-2 w-full overflow-hidden text-ellipsis">
@@ -287,8 +306,8 @@ const IndividualReminder = (props) => {
           className={
             "w-[100px] min-h-[80px] flex flex-col justify-center items-end rounded-r-2xl pr-[15px]" +
             (getRemainingTime(props?.data?.Date).includes("due")
-              ? " bg-[#ffd29f] text-[#95241d]"
-              : " bg-[#ffeadc] text-[#000000]")
+              ? " bg-[#aad6ff] text-[#95241d]"
+              : " bg-[#e4f2ff] text-[#000000]")
           }
         >
           <div className="text-[13px] ">
@@ -296,10 +315,10 @@ const IndividualReminder = (props) => {
           </div>
           <div
             className={
-              "text-white w-[30px] h-[30px] mt-[5px] rounded-full text-[18px] flex justify-center items-center cursor-pointer" +
+              "text-[black] w-[30px] h-[30px] mt-[5px] rounded-full text-[18px] flex justify-center items-center cursor-pointer" +
               (getRemainingTime(props?.data?.Date).includes("due")
-                ? " bg-[#f88239] "
-                : " bg-[#de8544] ")
+                ? " bg-[#6bb7ff] "
+                : " bg-[#c3e2ff] ")
             }
             onClick={() => {
               setApproveModal(true);

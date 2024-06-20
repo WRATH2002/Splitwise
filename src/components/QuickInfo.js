@@ -214,7 +214,7 @@ const QuickInfo = (props) => {
       {budgetModal === true ? (
         <>
           <div
-            className="w-full h-[100svh]  flex flex-col justify-end items-center bg-[#0000003e] p-[20px] fixed top-0 left-0  z-40"
+            className="w-full h-[100svh]  flex flex-col justify-end items-center backdrop-blur-sm bg-[#68777b7a] p-[20px] fixed top-0 left-0  z-40"
             // onClick={() => {
             //   // updateBudget();
             //   setBudgetModal(false);
@@ -226,32 +226,24 @@ const QuickInfo = (props) => {
               }}
             > */}
             <div className="w-full flex flex-col justify-end items-start h-[40px]">
-              <div className="w-[calc(100%-40px)] h-[20px] bg-[#FFF5EE] fixed z-20"></div>
-              <div className="w-full h-auto flex justify-start items-center z-30">
-                <div className=" w-auto text-[22px] whitespace-nowrap font-[google] font-normal  p-[20px] py-[9px] h-[40px] bg-[#FFF5EE] flex  justify-start items-center rounded-t-[22px]">
-                  {/* {part + 1}/
-                  {props?.budget == 0 && props?.income == 0 ? (
-                    <>{Info.length}</>
-                  ) : (
-                    <>{Info.length - 1}</>
-                  )} */}
+              <div className="w-full h-auto flex justify-start items-end z-30">
+                <div className=" w-auto text-[22px] whitespace-nowrap font-[google] font-normal  p-[20px] py-[9px] h-[40px] bg-[#ffffff] flex  justify-start items-center rounded-t-[22px]">
                   <span className="mt-[10px]">Set New Budget</span>
                 </div>
-                <div className="w-[calc(100%-80px)] bg-[#c1b9b4] h-[40px] rounded-bl-[22px] ">
-                  <div
-                    className="h-[35px] aspect-square rounded-full bg-[#fff5ee] ml-[5px] mb-[5px] flex justify-center items-center text-[20px] "
-                    onClick={() => {
-                      setBudgetModal(false);
-                      setNewBudget("");
-                      setError("");
-                    }}
-                  >
-                    <HiOutlinePlus className="rotate-45" />
-                  </div>
+                <div className="h-[20px] aspect-square inRound"></div>
+                <div
+                  className="h-[35px]  aspect-square rounded-full cursor-pointer bg-[#e4f2ff] ml-[-15px] mb-[5px] flex justify-center items-center text-[20px] "
+                  onClick={() => {
+                    setBudgetModal(false);
+                    setNewBudget("");
+                    setError("");
+                  }}
+                >
+                  <HiOutlinePlus className="rotate-45" />
                 </div>
               </div>
             </div>
-            <div className="min-w-[100%] z-50 h-auto bg-[#fff5ee] drop-shadow-sm   text-black  rounded-b-3xl rounded-tr-3xl font-[google] font-normal text-[14px] flex flex-col justify-center items-start p-[20px]">
+            <div className="min-w-[100%] z-50 h-auto bg-[#ffffff] drop-shadow-sm   text-black  rounded-b-3xl rounded-tr-3xl font-[google] font-normal text-[14px] flex flex-col justify-center items-start p-[20px]">
               {/* <span className="w-full text-[22px] text-black font-[google] font-normal flex justify-start items-center ">
                 Set New Budget
               </span> */}
@@ -260,7 +252,7 @@ const QuickInfo = (props) => {
                   <BiRupee className="text-black" />
                 </div>
                 <input
-                  className="outline-none w-full pl-[26px] rounded-md h-[40px] bg-transparent border border-[#ffd8be] px-[10px] text-black font-[google] font-normal text-[14px]"
+                  className="outline-none w-full pl-[26px] rounded-md h-[40px] bg-transparent border border-[#acebff] px-[10px] text-black font-[google] font-normal text-[14px]"
                   placeholder="Enter Budget"
                   value={newBudget}
                   onChange={(e) => {
@@ -273,7 +265,7 @@ const QuickInfo = (props) => {
               {error.length > 0 ? (
                 <>
                   <div
-                    className="flex w-full justify-between items-center mt-[6px] text-[#c43b31] text-[13px]"
+                    className="flex w-full justify-between items-center mt-[6px] text-[#e61d0f] text-[13px]"
                     // style={{ transition: ".3s" }}
                   >
                     * {error}
@@ -282,7 +274,7 @@ const QuickInfo = (props) => {
               ) : (
                 <></>
               )}
-              <span
+              {/* <span
                 className={
                   "text-[15px] mt-[10px] mb-[7px] flex justify-start items-center" +
                   (parseFloat(newBudget) >= 0
@@ -319,8 +311,8 @@ const QuickInfo = (props) => {
                 ) : (
                   <></>
                 )}
-              </span>
-              <div
+              </span> */}
+              {/* <div
                 className={
                   "w-full flex flex-col justify-start items-start  overflow-hidden" +
                   (categoryBudgetIndicator && newBudget.length != 0
@@ -456,13 +448,13 @@ const QuickInfo = (props) => {
                     }}
                   ></input>
                 </div>
-              </div>
+              </div> */}
 
               {subError.length > 0 ? (
                 <>
                   {categoryBudgetIndicator && newBudget.length != 0 ? (
                     <>
-                      <div className="flex w-full justify-between items-center mt-[6px] text-[#c43b31] text-[13px]">
+                      <div className="flex w-full justify-between items-center mt-[6px] text-[#e61d0f] text-[13px]">
                         * {subError}
                       </div>
                     </>
@@ -476,7 +468,7 @@ const QuickInfo = (props) => {
               <div
                 className={
                   "w-full flex justify-end items-end font-[google] font-normal text-[15px] text-black h-[20px] " +
-                  (parseFloat(newBudget) >= 0 ? " mt-[20px]" : " mt-[0px]")
+                  (parseFloat(newBudget) >= 0 ? " mt-[20px]" : " mt-[20px]")
                 }
               >
                 <div
@@ -493,7 +485,7 @@ const QuickInfo = (props) => {
                 parseInt(newBudget) <= parseInt(income) ? (
                   <>
                     <div
-                      className="h-full  flex justify-center items-center text-[#de8544] cursor-pointer "
+                      className="h-full  flex justify-center items-center text-[#6bb7ff] cursor-pointer "
                       onClick={() => {
                         updateBudget();
                         setBudgetModal(false);
@@ -504,7 +496,7 @@ const QuickInfo = (props) => {
                   </>
                 ) : (
                   <div
-                    className="h-full  flex justify-center items-center text-[#ffc194] cursor-pointer "
+                    className="h-full  flex justify-center items-center text-[#c2e1ff] cursor-pointer "
                     onClick={() => {
                       // updateBudget();
                       // setBudgetModal(false);
@@ -534,7 +526,7 @@ const QuickInfo = (props) => {
       {incomeModal === true ? (
         <>
           <div
-            className="w-full h-[100svh]  flex flex-col justify-end items-center bg-[#0000003e] p-[20px] fixed top-0 left-0  z-40"
+            className="w-full h-[100svh]  flex flex-col justify-end items-center backdrop-blur-sm bg-[#68777b7a] p-[20px] fixed top-0 left-0  z-40"
             style={{ zIndex: 70 }}
           >
             {/* <OutsideClickHandler
@@ -542,21 +534,15 @@ const QuickInfo = (props) => {
                 setIncomeModal(false);
               }}
             > */}
-            <div className="w-full flex flex-col justify-end items-start h-[40px]">
-              <div className="w-[calc(100%-40px)] h-[20px] bg-[#FFF5EE] fixed z-20"></div>
-              <div className="w-full h-auto flex justify-start items-center z-30">
-                <div className=" w-auto text-[22px] whitespace-nowrap font-[google] font-normal  p-[20px] py-[9px] h-[40px] bg-[#FFF5EE] flex  justify-start items-center rounded-t-[22px]">
-                  {/* {part + 1}/
-                  {props?.budget == 0 && props?.income == 0 ? (
-                    <>{Info.length}</>
-                  ) : (
-                    <>{Info.length - 1}</>
-                  )} */}
-                  <span className="mt-[10px]">Set New Income</span>
-                </div>
-                <div className="w-[calc(100%-80px)] bg-[#c1b9b4] h-[40px] rounded-bl-[22px] ">
+            <div className="w-full h-auto flex flex-col justify-end items-start ">
+              <div className="w-full flex flex-col justify-end items-start h-[40px]">
+                <div className="w-full h-auto flex justify-start items-end z-30">
+                  <div className=" w-auto text-[22px] whitespace-nowrap font-[google] font-normal  p-[20px] py-[9px] h-[40px] bg-[#ffffff] flex  justify-start items-center rounded-t-[22px]">
+                    <span className="mt-[10px]">Set New Income</span>
+                  </div>
+                  <div className="h-[20px] aspect-square inRound"></div>
                   <div
-                    className="h-[35px] aspect-square rounded-full bg-[#fff5ee] ml-[5px] mb-[5px] flex justify-center items-center text-[20px] "
+                    className="h-[35px]  aspect-square rounded-full cursor-pointer bg-[#e4f2ff] ml-[-15px] mb-[5px] flex justify-center items-center text-[20px] "
                     onClick={() => {
                       setIncomeModal(false);
                       setNewIncome("");
@@ -567,54 +553,61 @@ const QuickInfo = (props) => {
                   </div>
                 </div>
               </div>
-            </div>
-            <div
-              className="min-w-[100%] z-50 h-auto bg-[#fff5ee] drop-shadow-sm   text-black  rounded-b-3xl rounded-tr-3xl  font-[google] font-normal text-[14px] flex flex-col justify-center items-start p-[20px]"
-              style={{ zIndex: 100 }}
-            >
-              {/* <span className="w-full text-[22px] text-black font-[google] font-normal flex justify-start items-center ">
+              <div
+                className="min-w-[100%] z-50 h-auto bg-[#ffffff] drop-shadow-sm   text-black  rounded-b-3xl rounded-tr-3xl  font-[google] font-normal text-[14px] flex flex-col justify-center items-start p-[20px]"
+                style={{ zIndex: 100 }}
+              >
+                {/* <span className="w-full text-[22px] text-black font-[google] font-normal flex justify-start items-center ">
                 Set New Income
               </span> */}
-              <div className="flex w-full justify-start items-center ">
-                <div className="flex justify-center items-center w-[30px] h-full mr-[-30px]">
-                  <BiRupee className="" />
+                <div className="flex w-full justify-start items-center ">
+                  <div className="flex justify-center items-center w-[30px] h-full mr-[-30px]">
+                    <BiRupee className="" />
+                  </div>
+                  <input
+                    className="outline-none w-full h-[40px] bg-transparent pl-[25px] rounded-md border border-[#acebff] px-[10px] text-black font-[google] font-normal text-[14px]"
+                    placeholder="Enter Income"
+                    value={newIncome}
+                    onChange={(e) => {
+                      if (isNumeric(e.target.value) === true) {
+                        setNewIncome(e.target.value);
+                      }
+                    }}
+                  ></input>
                 </div>
-                <input
-                  className="outline-none w-full h-[40px] bg-transparent pl-[25px] rounded-md border border-[#ffd8be] px-[10px] text-black font-[google] font-normal text-[14px]"
-                  placeholder="Enter Income"
-                  value={newIncome}
-                  onChange={(e) => {
-                    if (isNumeric(e.target.value) === true) {
-                      setNewIncome(e.target.value);
-                    }
-                  }}
-                ></input>
-              </div>
-              {error.length > 0 ? (
-                <>
-                  {/* <div className="flex w-full justify-between items-center mt-[6px] text-[#ff6c00] text-[13px]">
+                {error.length > 0 ? (
+                  <>
+                    {/* <div className="flex w-full justify-between items-center mt-[6px] text-[#ff6c00] text-[13px]">
                     * {error}
                   </div> */}
-                </>
-              ) : (
-                <></>
-              )}
+                  </>
+                ) : (
+                  <></>
+                )}
 
-              <div className="w-full flex justify-end items-end font-[google] font-normal text-[15px] text-black h-[20px] mt-[20px]">
-                <div
-                  className="h-full mr-[20px] flex justify-center items-center cursor-pointer  "
-                  onClick={() => {
-                    setIncomeModal(false);
-                    setNewIncome("");
-                    setError("");
-                  }}
-                >
-                  Cancel
-                </div>
-                {newIncome.length !== 0 ? (
-                  <>
+                <div className="w-full flex justify-end items-end font-[google] font-normal text-[15px] text-black h-[20px] mt-[20px]">
+                  <div
+                    className="h-full mr-[20px] flex justify-center items-center cursor-pointer  "
+                    onClick={() => {
+                      setIncomeModal(false);
+                      setNewIncome("");
+                      setError("");
+                    }}
+                  >
+                    Cancel
+                  </div>
+                  {newIncome.length == 0 ? (
+                    <>
+                      <div
+                        className="h-full  flex justify-center items-center text-[#c2e1ff] cursor-pointer "
+                        onClick={() => {}}
+                      >
+                        Update
+                      </div>
+                    </>
+                  ) : (
                     <div
-                      className="h-full  flex justify-center items-center text-[#de8544] cursor-pointer "
+                      className="h-full  flex justify-center items-center text-[#6bb7ff] cursor-pointer "
                       onClick={() => {
                         updateIncome();
                         setIncomeModal(false);
@@ -622,18 +615,8 @@ const QuickInfo = (props) => {
                     >
                       Update
                     </div>
-                  </>
-                ) : (
-                  <div
-                    className="h-full  flex justify-center items-center text-[#ffc194] cursor-pointer "
-                    onClick={() => {
-                      // updateIncome();
-                      // setIncomeModal(false);
-                    }}
-                  >
-                    Update
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
             </div>
             {/* </OutsideClickHandler> */}
