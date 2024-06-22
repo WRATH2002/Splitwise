@@ -10,6 +10,8 @@
     "dotenv": "^16.4.5",
     "firebase": "^10.12.2",
     "flowbite-datepicker": "^1.2.6",
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.8.2",
     "long-press-event": "^2.5.0",
     "rc-progress": "^4.0.0",
     "react": "^18.3.1",

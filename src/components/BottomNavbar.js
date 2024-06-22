@@ -1,4 +1,5 @@
 import React from "react";
+import { IoGitNetworkOutline } from "react-icons/io5";
 import { LuSettings2 } from "react-icons/lu";
 import {
   MdCallSplit,
@@ -95,7 +96,7 @@ const BottomNavbar = (props) => {
         </div>
 
         <div className="w-[calc(100%/5)] h-full flex justify-center items-center cursor-pointer">
-          <MdCallSplit
+          <IoGitNetworkOutline
             className={
               " cursor-pointer" +
               (props?.segment === 4 ? " text-[#23a8d2]" : " text-[#000000]")

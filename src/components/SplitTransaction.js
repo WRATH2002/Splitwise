@@ -4,7 +4,7 @@ import { FaCheckCircle, FaReceipt, FaShopify } from "react-icons/fa";
 import { FiArrowLeft } from "react-icons/fi";
 import { GiPartyPopper } from "react-icons/gi";
 import { HiMiniBell } from "react-icons/hi2";
-import { IoFastFood } from "react-icons/io5";
+import { IoFastFood, IoGitNetworkOutline } from "react-icons/io5";
 import { LuChevronRight } from "react-icons/lu";
 import {
   MdCall,
@@ -995,7 +995,7 @@ const SplitTransaction = (props) => {
       >
         <div className="w-[30px] flex justify-start items-center text-[22px] ">
           {checkOwner(props?.data?.Owner) ? (
-            <MdCallSplit
+            <IoGitNetworkOutline
               className={
                 "" +
                 (!props?.data?.PaymentStatus
@@ -1012,7 +1012,7 @@ const SplitTransaction = (props) => {
               }
             />
           ) : (
-            <MdCallSplit
+            <IoGitNetworkOutline
               className={
                 "" +
                 (!props?.data?.PaymentStatus

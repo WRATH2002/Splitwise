@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { FaShopify } from "react-icons/fa";
 import { GiAutoRepair, GiPartyPopper } from "react-icons/gi";
-import { IoFastFood } from "react-icons/io5";
+import {
+  IoFastFood,
+  IoGitBranchOutline,
+  IoGitMergeOutline,
+  IoGitNetworkOutline,
+} from "react-icons/io5";
 import { FaKitMedical, FaTruckMedical } from "react-icons/fa6";
 import { BsFillFuelPumpFill, BsTaxiFrontFill } from "react-icons/bs";
 import {
@@ -122,7 +127,7 @@ const IndependentTransaction = (props) => {
         <></>
       )}
       <div
-        className="w-[calc(100%-40px)] min-h-[60px]  font-[google] font-normal text-[15px] text-white flex justify-center items-center border-b-[.7px] border-[#ffede2] cursor-pointer "
+        className="w-[calc(100%-40px)] min-h-[60px]  font-[google] font-normal text-[15px] text-white flex justify-center items-center border-b-[.7px] border-[#eff7ff] cursor-pointer "
         onClick={() => {
           setShowTransaction(true);
         }}
@@ -138,7 +143,7 @@ const IndependentTransaction = (props) => {
           >
             {/* <AiOutlineSwap /> */}
             <div className="bg-[#ffffff] mt-[20px] w-[18px] h-[18px] aspect-square rounded-full flex justify-center items-center">
-              <MdCallSplit />
+              <IoGitBranchOutline />
             </div>
           </div>
         ) : (

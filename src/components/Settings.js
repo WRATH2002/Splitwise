@@ -4,13 +4,21 @@ import { auth } from "../firebase";
 import { db } from "../firebase";
 import { MdAttachMoney, MdSavings } from "react-icons/md";
 import { IoIosWallet } from "react-icons/io";
-import { IoFingerPrintOutline, IoLogOut } from "react-icons/io5";
+import {
+  IoDocumentTextOutline,
+  IoFingerPrintOutline,
+  IoLogOut,
+} from "react-icons/io5";
 import { BiSolidReport } from "react-icons/bi";
 import { FaGooglePlay } from "react-icons/fa";
 import OutsideClickHandler from "react-outside-click-handler";
 
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
+
 import firebase from "../firebase";
 import { arrayUnion, onSnapshot } from "firebase/firestore";
+import { TbLogout } from "react-icons/tb";
 const monthNames = [
   "January",
   "February",
@@ -128,6 +136,153 @@ const Settings = (props) => {
       console.log(index);
     });
   }
+
+  function format(data) {
+    let arr = data?.split("/");
+    let str = "";
+    if (arr[0] < 10) {
+      str = str + "0" + arr[0] + "/";
+    } else {
+      str = str + arr[0] + "/";
+    }
+    if (arr[1] < 10) {
+      str = str + "0" + arr[1] + "/";
+    } else {
+      str = str + arr[1] + "/";
+    }
+    str = str + arr[2];
+
+    return str;
+  }
+
+  function sortObjectsByDateAsc() {
+    return transactionHistory.sort((a, b) => {
+      const [dayA, monthA, yearA] = a.Date.split("/").map(Number);
+      const [dayB, monthB, yearB] = b.Date.split("/").map(Number);
+
+      // Create date objects for comparison
+      const dateA = new Date(yearA, monthA - 1, dayA); // monthA - 1 because months are zero-based
+      const dateB = new Date(yearB, monthB - 1, dayB);
+
+      return dateA - dateB;
+    });
+  }
+
+  const downloadPDF = () => {
+    const doc = new jsPDF();
+
+    // Add title
+    doc.setFontSize(18);
+    doc.text("Transactions History", 14, 14);
+
+    // Define the columns and rows for the table
+    const columns = [
+      "Date",
+      "Lable",
+      "Category",
+      "Trn. Type",
+      "Trn. Mode",
+      "Credited",
+      "Debited",
+    ];
+    const rows = sortObjectsByDateAsc().map((tx) => [
+      format(tx.Date),
+      tx.Lable,
+      tx.Category,
+      tx.TransactionType,
+      tx.Mode,
+      tx.MoneyIsAdded ? formatAmountWithCommas(tx.Amount) : "",
+      !tx.MoneyIsAdded ? formatAmountWithCommas(tx.Amount) : "",
+    ]);
+
+    const totalExpense = transactionHistory.reduce((acc, tx) => {
+      return tx.MoneyIsAdded
+        ? acc - parseFloat(tx.Amount)
+        : acc + parseFloat(tx.Amount);
+    }, 0);
+    let splitCount = transactionHistory.reduce((acc, tx) => {
+      if (tx.TransactionType == "Split") {
+        acc = acc + 1;
+      }
+      return acc;
+    }, 0);
+    let splitExpense = transactionHistory.reduce((acc, tx) => {
+      if (tx.TransactionType == "Split") {
+        if (tx.MoneyIsAdded) {
+          acc = acc - parseFloat(tx.Amount);
+        } else {
+          acc = acc + parseFloat(tx.Amount);
+        }
+      }
+      return acc;
+    }, 0);
+    let normCount = transactionHistory.reduce((acc, tx) => {
+      if (tx.TransactionType == "Single") {
+        acc = acc + 1;
+      }
+      return acc;
+    }, 0);
+    let normExpense = transactionHistory.reduce((acc, tx) => {
+      if (tx.TransactionType == "Single") {
+        acc = acc + parseFloat(tx.Amount);
+      }
+      return acc;
+    }, 0);
+
+    // Get the current month
+    const currentDate = new Date();
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+    const currentMonth = monthNames[currentDate.getMonth()];
+
+    // Add table to the PDF
+    doc.autoTable({
+      // theme: "grid",
+      startY: 20,
+      head: [columns],
+      body: rows,
+      headStyles: { fillColor: [107, 183, 255], textColor: [0, 0, 0] },
+      columnStyles: {
+        0: { halign: "left" },
+        5: { halign: "right" },
+        6: { halign: "right" },
+      }, // Cells in first column centered and green
+    });
+
+    const finalY = doc.lastAutoTable.finalY + 10;
+    doc.setFontSize(12);
+    doc.text(`Transaction Info :`, 14, finalY);
+    doc.setFontSize(10);
+    doc.text(`Month : ${currentMonth}`, 14, finalY + 9);
+
+    doc.text(
+      `Normal Expense ( x${normCount} ) : ${normExpense}`,
+      14,
+      finalY + 15
+    );
+    doc.text(
+      `Split Expense ( x${splitCount} ) :  ${splitExpense}`,
+      14,
+      finalY + 21
+    );
+    doc.text(`Total Expense : ${totalExpense}`, 14, finalY + 27);
+
+    // Save the PDF
+    doc.save("transactions.pdf");
+  };
+
   return (
     <>
       {pop ? (
@@ -369,17 +524,21 @@ const Settings = (props) => {
           <MdSavings className="mr-[10px] text-[20px] text-[#de8544]" />{" "}
           Tutorial
         </div>
-        <div className="w-auto flex justify-start items-center my-[7px]">
-          <BiSolidReport className="mr-[10px] text-[20px] text-[#de8544]" /> Get
-          Report
+        <div
+          className="w-auto flex justify-start items-center my-[7px]"
+          onClick={downloadPDF}
+        >
+          <IoDocumentTextOutline className="mr-[10px] text-[20px] text-[#000000]" />{" "}
+          Get Report
         </div>
+
         <div
           className="w-auto flex justify-start items-center my-[7px]"
           onClick={() => {
             userSignOut();
           }}
         >
-          <IoLogOut className="mr-[10px] text-[20px] text-[#de8544]" /> Log Out
+          <TbLogout className="mr-[10px] text-[20px] text-[#000000]" /> Log Out
         </div>
 
         <div
