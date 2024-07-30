@@ -3,6 +3,7 @@ import { auth } from "../firebase";
 import { db } from "../firebase";
 import firebase from "../firebase";
 import { onSnapshot } from "firebase/firestore";
+// rgS
 
 export const Profile = (props) => {
   function remove() {
