@@ -17,12 +17,16 @@ const data = [
 ];
 
 const COLORS = [
-  "#95241d",
-  "#b63525",
-  "#d74e25",
-  "#ea682a",
-  "#ee8a56",
-  "#f2a87f",
+  "#003a70",
+  "#0f558f",
+  "#1965a0",
+  "#2476b1",
+  "#2d82bd",
+  "#4893c6",
+  "#64a4ce",
+  "#8dbedc",
+  "#b7d7ea",
+  "#e2eff6",
 ];
 // const [dataa, setDataa] = useState([]);
 

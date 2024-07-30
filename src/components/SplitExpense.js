@@ -944,17 +944,17 @@ const SplitExpense = () => {
       ) : (
         <></>
       )}
-      <div className="pt-[20px] w-full h-[60px] flex justify-center items-center bg-[#ffffff] border-none">
+      {/* <div className="pt-[20px] w-full h-[60px] flex justify-center items-center bg-[#ffffff] border-none">
         <TopNavbar />
-      </div>
-      <div className="h-[calc(100%-60px)] w-full bg-[#ffffff] flex justify-start items-center flex-col  text-white pb-[20px] border-none">
-        <QuickSplitInfo
-          willGet={formatAmountWithCommas(amountToGet()?.amount)}
-          count={amountToGet()?.count}
-          willPay={formatAmountWithCommas(getAmountToPay()?.amount)}
-          payCount={getAmountToPay()?.count}
-        />
-        <div className="w-[calc(100%-40px)] border-[.7px] border-[#eff7ff]"></div>
+      </div> */}
+      <QuickSplitInfo
+        willGet={formatAmountWithCommas(amountToGet()?.amount)}
+        count={amountToGet()?.count}
+        willPay={formatAmountWithCommas(getAmountToPay()?.amount)}
+        payCount={getAmountToPay()?.count}
+      />
+      <div className="h-[calc(100%-140px)] w-full bg-[#ffffff] flex justify-start items-center flex-col  text-white pb-[20px] border-none overflow-y-scroll">
+        {/* <div className="w-[calc(100%-40px)] border-[.7px] border-[#eff7ff]"></div> */}
         <span className="text-[#828282] font-[google] font-normal text-[14px] w-full mt-[20px] flex justify-between h-[30px] items-start px-[20px] ">
           <div className="flex justify-start items-center">
             Split Transaction History,{" "}

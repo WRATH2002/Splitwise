@@ -52,7 +52,7 @@ const Login = (props) => {
       <div className="w-full lg:w-[350px] md:w-[350px] p-[40px] rounded-none md:rounded-xl lg:rounded-xl h-[100svh] md:h-[70%] lg:h-[70%]  flex flex-col justify-center items-start">
         {/* <span className="in  font-bold text-[40px] mb-[30px]">INFINITY</span> */}
         <div className="w-full flex flex-col ">
-          <span className="text-[40px] text-[#de8544] font-[google] font-bold tracking-wider b2">
+          <span className="text-[50px] tracking-wide text-[black] font-[gaia] font-bold b2 ">
             Login{" "}
           </span>
           <span className="text-[15px] font-normal text-[#000000] font-[google] ">

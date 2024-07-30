@@ -144,7 +144,7 @@ const Signup = (props) => {
     <>
       <div className="w-full lg:w-[350px] md:w-[350px] p-[40px] rounded-none md:rounded-xl lg:rounded-xl h-[100svh] md:h-[70%] lg:h-[70%]  flex flex-col justify-center items-center">
         <div className="w-full flex flex-col">
-          <span className="text-[40px] text-[black] font-[google] font-bold tracking-wider b2">
+          <span className="text-[50px] tracking-wide text-[black] font-[gaia] font-bold  b2">
             Signup{" "}
           </span>
           <span className="text-[15px] font-normal font-[google] text-[#000000b4] ">

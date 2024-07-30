@@ -153,7 +153,7 @@ const SubGraph = () => {
         {/* <div className="w-full min-h-[220px] rounded-2xl flex justify-between items-center"> */}
         <div className="w-full h-[45px] flex justify-end items-center py-[10px]">
           <div
-            className="w-auto h-[35px] rounded-3xl bg-[#c3e2ff] px-[15px] flex justify-center items-center text-[14px] cursor-pointer"
+            className="w-auto h-[35px] rounded-3xl bg-[#181F32] text-[#ffffff] px-[15px] flex justify-center items-center text-[14px] cursor-pointer"
             onClick={() => {
               nonBudget();
               setNewBudgetModal(true);

@@ -7,6 +7,7 @@ import { IoIosWallet } from "react-icons/io";
 import {
   IoDocumentTextOutline,
   IoFingerPrintOutline,
+  IoGitNetworkOutline,
   IoLogOut,
 } from "react-icons/io5";
 import { BiSolidReport } from "react-icons/bi";
@@ -19,6 +20,48 @@ import "jspdf-autotable";
 import firebase from "../firebase";
 import { arrayUnion, onSnapshot } from "firebase/firestore";
 import { TbLogout } from "react-icons/tb";
+// import { BadgeIndianRupee } from "lucide-react";
+
+const Down = () => {
+  return (
+    <>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="21"
+        height="21"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.7"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="lucide lucide-chevron-up"
+      >
+        <path d="m18 15-6-6-6 6" />
+      </svg>
+    </>
+  );
+};
+const Up = () => {
+  return (
+    <>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="21"
+        height="21"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.7"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="lucide lucide-chevron-down"
+      >
+        <path d="m6 9 6 6 6-6" />
+      </svg>
+    </>
+  );
+};
 const monthNames = [
   "January",
   "February",
@@ -36,10 +79,18 @@ const monthNames = [
 const Settings = (props) => {
   const [pop, setPop] = useState(false);
   const [permission, setPermission] = useState(false);
+  const [btn1, setBtn1] = useState(false);
+  const [btn2, setBtn2] = useState(false);
+  const [btn3, setBtn3] = useState(false);
+  const [btn4, setBtn4] = useState(false);
   const [income, setIncome] = useState("");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [budget, setBudget] = useState("");
+  const [feature, setFeature] = useState(0);
   const [transactionHistory, setTransactionHistory] = useState([]);
   const [monthWiseData, setMonthWiseData] = useState([]);
+  const [price, setPrice] = useState("");
   const userSignOut = () => {
     signOut(auth)
       .then(() => console.log("Signed Out Successfully"))
@@ -66,6 +117,8 @@ const Settings = (props) => {
       setTransactionHistory(snapshot?.data()?.NormalTransaction);
       setIncome(snapshot?.data()?.TotalIncome);
       setBudget(snapshot?.data()?.Budget);
+      setName(snapshot?.data()?.Name);
+      setEmail(snapshot?.data()?.Email);
     });
   }
 
@@ -283,6 +336,12 @@ const Settings = (props) => {
     doc.save("transactions.pdf");
   };
 
+  function isNumeric(str) {
+    if (typeof str !== "string") return false;
+    if (str === "") return true;
+    return /^[0-9]+(\.[0-9]*)?$/.test(str);
+  }
+
   return (
     <>
       {pop ? (
@@ -491,57 +550,702 @@ const Settings = (props) => {
       ) : (
         <></>
       )}
-      <div className="w-full h-full bg-[#ffffff] p-[20px] text-black font-[google] font-normal flex flex-col justify-start items-start">
-        <div className="w-full ">
-          <div className="w-[90px] aspect-square rounded-full object-cover bg-[#e4f2ff]"></div>
-          <div></div>
+      {/* <div className="w-full h-[100svh] top-0 left-0 fixed bg-[#70708628] backdrop-blur-md flex justify-center items-center p-[20px] z-50 font-[google] font-normal">
+        <div className="w-full flex flex-col justify-center items-start p-[30px] bg-[white] rounded-3xl drop-shadow-sm">
+          <div className="text-[22px]">Update Budget</div>
+          <div className="text-[14px] text-[#00000057]">
+            Your budget will be updated with the new amount, and transactions
+            will be processed accordingly.
+          </div>
+          <div className="w-[35px] h-[45px] flex justify-center items-center mb-[-45px] mt-[20px]">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-indian-rupee"
+            >
+              <path d="M6 3h12" />
+              <path d="M6 8h12" />
+              <path d="m6 13 8.5 8" />
+              <path d="M6 13h3" />
+              <path d="M9 13c6.667 0 6.667-10 0-10" />
+            </svg>
+          </div>
+          <input
+            className="outline-none rounded-xl w-full h-[45px] bg-transparent border pl-[35px] px-[10px] text-black font-[google] font-normal  border-[#beb0f4] text-[16px]"
+            placeholder="Enter New Budget"
+            value={price}
+            onChange={(e) => {
+              console.log(isNumeric(e.target.value));
+              if (isNumeric(e.target.value) === true) {
+                setPrice(e.target.value);
+              }
+            }}
+          ></input>
+          <div className="w-full flex mt-[25px] justify-center items-end font-[google] font-normal text-[16px] text-black ">
+            <div
+              className=" mr-[15px] px-[15px] py-[10px] rounded-3xl bg-[#efefef] text-[black] flex justify-center items-center cursor-pointer  "
+              onClick={() => {
+                // setAddNewTransaction(false);
+                // setLabel("");
+                // setPrice("");
+                // setCategory("");
+                // setMode("");
+                // setBill("");
+                // setSubSection("");
+              }}
+            >
+              Cancel
+            </div>
+            {price?.length != 0 ? (
+              <>
+                <div
+                  className=" flex justify-center  px-[15px] py-[10px] rounded-3xl bg-[#beb0f4] text-[black] items-center cursor-pointer "
+                  onClick={() => {
+                    // setSubSection("");
+                    // addToFirebase();
+                    // setAddNewTransaction(false);
+                  }}
+                >
+                  Update
+                </div>
+              </>
+            ) : (
+              <>
+                <div className=" flex justify-center  px-[15px] py-[10px] rounded-3xl bg-[#e8e3fd] items-center text-[#0000006c]  ">
+                  Update
+                </div>
+              </>
+            )}
+          </div>
         </div>
-        <div className="w-full border-[.7px] border-[#fee6d7] my-[20px]"></div>
-        <div className="w-auto flex justify-start items-center my-[7px]"></div>
-        <div className="w-auto flex justify-start items-center my-[7px]">
-          Set / Change Budget
+      </div> */}
+      <div className="w-full h-full bg-[#ffffff]  text-black font-[google] font-normal flex flex-col justify-start items-start ">
+        <div className="w-full h-[230px]  flex flex-col bg-[#181F32] p-[20px] justify-center items-center">
+          <div className="w-[90px] aspect-square rounded-full object-cover bg-[#F5F6FA] text-black flex justify-center items-center text-[37px]">
+            {name.charAt(0)?.toUpperCase()}
+            {name.split(" ")[1]?.charAt(0)?.toUpperCase()}
+          </div>
+          <div className="text-[25px] mt-[15px] text-white ">{name}</div>
+          <div className="text-[17px] text-[#a7a7a7] mt-[-4px]">{email}</div>
         </div>
-        <div className="w-auto flex justify-start items-center my-[7px]">
-          <IoIosWallet className="mr-[10px] text-[20px] text-[#de8544]" /> Set /
-          Change Income
+        {/* <div className="w-full border-[.7px] border-[#f2f2f7] my-[20px]"></div> */}
+        <div className="w-full h-[calc(100%-255px)] flex flex-col justify-start items-start overflow-y-scroll px-[20px]">
+          <span className="mt-[25px] ">General</span>
+          <div className="w-full flex flex-col justify-start items-start px-[20px] bg-[#F5F6FA] py-[10px]  p-[20px] rounded-2xl mt-[5px]">
+            <div className="w-full h-[40px] flex justify-between items-center">
+              <div className="flex justify-start items-center">
+                <div className="w-[24px] h-full flex justify-start items-center mr-[9px]">
+                  {" "}
+                  <svg
+                    // className="mr-[5px]"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="21"
+                    height="21"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-user"
+                  >
+                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                  </svg>
+                </div>
+                Change Name
+              </div>
+              <div className="flex justify-end items-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="21"
+                  height="21"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.7"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-chevron-right"
+                >
+                  <path d="m9 18 6-6-6-6" />
+                </svg>
+              </div>
+            </div>
+            <div className="w-full h-[40px] flex justify-between items-center">
+              {" "}
+              <div className="flex justify-start items-center">
+                <div className="w-[24px] h-full flex justify-start items-center mr-[9px]">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="21"
+                    height="21"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-wallet"
+                  >
+                    <path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1" />
+                    <path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4" />
+                  </svg>
+                </div>
+                Update Budget
+              </div>
+              <div className="flex justify-end items-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="21"
+                  height="21"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.7"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-chevron-right"
+                >
+                  <path d="m9 18 6-6-6-6" />
+                </svg>
+              </div>
+            </div>
+            <div className="w-full h-[40px] flex justify-between items-center">
+              {" "}
+              <div className="flex justify-start items-center">
+                <div className="w-[24px] h-full flex justify-start items-center mr-[9px]">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="21"
+                    height="21"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-hand-coins"
+                  >
+                    <path d="M11 15h2a2 2 0 1 0 0-4h-3c-.6 0-1.1.2-1.4.6L3 17" />
+                    <path d="m7 21 1.6-1.4c.3-.4.8-.6 1.4-.6h4c1.1 0 2.1-.4 2.8-1.2l4.6-4.4a2 2 0 0 0-2.75-2.91l-4.2 3.9" />
+                    <path d="m2 16 6 6" />
+                    <circle cx="16" cy="9" r="2.9" />
+                    <circle cx="6" cy="5" r="3" />
+                  </svg>
+                </div>
+                Update Income
+              </div>
+              <div className="flex justify-end items-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="21"
+                  height="21"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.7"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-chevron-right"
+                >
+                  <path d="m9 18 6-6-6-6" />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <span className="mt-[14px] ">About Transaction</span>
+          <div className="w-full flex flex-col justify-start items-start px-[20px] bg-[#F5F6FA] py-[10px]  p-[20px] rounded-2xl mt-[5px]">
+            <div className="w-full h-[40px] flex justify-start items-center">
+              <div className="w-[24px] h-full flex justify-start items-center mr-[9px]">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="21"
+                  height="21"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.7"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-piggy-bank"
+                >
+                  <path d="M19 5c-1.5 0-2.8 1.4-3 2-3.5-1.5-11-.3-11 5 0 1.8 0 3 2 4.5V20h4v-2h3v2h4v-4c1-.5 1.7-1 2-2h2v-4h-2c0-1-.5-1.5-1-2V5z" />
+                  <path d="M2 9v1c0 1.1.9 2 2 2h1" />
+                  <path d="M16 11h.01" />
+                </svg>
+              </div>
+              Total Savings
+            </div>
+            <div className="w-full h-[40px] flex justify-between items-center">
+              <div className="w-auto flex justify-start items-center">
+                <div className="w-[24px] h-full flex justify-start items-center mr-[9px]">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="21"
+                    height="21"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-banknote"
+                  >
+                    <rect width="20" height="12" x="2" y="6" rx="2" />
+                    <circle cx="12" cy="12" r="2" />
+                    <path d="M6 12h.01M18 12h.01" />
+                  </svg>
+                </div>
+                Default Currency
+              </div>
+              <div className="w-auto flex justify-end items-center text-[#6f6f6f]">
+                INR
+                <svg
+                  className="ml-[3px]"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.7"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-indian-rupee"
+                >
+                  <path d="M6 3h12" />
+                  <path d="M6 8h12" />
+                  <path d="m6 13 8.5 8" />
+                  <path d="M6 13h3" />
+                  <path d="M9 13c6.667 0 6.667-10 0-10" />
+                </svg>
+                <svg
+                  className="text-black"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="21"
+                  height="21"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.7"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-chevron-right"
+                >
+                  <path d="m9 18 6-6-6-6" />
+                </svg>
+              </div>
+            </div>
+            <div
+              className="w-full h-[40px] flex justify-start items-center "
+              onClick={downloadPDF}
+            >
+              <div className="w-[24px] h-full flex justify-start items-center mr-[9px]">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="21"
+                  height="21"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.7"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-file-bar-chart-2"
+                >
+                  <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
+                  <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+                  <path d="M8 18v-1" />
+                  <path d="M12 18v-6" />
+                  <path d="M16 18v-3" />
+                </svg>
+              </div>
+              Monthly Report
+            </div>
+          </div>
+
+          <span className="mt-[14px] ">Features</span>
+          <div className="w-full flex flex-col justify-start items-start px-[20px] bg-[#F5F6FA] py-[10px]  p-[20px] rounded-2xl mt-[5px]">
+            <div
+              className={
+                "w-full  flex flex-col justify-start items-start" +
+                (feature == 1 ? " h-auto" : " h-[40px]")
+              }
+              onClick={() => {
+                setFeature(1);
+              }}
+            >
+              <div className="w-full h-[40px] flex justify-between items-center">
+                <div className="w-auto h-[40px] flex justify-start items-center">
+                  <div className="w-[24px] h-full flex justify-start items-center mr-[9px]">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="21"
+                      height="21"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.7"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="lucide lucide-siren"
+                    >
+                      <path d="M7 18v-6a5 5 0 1 1 10 0v6" />
+                      <path d="M5 21a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-1a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2z" />
+                      <path d="M21 12h1" />
+                      <path d="M18.5 4.5 18 5" />
+                      <path d="M2 12h1" />
+                      <path d="M12 2v1" />
+                      <path d="m4.929 4.929.707.707" />
+                      <path d="M12 12v6" />
+                    </svg>
+                  </div>
+                  Show Due Reminders
+                </div>
+                <div className="w-auto h-full flex justify-end items-center">
+                  {feature == 1 ? (
+                    <>
+                      <Down />
+                    </>
+                  ) : (
+                    <>
+                      <Up />
+                    </>
+                  )}
+                </div>
+              </div>
+              <div
+                className={
+                  "w-full flex justify-between items-start overflow-hidden" +
+                  (feature == 1 ? " h-auto " : " h-0")
+                }
+              >
+                <div className="w-[calc(100%-82px)] h-auto flex justify-start items-start text-[14px] text-[#6f6f6f] ml-[33px]">
+                  If this option is enabled, all the due and upcoming reminders
+                  in this month will be showed under the Transaction History
+                  section in home page.
+                </div>
+                <div
+                  className={
+                    "w-[33px] h-[22px] rounded-full  flex justify-start items-center px-[2px]" +
+                    (btn1 ? " bg-[#00bb0034]" : " bg-white")
+                  }
+                  style={{ transition: ".3s" }}
+                  onClick={() => {
+                    setBtn1(!btn1);
+                  }}
+                >
+                  <div
+                    className={
+                      "w-[18px] aspect-square rounded-full " +
+                      (btn1 ? " ml-[11px] bg-[#00bb00]" : " ml-0 bg-[#ebebf5]")
+                    }
+                    style={{ transition: ".3s" }}
+                  ></div>
+                </div>
+              </div>
+            </div>
+            <div
+              className={
+                "w-full flex flex-col justify-start items-start" +
+                (feature == 2 ? " h-auto" : " h-[40px]")
+              }
+              onClick={() => {
+                setFeature(2);
+              }}
+            >
+              <div className="w-full h-[40px] flex justify-between items-center">
+                <div className="w-auto h-[40px] flex justify-start items-center">
+                  <div className="w-[24px] h-full flex justify-start items-center mr-[9px]">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="21"
+                      height="21"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.7"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="lucide lucide-bell-dot"
+                    >
+                      <path d="M19.4 14.9C20.2 16.4 21 17 21 17H3s3-2 3-9c0-3.3 2.7-6 6-6 .7 0 1.3.1 1.9.3" />
+                      <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+                      <circle cx="18" cy="8" r="3" />
+                    </svg>
+                  </div>
+                  Show Monthly Reminders
+                </div>
+                <div className="w-auto h-full flex justify-end items-center">
+                  {feature == 2 ? (
+                    <>
+                      <Down />
+                    </>
+                  ) : (
+                    <>
+                      <Up />
+                    </>
+                  )}
+                </div>
+              </div>
+              <div
+                className={
+                  "w-full flex justify-between items-start overflow-hidden" +
+                  (feature == 2 ? " h-auto " : " h-0")
+                }
+              >
+                <div className="w-[calc(100%-82px)] h-auto flex justify-start items-start text-[14px] text-[#6f6f6f] ml-[33px]">
+                  If this option is enabled in Reminfer Page only the due &
+                  upcoming reminders for current month will be visible only.
+                </div>
+                <div
+                  className={
+                    "w-[33px] h-[22px] rounded-full  flex justify-start items-center px-[2px]" +
+                    (btn2 ? " bg-[#00bb0034]" : " bg-white")
+                  }
+                  style={{ transition: ".3s" }}
+                  onClick={() => {
+                    setBtn2(!btn2);
+                  }}
+                >
+                  <div
+                    className={
+                      "w-[18px] aspect-square rounded-full " +
+                      (btn2 ? " ml-[11px] bg-[#00bb00]" : " ml-0 bg-[#ebebf5]")
+                    }
+                    style={{ transition: ".3s" }}
+                  ></div>
+                </div>
+              </div>
+            </div>
+            <div
+              className="w-full h-[40px] flex justify-between items-center"
+              onClick={() => {
+                setFeature(3);
+              }}
+            >
+              <div className="w-auto h-full flex justify-start items-center">
+                <div className="w-[24px] h-full flex justify-start items-center mr-[9px]">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="21"
+                    height="21"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-notepad-text"
+                  >
+                    <path d="M8 2v4" />
+                    <path d="M12 2v4" />
+                    <path d="M16 2v4" />
+                    <rect width="16" height="18" x="4" y="4" rx="2" />
+                    <path d="M8 10h6" />
+                    <path d="M8 14h8" />
+                    <path d="M8 18h5" />
+                  </svg>
+                </div>
+                Blur Notes Preview
+              </div>
+
+              <div className="w-auto h-full flex justify-end items-center">
+                {feature == 3 ? (
+                  <>
+                    <Down />
+                  </>
+                ) : (
+                  <>
+                    <Up />
+                  </>
+                )}
+              </div>
+            </div>
+            <div
+              className="w-full h-[40px] flex justify-between items-center"
+              onClick={() => {
+                setFeature(4);
+              }}
+            >
+              <div className="w-auto h-full flex justify-start items-center">
+                <div className="w-[24px] h-full flex justify-start items-center mr-[9px]">
+                  <IoGitNetworkOutline className="text-[20px]" />
+                </div>
+                Delete Split Transaction
+              </div>
+
+              <div className="w-auto h-full flex justify-end items-center">
+                {feature == 4 ? (
+                  <>
+                    <Down />
+                  </>
+                ) : (
+                  <>
+                    <Up />
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <span className="mt-[14px] ">Others</span>
+          <div className="w-full flex flex-col justify-start items-start px-[20px] bg-[#F5F6FA] py-[10px]  p-[20px] rounded-2xl mt-[5px]">
+            <div
+              className="w-full h-[40px] flex justify-start items-center"
+              onClick={() => {
+                doneTutorial();
+              }}
+            >
+              <div className="w-[24px] h-full flex justify-start items-center mr-[9px]">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="21"
+                  height="21"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.7"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-replace-all"
+                >
+                  <path d="M14 4c0-1.1.9-2 2-2" />
+                  <path d="M20 2c1.1 0 2 .9 2 2" />
+                  <path d="M22 8c0 1.1-.9 2-2 2" />
+                  <path d="M16 10c-1.1 0-2-.9-2-2" />
+                  <path d="m3 7 3 3 3-3" />
+                  <path d="M6 10V5c0-1.7 1.3-3 3-3h1" />
+                  <rect width="8" height="8" x="2" y="14" rx="2" />
+                  <path d="M14 14c1.1 0 2 .9 2 2v4c0 1.1-.9 2-2 2" />
+                  <path d="M20 14c1.1 0 2 .9 2 2v4c0 1.1-.9 2-2 2" />
+                </svg>
+              </div>
+              Tutorial
+            </div>
+            {/* <div className=""></div> */}
+            <div
+              className="w-full h-[40px] flex justify-start items-center"
+              onClick={() => {
+                userSignOut();
+              }}
+            >
+              <div className="w-[24px] h-full flex justify-start items-center mr-[9px]">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="21"
+                  height="21"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.7"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-log-out"
+                >
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                  <polyline points="16 17 21 12 16 7" />
+                  <line x1="21" x2="9" y1="12" y2="12" />
+                </svg>
+              </div>
+              Log Out
+            </div>
+          </div>
         </div>
-        <div
+
+        {/* <div
           className="w-auto flex justify-start items-center my-[7px]"
           onClick={() => {
             setPermission(true);
           }}
         >
-          <MdSavings className="mr-[10px] text-[20px] text-[#de8544]" /> Total
-          Savings
-        </div>
+          {" "}
+          Total Savings
+        </div> */}
 
-        <div
+        {/* <div
           className="w-auto flex justify-start items-center my-[7px]"
           onClick={() => {
             doneTutorial();
           }}
         >
-          <MdSavings className="mr-[10px] text-[20px] text-[#de8544]" />{" "}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-shapes"
+          >
+            <path d="M8.3 10a.7.7 0 0 1-.626-1.079L11.4 3a.7.7 0 0 1 1.198-.043L16.3 8.9a.7.7 0 0 1-.572 1.1Z" />
+            <rect x="3" y="14" width="7" height="7" rx="1" />
+            <circle cx="17.5" cy="17.5" r="3.5" />
+          </svg>
           Tutorial
-        </div>
-        <div
+        </div> */}
+        {/* <div
           className="w-auto flex justify-start items-center my-[7px]"
           onClick={downloadPDF}
         >
-          <IoDocumentTextOutline className="mr-[10px] text-[20px] text-[#000000]" />{" "}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-file-text"
+          >
+            <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
+            <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+            <path d="M10 9H8" />
+            <path d="M16 13H8" />
+            <path d="M16 17H8" />
+          </svg>
           Get Report
-        </div>
+        </div> */}
 
-        <div
+        {/* <div
           className="w-auto flex justify-start items-center my-[7px]"
           onClick={() => {
             userSignOut();
           }}
         >
-          <TbLogout className="mr-[10px] text-[20px] text-[#000000]" /> Log Out
-        </div>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-log-out"
+          >
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+            <polyline points="16 17 21 12 16 7" />
+            <line x1="21" x2="9" y1="12" y2="12" />
+          </svg>
+          Log Out
+        </div> */}
 
-        <div
+        {/* <div
           className="w-[calc(100%-40px)] fixed h-[100px] bottom-[60px] left-[20px] font-[google] font-normal text-black rounded-3xl flex flex-col justify-center items-center bg-[#e4f2ff] text-[14px]"
           onClick={() => {
             setPop(!pop);
@@ -553,7 +1257,7 @@ const Settings = (props) => {
           <span className="flex justify-center items-center text-[19px] font-semibold tracking-wide">
             <FaGooglePlay className="text-[25px] mr-[10px]" /> Google Pay
           </span>
-        </div>
+        </div> */}
       </div>
     </>
   );

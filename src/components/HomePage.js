@@ -16,7 +16,7 @@ import OutsideClickHandler from "react-outside-click-handler";
 import { MdKeyboardArrowDown } from "react-icons/md";
 import Tutorial from "./Tutorial";
 import { HiOutlinePlus } from "react-icons/hi";
-import { TbArrowBigLeftLinesFilled } from "react-icons/tb";
+import { TbArrowBigLeftLinesFilled, TbTransactionRupee } from "react-icons/tb";
 
 const monthNames = [
   "January",
@@ -235,7 +235,7 @@ const HomePage = () => {
       {showFilterModal ? (
         <>
           <div
-            className="w-full h-[100svh]  flex flex-col justify-end items-start  backdrop-blur-sm bg-[#68777b7a] p-[20px] fixed top-0 left-0  z-40"
+            className="w-full h-[100svh]  flex flex-col justify-end items-start  backdrop-blur-md bg-[#181f3240] p-[20px] fixed top-0 left-0  z-40"
             style={{ zIndex: 70 }}
             onClick={() => {
               setShowFilterModal(false);
@@ -254,7 +254,7 @@ const HomePage = () => {
                   </div>
                   <div className="h-[20px] aspect-square inRound"></div>
                   <div
-                    className="h-[35px]  aspect-square rounded-full cursor-pointer bg-[#e4f2ff] ml-[-15px] mb-[5px] flex justify-center items-center text-[20px] "
+                    className="h-[35px]  aspect-square rounded-full cursor-pointer bg-[#181F32] text-[white] ml-[-15px] mb-[5px] flex justify-center items-center text-[20px] "
                     onClick={() => {
                       setShowFilterModal(false);
                     }}
@@ -279,7 +279,7 @@ const HomePage = () => {
                   Date in Ascending Order{" "}
                   {filterPos == 1 ? (
                     <>
-                      <TbArrowBigLeftLinesFilled className=" ml-[7px] text-[#23a8d2]" />{" "}
+                      <TbArrowBigLeftLinesFilled className=" ml-[7px] text-[#181F32]" />{" "}
                     </>
                   ) : (
                     <></>
@@ -296,7 +296,7 @@ const HomePage = () => {
                   Date in Descending Order{" "}
                   {filterPos == 2 ? (
                     <>
-                      <TbArrowBigLeftLinesFilled className=" ml-[7px] text-[#23a8d2]" />{" "}
+                      <TbArrowBigLeftLinesFilled className=" ml-[7px] text-[#181F32]" />{" "}
                     </>
                   ) : (
                     <></>
@@ -313,7 +313,7 @@ const HomePage = () => {
                   Price from Low to High{" "}
                   {filterPos == 3 ? (
                     <>
-                      <TbArrowBigLeftLinesFilled className=" ml-[7px] text-[#23a8d2]" />{" "}
+                      <TbArrowBigLeftLinesFilled className=" ml-[7px] text-[#181F32]" />{" "}
                     </>
                   ) : (
                     <></>
@@ -330,7 +330,7 @@ const HomePage = () => {
                   Price from High to Low{" "}
                   {filterPos == 4 ? (
                     <>
-                      <TbArrowBigLeftLinesFilled className=" ml-[7px] text-[#23a8d2]" />{" "}
+                      <TbArrowBigLeftLinesFilled className=" ml-[7px] text-[#181F32]" />{" "}
                     </>
                   ) : (
                     <></>
@@ -347,7 +347,7 @@ const HomePage = () => {
                   Normal{" "}
                   {filterPos == 5 ? (
                     <>
-                      <TbArrowBigLeftLinesFilled className=" ml-[7px] text-[#23a8d2]" />{" "}
+                      <TbArrowBigLeftLinesFilled className=" ml-[7px] text-[#181F32]" />{" "}
                     </>
                   ) : (
                     <></>
@@ -499,16 +499,90 @@ const HomePage = () => {
         <></>
       )}
 
+      {/* <div className="w-full h-[100svh] bg-[white] left-0 top-0 fixed flex flex-col justify-start items-start p-[20px] z-50 font-[google] font-normal">
+        <span className="text-[22px] ">Notifications</span>
+        <div className="w-full border border-[#efebff] my-[15px]"></div>
+        <div className="w-full h-auto flex flex-col justify-start items-start">
+          <div className="w-full h-auto flex justify-start items-start p-[20px] border border-[#efebff] bg-[#efebff] rounded-2xl">
+           
+            <div className="w-full h-auto flex flex-col justify-start items-center">
+              <span className="text-black text-[18px] font-[satoshi] font-semibold flex justify-start items-center w-full">
+                <svg
+                  className="mr-[5px]"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.1"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-indian-rupee"
+                >
+                  <path d="M6 3h12" />
+                  <path d="M6 8h12" />
+                  <path d="m6 13 8.5 8" />
+                  <path d="M6 13h3" />
+                  <path d="M9 13c6.667 0 6.667-10 0-10" />
+                </svg>
+                4573.38 has been Credited
+              </span>
+              <span className="text-[15px] font-[google] m-[7px] text-[#000000e2]">
+                Himadri Purkait has paid 4573.38 /- for split transaction{" "}
+                <b className="text-[black]">House Rent</b>
+              </span>
+            </div>
+          </div>
+          <div className="w-full h-auto flex justify-start items-start p-[20px] border border-[#efebff] bg-[#efebff] rounded-2xl mt-[10px]">
+           
+            <div className="w-full h-auto flex flex-col justify-start items-center">
+              <span className="text-black text-[18px] font-[satoshi] font-semibold flex justify-start items-center w-full">
+                <svg
+                  className="mr-[5px]"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.1"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-indian-rupee"
+                >
+                  <path d="M6 3h12" />
+                  <path d="M6 8h12" />
+                  <path d="m6 13 8.5 8" />
+                  <path d="M6 13h3" />
+                  <path d="M9 13c6.667 0 6.667-10 0-10" />
+                </svg>
+                4573.38 has been Credited
+              </span>
+              <span className="text-[15px] font-[google] m-[7px] text-[#000000e2]">
+                Himadri Purkait has paid 4573.38 /- for split transaction{" "}
+                <b className="text-[black]">House Rent</b>
+              </span>
+              <span className="w-full flex justify-end items-center">
+                <span className="px-[15px] py-[7px] rounded-xl flex justify-center text-[14px] items-center bg-[#ccbffc]">
+                  Mark as Read
+                </span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div> */}
+
       {/* <Tutorial /> */}
-      <div className="w-full h-[calc(100svh-60px)] bg-[#ffffff] flex flex-col justify-start items-center pt-[20px]">
-        <TopNavbar />
+      <div className="w-full h-[calc(100svh-60px)] bg-[#ffffff] flex flex-col justify-start items-center ">
+        {/* <TopNavbar /> */}
         <QuickInfo month={month} year={year} />
-        <div className="w-[calc(100%-40px)] border-[.7px] border-[#eff7ff]"></div>
-        <span className="text-[#989898] font-[google] font-normal text-[14px] w-full mt-[20px] flex justify-between h-[30px] items-start px-[20px] ">
+        {/* <div className="w-[calc(100%-40px)] border-[.7px] border-[#eff7ff]"></div> */}
+        <span className="text-[#00000057] font-[google]  font-normal text-[14px] w-full mt-[20px] flex justify-between h-[30px] items-start px-[20px] ">
           <div className="flex justify-start items-center">
             Transaction History,{" "}
             <span
-              className=" ml-[4px] text-[black] cursor-pointer flex justify-start items-center px-[6px] pl-[8px] h-full rounded-full bg-[#e4f2ff] py-[2px]"
+              className=" ml-[2px] text-[14px] text-[black] cursor-pointer flex justify-start items-center px-[6px] pl-[8px] h-full rounded-full  py-[2px]"
               onClick={() => {
                 setChooseMonth(true);
               }}
@@ -519,12 +593,29 @@ const HomePage = () => {
           </div>
           {tempTransactionHistory?.length !== 0 ? (
             <div
-              className="w-[30px] h-full flex justify-end items-center text-black text-[14px]"
+              className="w-[30px] h-full flex justify-end items-center text-black text-[14px] -rotate-90"
               onClick={() => {
                 setShowFilterModal(!showFilterModal);
               }}
             >
-              <FaFilter />
+              {/* <FaFilter /> */}
+              <svg
+                className=""
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-bar-chart-2"
+              >
+                <line x1="18" x2="18" y1="20" y2="10" />
+                <line x1="12" x2="12" y1="20" y2="4" />
+                <line x1="6" x2="6" y1="20" y2="14" />
+              </svg>
             </div>
           ) : (
             <></>
@@ -534,10 +625,10 @@ const HomePage = () => {
 
         <div
           className={
-            "w-full  flex flex-col items-center justify-start " +
+            "w-full h-auto  flex flex-col items-center justify-start " +
             (reminderCount === 0
-              ? " max-h-[calc(100%-281.4px)]"
-              : " max-h-[calc(100%-391.4px)]")
+              ? " max-h-[calc(100%-240px)]"
+              : " max-h-[calc(100%-370px)]")
           }
           style={{ transition: ".4s" }}
           id="container"
@@ -550,18 +641,21 @@ const HomePage = () => {
           >
             {tempTransactionHistory?.length === 0 ? (
               <>
-                <span className=" w-[calc(100%-40px)] h-[100px] rounded-3xl border-[1px] border-[#e4f2ff] bg-[#e4f2ff]  flex justify-center items-center font-[google] font-normal text-[15px] text-[black]">
-                  No Transactions done this Month
+                <span className=" w-[calc(100%-40px)] h-[100px] rounded-3xl border-[1px] border-[#ebebf500] bg-[#ebebf500]  flex justify-center items-center font-[google] font-normal text-[15px] text-[black] z-10">
+                  <span className="z-10">No Transactions Done</span>
+                  <TbTransactionRupee className="text-[70px] text-[#ebebf5] z-0 fixed " />
                 </span>
               </>
             ) : (
               <>
-                {tempTransactionHistory?.map((data) => {
+                {tempTransactionHistory?.map((data, index) => {
+                  const isLast = index === tempTransactionHistory.length - 1;
                   return (
                     <>
                       <IndependentTransaction
                         // photo={url}
                         data={data}
+                        isLast={isLast}
                         // name={data?.Lable}
                         // date={data?.Date}
                         // amount={data?.Amount}

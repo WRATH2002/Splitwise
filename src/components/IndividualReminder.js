@@ -272,29 +272,29 @@ const IndividualReminder = (props) => {
 
       <div
         className={
-          "w-full min-h-[80px] mb-[5px]  rounded-2xl flex font-[google] justify-center items-center font-normal " +
+          "w-full min-h-[90px] mb-[5px]  rounded-2xl flex font-[google] justify-center items-center font-normal " +
           (getRemainingTime(props?.data?.Date).includes("due")
-            ? " bg-[#6bb7ff]"
-            : " bg-[#c3e2ff]")
+            ? " bg-[#181F32]"
+            : " bg-[#181F32]")
         }
       >
-        <div className="w-[50px] h-full flex flex-col justify-center items-center">
-          <div className="text-[12px] text-[#000000]">
+        <div className="w-[60px] h-full flex flex-col justify-center items-center">
+          <div className="text-[12px] text-[#ffffff]">
             {monthName(props?.data?.Date)}
           </div>
-          <div className="text-black text-[20px] ">
+          <div className="text-white text-[20px] ">
             {date(props?.data?.Date)}
           </div>
         </div>
         <div
           className={
-            "w-[calc(100%-150px)] h-[80px] flex flex-col justify-center items-start px-[10px] " +
+            "w-[calc(100%-160px)] h-full flex flex-col justify-center items-start px-[10px] " +
             (getRemainingTime(props?.data?.Date).includes("due")
-              ? " bg-[#aad6ff] text-[#4a4a4a]"
-              : " bg-[#e4f2ff] text-[#6a6a6a]")
+              ? " bg-[#F4F5F7] text-[#4a4a4a]"
+              : " bg-[#F4F5F7] text-[#6a6a6a]")
           }
         >
-          <div className="text-[14px] leading-[19px]  line-clamp-2 w-full overflow-hidden text-ellipsis">
+          <div className="text-[14px] leading-[19px]  line-clamp-2 w-full overflow-hidden text-black text-ellipsis">
             {props?.data?.Lable}
           </div>
           <div className="text-black text-[17px] w-full flex justify-start items-center ">
@@ -304,10 +304,10 @@ const IndividualReminder = (props) => {
         </div>
         <div
           className={
-            "w-[100px] min-h-[80px] flex flex-col justify-center items-end rounded-r-2xl pr-[15px]" +
+            "w-[100px] h-full flex flex-col justify-center items-end rounded-r-2xl pr-[15px]" +
             (getRemainingTime(props?.data?.Date).includes("due")
-              ? " bg-[#aad6ff] text-[#95241d]"
-              : " bg-[#e4f2ff] text-[#000000]")
+              ? " bg-[#F4F5F7] text-[#e61d0f]"
+              : " bg-[#F4F5F7] text-[#000000]")
           }
         >
           <div className="text-[13px] ">
@@ -315,10 +315,10 @@ const IndividualReminder = (props) => {
           </div>
           <div
             className={
-              "text-[black] w-[30px] h-[30px] mt-[5px] rounded-full text-[18px] flex justify-center items-center cursor-pointer" +
+              "text-[#ffffff] w-[30px] h-[30px] mt-[5px] rounded-full text-[18px] flex justify-center items-center cursor-pointer" +
               (getRemainingTime(props?.data?.Date).includes("due")
-                ? " bg-[#6bb7ff] "
-                : " bg-[#c3e2ff] ")
+                ? " bg-[#181F32] "
+                : " bg-[#181F32] ")
             }
             onClick={() => {
               setApproveModal(true);

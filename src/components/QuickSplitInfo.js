@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { BiRupee } from "react-icons/bi";
 import { IoCalendarSharp } from "react-icons/io5";
+import { LuCornerDownLeft, LuCornerDownRight } from "react-icons/lu";
 import { MdOutlineBarChart } from "react-icons/md";
 import { RiDonutChartFill } from "react-icons/ri";
 
@@ -32,15 +33,32 @@ const QuickSplitInfo = (props) => {
     setMonth(currMonth);
   }
   return (
-    <div className="w-full h-[120px] flex justify-between items-center font-[google] font-normal px-[20px]">
+    <div className="w-[calc(100%-40px)] h-[120px] flex justify-between items-center font-[google] font-normal px-[20px] bg-[#efebff] rounded-2xl p-[20px] mt-[20px]">
       <div className="w-[calc(100%/2)] flex flex-col justify-center items-start ">
-        <span className=" flex justify-center items-center text-[14px] text-[#000000]">
+        <span className=" flex justify-center items-center text-[14px] text-[#00bb00] ">
           {/* <IoCalendarSharp className="text-[12px] mr-[8px]" /> */}
-          Total you will get
+          <span className="text-[#00bb00]">Owed</span>{" "}
+          <svg
+            className="text-[#00bb00]"
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.7"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-arrow-down-left"
+          >
+            <path d="M17 7 7 17" />
+            <path d="M17 17H7V7" />
+          </svg>
         </span>
-        <span className=" font-[google] font-normal text-[22px] text-[#000000] flex justify-start items-center">
-          <span className=" flex justify-start items-center text-[#00bb00]">
-            <BiRupee className="ml-[-4px] " /> {props?.willGet}
+        <span className=" font-[google] font-normal text-[25px] text-[#000000] flex justify-start items-center">
+          <span className=" flex justify-start items-center text-[#000000]">
+            <BiRupee className="ml-[-4px] " /> {props?.willGet}{" "}
+            {/* <LuCornerDownRight className="text-[25px]" /> */}
           </span>
         </span>
         <span className="font-[google]  text-[13px] text-[#000000]   flex justify-start items-center mt-[5px]">
@@ -50,20 +68,35 @@ const QuickSplitInfo = (props) => {
               // setBudgetModal(true);
             }}
           >
+            <span className="text-[#828282]  font-normal">Count : </span>
             {props?.count}
-            <span className="text-[#828282] ml-[4px] font-normal">
-              Transactions{" "}
-            </span>
           </span>
         </span>
       </div>
       <div className="w-[calc(100%/2)] flex flex-col justify-center items-end font-[google] font-normal">
-        <span className=" flex justify-center items-center text-[14px] text-[#000000] ">
-          Total you to pay
+        <span className=" flex justify-center items-center text-[14px] text-[#e61d0f] ">
+          <svg
+            className="text-[#e61d0f]"
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.7"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-arrow-up-right"
+          >
+            <path d="M7 7h10v10" />
+            <path d="M7 17 17 7" />
+          </svg>{" "}
+          Due
         </span>
-        <span className=" font-[google] font-normal text-[22px] text-[#000000] flex justify-start items-center">
-          <span className=" flex justify-start items-center text-[#c43b31]">
-            <BiRupee className="ml-[-3px] " /> {props?.willPay}
+        <span className=" font-[google] font-normal text-[25px] text-[#000000] flex justify-start items-center">
+          <span className=" flex justify-start items-center text-[#000000]">
+            <BiRupee className="ml-[-3px] " /> {props?.willPay}{" "}
+            {/* <LuCornerDownLeft className="text-[25px]" /> */}
           </span>
         </span>
         <span className="font-[google]  text-[13px] text-[#000000]   flex justify-start items-center mt-[5px]">

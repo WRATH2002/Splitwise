@@ -26,9 +26,12 @@ import {
   LuCornerUpLeft,
   LuCornerUpRight,
   LuLock,
+  LuTimer,
   LuUnlock,
 } from "react-icons/lu";
 import { useLongPress } from "use-long-press";
+import { TbTransactionRupee } from "react-icons/tb";
+import RedminderDate from "./RedminderDate";
 
 const monthsShort = [
   "January",
@@ -65,6 +68,7 @@ const ReminderPage = () => {
   const [sideBar, setSideBar] = useState(false);
   const [sec, setSec] = useState("Reminder");
   // const [Date, Date] = useState("");
+  const [reminderDate, setReminderDate] = useState("");
 
   useEffect(() => {
     fetchMonth();
@@ -135,18 +139,20 @@ const ReminderPage = () => {
   function upcoming() {
     let date = new Date().getDate();
     let month = new Date().getMonth() + 1;
+    let count = 0;
 
     let totalUpcoming = tempTransactionHistory.reduce((acc, curr) => {
       let dateArr = curr?.Date?.split("/");
       if (dateArr[1] == month) {
         if (dateArr[0] > date) {
           acc = acc + parseInt(curr.Amount);
+          count = count + 1;
         }
       }
       return acc;
     }, 0);
 
-    return totalUpcoming;
+    return { acc: totalUpcoming, count: count };
   }
 
   function formatAmountWithCommas(amountStr) {
@@ -166,6 +172,7 @@ const ReminderPage = () => {
   function due() {
     let date = new Date().getDate();
     let month = new Date().getMonth() + 1;
+    let count = 0;
 
     let totalDue = tempTransactionHistory.reduce((acc, curr) => {
       let dateArr = curr?.Date?.split("/");
@@ -173,15 +180,17 @@ const ReminderPage = () => {
         if (dateArr[1] == month) {
           if (dateArr[0] <= date) {
             acc = acc + parseInt(curr.Amount);
+            count = count + 1;
           }
         } else {
           acc = acc + parseInt(curr.Amount);
+          count = count + 1;
         }
       }
       return acc;
     }, 0);
 
-    return totalDue;
+    return { acc: totalDue, count: count };
   }
 
   const bind = useLongPress(() => {
@@ -206,7 +215,11 @@ const ReminderPage = () => {
     <div className="w-full h-[calc(100svh-60px)] flex flex-col justify-start items-center">
       {addModal ? (
         <>
-          <AddReminderModal data={setAddModal} />
+          <AddReminderModal
+            reminderDate={reminderDate}
+            data={setAddModal}
+            setReminderDate={setReminderDate}
+          />
         </>
       ) : (
         <></>
@@ -348,46 +361,14 @@ const ReminderPage = () => {
       ) : (
         <></>
       )}
-      <div className="pt-[20px] w-full h-[60px] flex justify-center items-center bg-[#ffffff] border-none">
+      {/* <div className="pt-[20px] w-full h-[60px] flex justify-center items-center bg-[#ffffff] border-none">
         <TopNavbar />
-      </div>
-      <div className="w-full h-[50px]  flex justify-center items-center mt-[10px]">
-        <div className="h-full w-[calc(100%/2)] flex justify-center items-center">
-          <div
-            className={
-              "w-[100px] h-[40px] flex justify-center items-center  cursor-pointer" +
-              (sec === "Reminder"
-                ? " border-b-[2px] border-[black]"
-                : " border-none ")
-            }
-            onClick={() => {
-              setSec("Reminder");
-            }}
-          >
-            Reminders
-          </div>
-        </div>
-        <div className="h-full w-[calc(100%/2)] flex justify-center items-center">
-          <div
-            className={
-              "w-[100px] h-[40px] flex justify-center items-center  cursor-pointer" +
-              (sec === "Note"
-                ? "  border-b-[2px] border-[black]"
-                : " border-none")
-            }
-            onClick={() => {
-              setSec("Note");
-            }}
-          >
-            Notes
-          </div>
-        </div>
-      </div>
+      </div> */}
 
       {sec === "Note" ? (
-        <div className="w-full h-[calc(100%-120px)] overflow-y-scroll flex justify-start items-start flex-wrap p-[15px] font-[google] ">
+        <div className="w-full h-[calc(100%-60px)] overflow-y-scroll flex justify-start items-start flex-wrap p-[15px] font-[google] ">
           <div className="w-full flex justify-start items-start flex-wrap ">
-            <div className="min-w-[calc((100%-20px)/2)] text-[16px] min-h-[100px] bg-[#ffdb98] rounded-3xl mx-[5px] mb-[10px] flex justify-center items-center cursor-pointer">
+            <div className="min-w-[calc((100%-20px)/2)] text-[16px] min-h-[100px] bg-[#F4F5F7] rounded-2xl mx-[5px] mb-[10px] flex justify-center items-center cursor-pointer">
               <div
                 className="w-auto flex justify-center items-center p-[20px]"
                 onClick={() => {
@@ -402,7 +383,7 @@ const ReminderPage = () => {
                 }}
                 style={{ transition: ".4s" }}
               >
-                <div className="w-[30px] h-[30px] rounded-full bg-[#eba41c] text-white flex justify-center items-center  mr-[10px]">
+                <div className="w-[30px] h-[30px] rounded-full bg-[#181F32] text-[#ffffff] flex justify-center items-center  mr-[10px]">
                   <BiPlus
                     className={
                       "text-[25px] z-0" + (edit ? " rotate-45" : " rotate-0")
@@ -418,11 +399,11 @@ const ReminderPage = () => {
                 <>
                   <div
                     className={
-                      "w-[calc((100%-20px)/2)] min-h-[210px]  rounded-3xl mx-[5px] mb-[10px] flex flex-col justify-between items-start overflow-hidden p-[20px] cursor-pointer" +
+                      "w-[calc((100%-20px)/2)] min-h-[210px]  rounded-2xl mx-[5px] mb-[10px] flex flex-col justify-between items-start overflow-hidden p-[20px] cursor-pointer" +
                       (index % 2 != 0 ? " mt-[-110px]" : " mt-[0px]") +
                       (deleteData.includes(data)
-                        ? " bg-[#dae4ec] "
-                        : " bg-[#ecf5ff] ")
+                        ? " bg-[#d0d1d4] "
+                        : " bg-[#F4F5F7] ")
                     }
                     onClick={() => {
                       if (edit) {
@@ -447,12 +428,12 @@ const ReminderPage = () => {
                       <span className="text-[22px] w-full  overflow-hidden line-clamp-1 text-ellipsis">
                         {data?.Title}
                       </span>
-                      <span className=" text-[14px] text-[#3c3c3c] w-full overflow-hidden line-clamp-4 text-ellipsis  mt-[4px]">
+                      <span className=" text-[14px] text-[#00000085] w-full overflow-hidden line-clamp-4 text-ellipsis  mt-[4px]">
                         {data?.Body}
                       </span>
                     </div>
                     <div className="w-full flex h-[26px] justify-between items-center">
-                      <span className="text-[14px] text-[#3c3c3c]">
+                      <span className="text-[14px] text-[#00000085]">
                         {data?.Date}
                       </span>
                       {edit ? (
@@ -460,7 +441,7 @@ const ReminderPage = () => {
                           className={
                             "w-[26px] h-[26px] rounded-full  flex justify-center items-center" +
                             (deleteData.includes(data)
-                              ? " bg-[#eba41c] text-white"
+                              ? " bg-[#181F32] text-white"
                               : " bg-[#ffffff] text-white")
                           }
                         >
@@ -478,40 +459,124 @@ const ReminderPage = () => {
           </div>
         </div>
       ) : (
-        <div className="w-full h-[calc(100%-120px)] bg-[#ffffff] py-[20px]">
-          <div className="w-[calc(100%-40px)] ml-[20px] h-[135px] flex  justify-between items-center p-[20px] bg-[#e4f2ff] rounded-3xl border-[1px] border-[#e4f2ff] ">
-            <div className="w-full  flex flex-col justify-center items-start font-[google] font-normal text-[22px] text-white ">
-              <span className="text-[#6c6c6c] text-[14px]">
-                Total Due till June
+        <div className="w-full h-[calc(100%-200px)] bg-[#ffffff]">
+          <div className="w-[100%] h-[140px] flex  justify-between items-center  bg-[#191A2C] p-[20px]  mb-[20px]">
+            <div className="w-[calc((100%-40px)/2)]  flex flex-col justify-center items-start font-[google] font-normal text-[25px] text-white ">
+              <span className="text-[#ffffffd3] text-[14px]">
+                Total Due by -{" "}
+                <span className="text-white ml-[3px]">
+                  {monthsShort[parseInt(new Date().getMonth())]}
+                </span>
               </span>
-              <span className="flex justify-start items-center text-[#c43b31] mt-[-5px]">
+              <span className="flex justify-start items-center text-[#ffffff] mt-[0px]">
                 <BiRupee className="ml-[-3px]" />{" "}
-                {formatAmountWithCommas(due())}
+                {formatAmountWithCommas(due()?.acc)}
               </span>
-              <span className="text-[#6c6c6c] text-[14px]">
-                Total Upcoming in June
-              </span>
-              <span className="flex justify-start items-center text-[#c43b31] mt-[-5px]">
-                <BiRupee className="ml-[-3px]" />{" "}
-                {formatAmountWithCommas(upcoming())}
+              <span className="flex justify-start items-center text-[14px] py-[2px] px-[7px] rounded-xl bg-[#F4F5F7] text-[#000000] mt-[0px]">
+                x {due()?.count}
               </span>
             </div>
-            <div className="w-auto h-full flex flex-col justify-center items-center font-[google] font-normal text-black">
+            <div className="w-[40px] h-full flex flex-col justify-center items-center font-[google] font-normal text-black">
               <div
-                className="w-[40px] h-[40px] rounded-2xl bg-[#c3e2ff] flex justify-center items-center"
+                className="w-[40px] h-[40px] rounded-2xl bg-[#F4F5F7] flex justify-center items-center"
                 onClick={() => {
                   setAddModal(true);
                   // setSplitModal(true);
                 }}
               >
-                <FiPlus className="text-black text-[20px]" />
+                {/* <FiPlus className="text-black text-[20px]" /> */}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.3"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-plus"
+                >
+                  <path d="M5 12h14" />
+                  <path d="M12 5v14" />
+                </svg>
               </div>
             </div>
+            <div className="w-[calc((100%-40px)/2)]  flex flex-col justify-center items-end font-[google] font-normal text-[25px] text-white ">
+              <span className="text-[#ffffffd3] text-[14px]">
+                Upcoming for -{" "}
+                <span className="text-white ml-[3px]">
+                  {monthsShort[parseInt(new Date().getMonth())]}
+                </span>
+              </span>
+              <span className="flex justify-start items-center text-[#e61d0f] mt-[0px]">
+                <BiRupee className="text-white ml-[-3px]" />{" "}
+                <div className="text-[#ffffff]">
+                  {formatAmountWithCommas(upcoming()?.acc)}
+                </div>
+              </span>
+              <span className="flex justify-start items-center text-[#e61d0f] mt-[0px] text-[14px]">
+                <div className="py-[2px] px-[7px] rounded-xl bg-[#F4F5F7] text-[#000000] flex justify-center items-center">
+                  x {upcoming()?.count}
+                </div>
+              </span>
+            </div>
           </div>
-          <div className="flex justify-start items-center text-[14px] font-[google] font-normal mt-[20px] px-[20px] text-[#828282]">
+
+          {/* <div className="w-full h-[50px]  flex justify-center items-center mt-[10px]">
+            <div className="h-full w-[calc(100%/2)] flex justify-center items-center">
+              <div
+                className={
+                  "w-[100px] h-[40px] flex justify-center items-center  cursor-pointer" +
+                  (sec === "Reminder"
+                    ? " border-b-[2px] border-[black]"
+                    : " border-b-[2px] border-transparent ")
+                }
+                onClick={() => {
+                  setSec("Reminder");
+                }}
+              >
+                Reminders
+              </div>
+            </div>
+            <div className="h-full w-[calc(100%/2)] flex justify-center items-center">
+              <div
+                className={
+                  "w-[100px] h-[40px] flex justify-center items-center  cursor-pointer" +
+                  (sec === "Note"
+                    ? "  border-b-[2px] border-[black]"
+                    : " border-b-[2px] border-transparent")
+                }
+                onClick={() => {
+                  setSec("Note");
+                }}
+              >
+                Notes
+              </div>
+            </div>
+          </div> */}
+          {/* <div className="flex justify-start items-center">
+            Transaction History,{" "}
+            <span
+              className=" ml-[2px] text-[14px] text-[black] cursor-pointer flex justify-start items-center px-[6px] pl-[8px] h-full rounded-full  py-[2px]"
+              onClick={() => {
+                setChooseMonth(true);
+              }}
+            >
+              {monthNames[month - 1]} - {year}{" "}
+              <MdKeyboardArrowDown className="text-[21px]" />
+            </span>
+          </div> */}
+          <RedminderDate
+            reminderDate={reminderDate}
+            setReminderDate={setReminderDate}
+            tempTransactionHistory={tempTransactionHistory}
+            setAddModal={setAddModal}
+          />
+          <div className="flex justify-start items-center text-[14px] font-[google] font-normal mt-[10px] px-[20px] text-[#00000057]">
             Reminders,{" "}
             <span
-              className=" ml-[4px] text-black flex justify-start items-center px-[6px] pl-[8px] h-full rounded-full bg-[#e4f2ff] py-[2px]"
+              className=" ml-[2px] text-[14px] text-[black] cursor-pointer flex justify-start items-center px-[6px] pl-[8px] h-full rounded-full  py-[2px]"
               onClick={() => {
                 setChooseMonth(true);
                 // setAddModal(true);
@@ -524,10 +589,11 @@ const ReminderPage = () => {
           </div>
 
           <div className="contt w-full h-[calc(100%-225px)] flex flex-col justify-start items-center overflow-y-scroll mt-[10px] px-[20px]">
-            {tempTransactionHistory.length === 0 ? (
+            {tempTransactionHistory.length == 0 ? (
               <>
-                <span className="mt-[30px] w-full h-[100px] rounded-3xl border-[1px] border-[#e4f2ff] bg-[#e4f2ff]  flex justify-center items-center font-[google] font-normal text-[15px] text-[black]">
-                  No Reminders remaining this Month
+                <span className=" w-[calc(100%-40px)] h-[100px] rounded-3xl border-[1px] border-[#ebebf500] bg-[#ebebf500]  flex justify-center items-center font-[google] font-normal text-[15px] text-[black] z-10">
+                  <span className="z-10">No Reminders Here</span>
+                  <LuTimer className="text-[70px] text-[#ebebf5] z-0 fixed " />
                 </span>
               </>
             ) : (
@@ -569,7 +635,7 @@ const ReminderPage = () => {
         <>
           <div
             className={
-              "h-[50px]  rounded-r-full bg-[#ffcb6b] top-[75px] left-0 fixed flex justify-end items-center" +
+              "h-[50px]  rounded-r-full bg-[#181F32] top-[75px] left-0 fixed flex justify-end items-center" +
               (sideBar ? " w-[7px]" : " w-[20px] cursor-pointer")
             }
             onClick={() => {
@@ -581,13 +647,13 @@ const ReminderPage = () => {
               <></>
             ) : (
               <>
-                <LuChevronRight className="text-[20px] text-black" />{" "}
+                <LuChevronRight className="text-[20px] text-[white]" />{" "}
               </>
             )}
           </div>
           <div
             className={
-              " h-auto mb-[-10px] mt-[10px]  text-[20px] left-[20px]  flex justify-evenly items-center fixed top-[66px] flex-col w-[50px]  rounded-2xl text-black drop-shadow-md" +
+              " h-auto mb-[-10px] mt-[10px]  text-[20px] left-[16px]  flex justify-evenly items-center fixed top-[66px] flex-col w-[50px]  rounded-2xl text-white drop-shadow-md" +
               (sideBar ? " ml-[0px] " : " ml-[-80px]")
             }
             style={{ transition: ".4s" }}
@@ -595,35 +661,97 @@ const ReminderPage = () => {
             {/* <div>
               <LuLock className="my-[10px]" />
             </div> */}
-            <div className=" h-[150px] bg-[#ffcb6b]   flex justify-evenly items-center flex-col w-[50px] py-[10px] rounded-3xl text-black drop-shadow-sm">
+            <div className=" h-[150px] bg-[#181F32]   flex justify-evenly items-center flex-col w-[45px] py-[10px] rounded-2xl text-white drop-shadow-sm">
               {/* <div>
               <LuLock className="my-[10px]" />
             </div> */}
               {/* deleteNoteFromFirebase() */}
-              <div>
+              {/* <div>
                 <LuUnlock className="my-[10px] cursor-pointer" />
-              </div>
-              <div>
+              </div> */}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="21"
+                height="21"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-lock"
+              >
+                <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+              <svg
+                onClick={() => {
+                  setSideBar(false);
+                  setEdit(false);
+                  deleteNoteFromFirebase();
+                }}
+                xmlns="http://www.w3.org/2000/svg"
+                width="21"
+                height="21"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-trash"
+              >
+                <path d="M3 6h18" />
+                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+              </svg>
+              {/* <div>
                 <AiOutlineDelete
                   className="my-[10px] cursor-pointer"
-                  onClick={() => {
-                    setSideBar(false);
-                    setEdit(false);
-                    deleteNoteFromFirebase();
-                  }}
+                  
                 />
-              </div>
-              <div>
+              </div> */}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="21"
+                height="21"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-pin"
+              >
+                <path d="M12 17v5" />
+                <path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z" />
+              </svg>
+              {/* <div>
                 <PiPushPinBold className="my-[10px] cursor-pointer" />
-              </div>
+              </div> */}
             </div>
             <div
-              className=" h-[50px] bg-[#ffcb6b]  mt-[10px] flex justify-evenly items-center w-[50px] rounded-3xl text-black drop-shadow-sm"
+              className=" h-[45px] bg-[#181F32]  mt-[10px] flex justify-evenly items-center w-[45px] rounded-3xl text-white drop-shadow-sm"
               onClick={() => {
                 setSideBar(false);
               }}
             >
-              <BiPlus className="rotate-45 text-[30px] cursor-pointer" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="21"
+                height="21"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-x"
+              >
+                <path d="M18 6 6 18" />
+                <path d="m6 6 12 12" />
+              </svg>
+              {/* <BiPlus className="rotate-45 text-[30px] cursor-pointer" /> */}
             </div>
           </div>
         </>

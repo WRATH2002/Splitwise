@@ -12,6 +12,7 @@ import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
 import ExpenseBarGraph from "./ExpenseBarGraph";
 import OutsideClickHandler from "react-outside-click-handler";
 import { HiOutlinePlus } from "react-icons/hi";
+import { PiGraph } from "react-icons/pi";
 
 const monthNames = [
   "January",
@@ -214,7 +215,7 @@ const QuickInfo = (props) => {
       {budgetModal === true ? (
         <>
           <div
-            className="w-full h-[100svh]  flex flex-col justify-end items-center backdrop-blur-sm bg-[#68777b7a] p-[20px] fixed top-0 left-0  z-40"
+            className="w-full h-[100svh]  flex flex-col justify-end items-center backdrop-blur-md bg-[#70708628] p-[20px] fixed top-0 left-0  z-40"
             // onClick={() => {
             //   // updateBudget();
             //   setBudgetModal(false);
@@ -228,11 +229,32 @@ const QuickInfo = (props) => {
             <div className="w-full flex flex-col justify-end items-start h-[40px]">
               <div className="w-full h-auto flex justify-start items-end z-30">
                 <div className=" w-auto text-[22px] whitespace-nowrap font-[google] font-normal  p-[20px] py-[9px] h-[40px] bg-[#ffffff] flex  justify-start items-center rounded-t-[22px]">
-                  <span className="mt-[10px]">Set New Budget</span>
+                  <span className="mt-[10px] flex justify-start items-center">
+                    {" "}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.7"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="lucide lucide-hand-coins"
+                    >
+                      <path d="M11 15h2a2 2 0 1 0 0-4h-3c-.6 0-1.1.2-1.4.6L3 17" />
+                      <path d="m7 21 1.6-1.4c.3-.4.8-.6 1.4-.6h4c1.1 0 2.1-.4 2.8-1.2l4.6-4.4a2 2 0 0 0-2.75-2.91l-4.2 3.9" />
+                      <path d="m2 16 6 6" />
+                      <circle cx="16" cy="9" r="2.9" />
+                      <circle cx="6" cy="5" r="3" />
+                    </svg>
+                    &nbsp;&nbsp;Set New Budget
+                  </span>
                 </div>
                 <div className="h-[20px] aspect-square inRound"></div>
                 <div
-                  className="h-[35px]  aspect-square rounded-full cursor-pointer bg-[#e4f2ff] ml-[-15px] mb-[5px] flex justify-center items-center text-[20px] "
+                  className="h-[35px]  aspect-square rounded-full cursor-pointer bg-[#efebff] ml-[-15px] mb-[5px] flex justify-center items-center text-[20px] "
                   onClick={() => {
                     setBudgetModal(false);
                     setNewBudget("");
@@ -252,7 +274,7 @@ const QuickInfo = (props) => {
                   <BiRupee className="text-black" />
                 </div>
                 <input
-                  className="outline-none w-full pl-[26px] rounded-md h-[40px] bg-transparent border border-[#acebff] px-[10px] text-black font-[google] font-normal text-[14px]"
+                  className="outline-none w-full pl-[26px] rounded-md h-[40px] bg-transparent border border-[#beb0f4] px-[10px] text-black font-[google] font-normal text-[14px]"
                   placeholder="Enter Budget"
                   value={newBudget}
                   onChange={(e) => {
@@ -625,20 +647,39 @@ const QuickInfo = (props) => {
       ) : (
         <></>
       )}
-      <div className="w-full h-[120px] flex justify-between items-center font-[google] font-normal px-[20px]">
+      <div className="w-full  h-[140px] flex justify-between items-start font-[google] font-normal bg-[#181F32] pt-[30px] px-[20px]">
         <div className="w-[calc(100%/2)] flex flex-col justify-center items-start ">
-          <span className=" flex justify-center items-center text-[14px] text-[#989898]">
-            <span className="text-black flex justify-start items-center mr-[5px]">
-              <IoCalendarSharp className="text-[12px] mr-[8px]" />
-              {monthNames[month - 1]},
+          <span className=" flex justify-center items-center text-[14px] text-[#aeaeae]">
+            <span className="text-[#ffffff] flex justify-start items-center ml-[-3px] font-normal tracking-wide">
+              {/* <IoCalendarSharp className="text-[12px] mr-[8px]" /> */}
+              <svg
+                // className="mr-[6px] "
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#ffffff"
+                stroke-width="1.7"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-calendar"
+              >
+                <path d="M8 2v4" />
+                <path d="M16 2v4" />
+                <rect width="18" height="18" x="3" y="4" rx="2" />
+                <path d="M3 10h18" />
+              </svg>
+              &nbsp;&nbsp;
+              {monthNames[props?.month - 1]},
             </span>{" "}
-            Total Expense
+            &nbsp;&nbsp;Total Expense
           </span>
-          <span className=" font-[google] font-normal text-[22px] text-[#000000] flex justify-start items-center">
+          <span className=" font-[google] font-normal text-[25px] text-[#ffffff] flex justify-start items-center">
             {parseFloat(monthlyExpense) <= budget ? (
               <>
-                <span className=" flex justify-start items-center text-[#000000]">
-                  <BiRupee className="ml-[-3px] " />{" "}
+                <span className=" flex justify-start items-center text-[#ffffff]">
+                  <BiRupee className="ml-[-6px]" />{" "}
                   {monthlyExpense.length != 0 ? (
                     <>{formatAmountWithCommas(monthlyExpense)}</>
                   ) : (
@@ -654,8 +695,8 @@ const QuickInfo = (props) => {
               </>
             ) : (
               <>
-                <span className=" flex justify-start items-center text-[#000000]">
-                  <BiRupee className="ml-[-3px] " />{" "}
+                <span className=" flex justify-start items-center text-[#ffffff]">
+                  <BiRupee className="ml-[-6px]" />{" "}
                   {monthlyExpense.length != 0 ? (
                     <>{formatAmountWithCommas(monthlyExpense)}</>
                   ) : (
@@ -671,11 +712,11 @@ const QuickInfo = (props) => {
               </>
             )}
           </span>
-          <span className="font-[google]  text-[13px] text-[#000000]   flex justify-start items-center mt-[5px]">
+          <span className="font-[google]  text-[13px] text-[#ffffff]   flex justify-start items-center mt-[5px]">
             <Line
               percent={percent}
               strokeWidth={6}
-              trailColor="#989898"
+              trailColor="#ffffff"
               trailWidth={2}
               strokeColor={"" + (percent < 75 ? " #00bb00" : " #e61d0f")}
               className="h-[4px]"
@@ -690,10 +731,28 @@ const QuickInfo = (props) => {
                 <>Set Budget</>
               ) : (
                 <>
-                  <BiRupee className="ml-[-3px] " />{" "}
+                  <BiRupee className="ml-[-3px] text-[14px] " />{" "}
                   {formatAmountWithCommas(budget)}{" "}
-                  <span className="text-[#828282] ml-[4px] font-normal">
-                    [ Budget ]{" "}
+                  <span className="text-[#ffffff] ml-[6px] font-normal">
+                    {/* [ Budget ]{" "} */}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.7"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="lucide lucide-hand-coins"
+                    >
+                      <path d="M11 15h2a2 2 0 1 0 0-4h-3c-.6 0-1.1.2-1.4.6L3 17" />
+                      <path d="m7 21 1.6-1.4c.3-.4.8-.6 1.4-.6h4c1.1 0 2.1-.4 2.8-1.2l4.6-4.4a2 2 0 0 0-2.75-2.91l-4.2 3.9" />
+                      <path d="m2 16 6 6" />
+                      <circle cx="16" cy="9" r="2.9" />
+                      <circle cx="6" cy="5" r="3" />
+                    </svg>
                   </span>
                 </>
               )}
@@ -708,14 +767,49 @@ const QuickInfo = (props) => {
               {formatAmountWithCommas(income)}
             </span>
           </span>
-          <span className=" font-[google] font-normal text-[22px] text-[#000000] flex justify-start items-center">
+          <span className=" font-[google] font-normal text-[25px] text-[#ffffff] flex justify-start items-center">
             <span className="opacity-0">{transactionHistory.length}</span>
-            <RiDonutChartFill className="mr-[9px]" />{" "}
-            <MdOutlineBarChart
+            {/* <RiDonutChartFill className="mr-[9px]" />{" "} */}
+            {/* <PiGraph /> */}
+            {/* <MdOutlineBarChart
               onClick={() => {
                 setShowGraph(true);
               }}
-            />
+            /> */}
+            {/* <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.7"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-bell"
+            >
+              <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+              <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+            </svg> */}
+            <svg
+              onClick={() => {
+                setShowGraph(true);
+              }}
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="3"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-bar-chart-2"
+            >
+              <line x1="18" x2="18" y1="20" y2="10" />
+              <line x1="12" x2="12" y1="20" y2="4" />
+              <line x1="6" x2="6" y1="20" y2="14" />
+            </svg>
           </span>
           {income == 0 ? (
             <span
@@ -733,9 +827,25 @@ const QuickInfo = (props) => {
                 setIncomeModal(true);
               }}
             >
-              Curr. Income{" "}
-              <span className="text-[black] flex justify-end items-center ml-[6px]">
-                <BiRupee className=" " />
+              {/* Curr. Income{" "} */}
+              <span className="text-[#ffffff] flex justify-end items-center ml-[6px]">
+                <svg
+                  className="mr-[6px]"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.7"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-wallet"
+                >
+                  <path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1" />
+                  <path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4" />
+                </svg>
+                <BiRupee className="text-[14px] " />
                 {formatAmountWithCommas(income)}
               </span>
             </span>

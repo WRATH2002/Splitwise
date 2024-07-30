@@ -5,7 +5,7 @@ import { FiArrowLeft } from "react-icons/fi";
 import { GiPartyPopper } from "react-icons/gi";
 import { HiMiniBell } from "react-icons/hi2";
 import { IoFastFood, IoGitNetworkOutline } from "react-icons/io5";
-import { LuChevronRight } from "react-icons/lu";
+import { LuArrowLeft, LuChevronRight, LuCornerDownRight } from "react-icons/lu";
 import {
   MdCall,
   MdCallSplit,
@@ -23,9 +23,14 @@ import {
   onSnapshot,
   where,
 } from "firebase/firestore";
-import { IoMdInformationCircle } from "react-icons/io";
+import {
+  IoIosCard,
+  IoIosCheckmarkCircle,
+  IoMdCall,
+  IoMdInformationCircle,
+} from "react-icons/io";
 import { AiFillInfoCircle } from "react-icons/ai";
-import { FaCircleExclamation } from "react-icons/fa6";
+import { FaCircleCheck, FaCircleExclamation } from "react-icons/fa6";
 import { GiAutoRepair } from "react-icons/gi";
 import { FaTruckMedical } from "react-icons/fa6";
 import { BsFillFuelPumpFill, BsTaxiFrontFill } from "react-icons/bs";
@@ -37,6 +42,9 @@ import {
 } from "react-icons/md";
 import { HiShoppingBag } from "react-icons/hi2";
 import { PiSealQuestionFill } from "react-icons/pi";
+import { QR } from "react-qr-rounded";
+import { RxPerson } from "react-icons/rx";
+import { TbClockFilled } from "react-icons/tb";
 
 const MemberProfile = (props) => {
   const [name, setName] = useState("");
@@ -93,56 +101,62 @@ const MemberProfile = (props) => {
   return (
     <>
       <div
-        className=" w-full h-[50px] mb-[10px] z-30 flex justify-center items-center font-[google] font-normal text-[16px] cursor-pointer"
+        className="w-full flex justify-start items-center mt-[5px]"
         onClick={() => {
           props?.setNotificationModal(!props?.notificationModal);
           props?.setIsPaid(tempIsPaid);
           props?.setNotName(name);
         }}
       >
-        <img
-          className="w-[45px] aspect-square object-cover rounded-2xl bg-[#ffeadc]  z-30" // {
-          //   +
-          //   (isPaid ? " grayscale opacity-60" : " grayscale-0")
-          // }
-          src="https://images.pexels.com/photos/4917253/pexels-photo-4917253.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-        ></img>
-        <div className="w-[calc(100%-150px)] h-full px-[15px] flex flex-col justify-center items-start ">
-          <span>{name}</span>
-          <span className="text-[14px] text-[#828282] flex justify-start items-center">
-            <MdCall className="text-[15px] mr-[5px]" /> {phone}
-          </span>
+        <div className="w-[50px] h-[50px] rounded-full bg-white flex justify-center items-center text-[24px] ">
+          {name.charAt(0).toUpperCase()}
         </div>
-        <div className="w-[100px] h-full flex justify-end items-center text-[14px] ">
-          {props?.isOwner ? (
-            <>
-              {tempIsPaid ? (
-                <>
-                  Paid{" "}
-                  <FaCheckCircle className="text-[15px] ml-[5px] text-[#00bb00] z-40" />
-                </>
-              ) : (
-                <>
-                  Pending{" "}
-                  <FaCircleExclamation className="text-[15px] ml-[5px] text-[#e61d0f] z-40" />{" "}
-                </>
-              )}
-            </>
-          ) : (
-            <></>
-          )}
-        </div>
-        {/* {isPaid ? (
-          <div className="w-full h-full flex justify-center items-center mt-[-50px] z-40">
-            <FaCheckCircle className="text-[20px] text-[#5aeaff] z-40" /> de8544
+        <div className="ml-[15px] w-[calc(100%-65px)] flex justify-between items-center">
+          <div className="w-auto flex flex-col justify-center items-start">
+            <span className="text-[16px]">{name}</span>
+            <span className="text-[14px] text-[#6f6f6f] mt-[-3px] flex justify-start items-center">
+              <IoMdCall className="text-[14px] mr-[4px]" /> {phone}
+            </span>
           </div>
-        ) : (
-          <></>
-        )} */}
+          <div className="w-auto rounded-2xl  flex justify-end items-center text-[14px] ">
+            {props?.isOwner ? (
+              <>
+                {tempIsPaid ? (
+                  <>
+                    Paid{" "}
+                    <IoIosCheckmarkCircle className="text-[16px] ml-[5px] text-[#00bb00] z-40" />
+                  </>
+                ) : (
+                  <>
+                    Pending{" "}
+                    <TbClockFilled className="text-[16px] ml-[5px] text-[#e61d0f] z-40" />{" "}
+                  </>
+                )}
+              </>
+            ) : (
+              <></>
+            )}
+          </div>
+        </div>
       </div>
     </>
   );
 };
+const paymentName = ["Online UPI", "Credit/Debit Card", "Cash"];
+const months = [
+  "JAN",
+  "FEB",
+  "MAR",
+  "APR",
+  "MAY",
+  "JUN",
+  "JUL",
+  "AUG",
+  "SEP",
+  "OCT",
+  "NOV",
+  "DEC",
+];
 
 export const MoreAboutTransaction = (props) => {
   const [section, setSection] = useState(1);
@@ -154,6 +168,7 @@ export const MoreAboutTransaction = (props) => {
   const [notificationModal, setNotificationModal] = useState(false);
   const [notName, setNotName] = useState("");
   const [isPaid, setIsPaid] = useState(false);
+  const [categoryDropdown, setCategoryDropdown] = useState(false);
 
   useEffect(() => {
     fetchName(props?.data?.Owner);
@@ -399,19 +414,20 @@ export const MoreAboutTransaction = (props) => {
   return (
     <>
       {confirmModal ? (
-        <div className="w-full h-[100svh] fixed z-50 bg-[#68686871] top-0 left-0 flex justify-center items-center backdrop-blur-md">
-          <div className="w-[320px] h-auto p-[30px] py-[23px] bg-[#fff5ee] rounded-3xl flex flex-col justify-center items-start">
+        <div className="w-full h-[100svh] fixed z-50 bg-[#70708628] p-[20px] top-0 left-0 flex justify-center items-center backdrop-blur-md">
+          <div className="w-full h-auto p-[30px] py-[23px] bg-[#ffffff] rounded-3xl flex flex-col justify-center items-start">
             <span className="w-full text-[22px] text-black font-[google] font-normal flex justify-start items-center ">
-              Confirm{" "}
-              <span className="text-[#de8544] ml-[10px]">Transaction</span>
+              Confirm Transaction
+              {/* <span className="text-[#de8544] ml-[10px]">Transaction</span> */}
             </span>
 
-            <span className="w-full text-[14px] text-[#000000] font-[google] font-normal flex justify-center items-start whitespace-pre-wrap mt-[5px]  ">
-              Have you paid your Splitted Bill already. The owner will be able
-              to see your transaction. Do you really want to confirm ?
+            <span className="w-full text-[14px] text-[#0000007e] font-[google] font-normal flex justify-center items-start whitespace-pre-wrap mt-[10px]  ">
+              Are you sure you want to proceed? Once confirmed, the owner will
+              be notified of your transaction. Have you already paid your share
+              of the bill?
             </span>
 
-            <span className="w-full text-[14px] text-[#434343b5] font-[google] font-normal flex justify-start items-center mt-[10px]">
+            {/* <span className="w-full text-[14px] text-[#434343b5] font-[google] font-normal flex justify-start items-center mt-[10px]">
               <span className="mr-[5px] text-[#000000]">Label :</span>{" "}
               {props?.data?.Lable}
             </span>
@@ -428,7 +444,7 @@ export const MoreAboutTransaction = (props) => {
                   parseInt(props?.data?.MemberCount)
                 ).toFixed(2)
               )}
-            </span>
+            </span> */}
             <span
               className="w-full text-[14px] text-[#000000] font-[google] font-normal flex justify-start items-center whitespace-pre-wrap   cursor-pointer mt-[10px]"
               onClick={() => {
@@ -444,14 +460,92 @@ export const MoreAboutTransaction = (props) => {
                 // }}
               >
                 <span className="font-[google] font-normal mb-[10px] mt-[10px]">
-                  Please select Payment Method
+                  Select a Payment Mode
                 </span>
-                <div className="w-full h-auto flex justify-start items-center">
-                  <span
+                <div className="flex flex-col justify-end items-start  w-full h-0 ">
+                  <div
                     className={
-                      "p-[10px] w-auto px-[20px] mb-[5px]  rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                      "w-[calc(100%-100px)] rounded-xl mt-[5px] h-[150px] mb-[5px] font-[google] font-normal text-[16px] overflow-y-scroll fixed flex-col flex justify-start items-start  border border-[#ebe6ff] bg-[#ece9f5] p-[15px] py-[9px] left-[50px]" +
+                      (categoryDropdown ? " flex" : " hidden")
+                    }
+                  >
+                    {/* <div className="w-full py-[6px] flex justify-start items-center">
+                            Select Category
+                          </div>
+                          <div className="w-full my-[6px] flex justify-start items-center border border-[#beb0f4]"></div> */}
+                    {paymentName.map((data, index) => {
+                      return (
+                        <div
+                          className="w-full py-[6px] flex justify-start items-center z-50"
+                          onClick={() => {
+                            setMode(data);
+                            setCategoryDropdown(false);
+                          }}
+                        >
+                          {/* <SmallSizeIcon Category={data} /> */}
+                          <div className="" key={index}>
+                            {data}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+                <div className="w-full h-auto flex justify-start items-center">
+                  <div
+                    className="w-full h-auto flex justify-start items-center z-50"
+                    onClick={() => {
+                      setCategoryDropdown(!categoryDropdown);
+                    }}
+                  >
+                    <div
+                      className={
+                        "outline-none w-full h-[45px] rounded-xl bg-transparent border border-[#beb0f4]  px-[10px] text-black font-[google] font-normal text-[16px] z-40 flex justify-start items-center"
+                      }
+                      // placeholder="Price"
+                      // value={price}
+                    >
+                      {mode}
+                    </div>
+                    <div className="w-[30px] h-[45px] flex justify-start items-center ml-[-30px]">
+                      {categoryDropdown ? (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="lucide lucide-chevron-up"
+                        >
+                          <path d="m18 15-6-6-6 6" />
+                        </svg>
+                      ) : (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="lucide lucide-chevron-down"
+                        >
+                          <path d="m6 9 6 6 6-6" />
+                        </svg>
+                      )}
+                    </div>
+                  </div>
+                  {/* <span
+                    className={
+                      "p-[5px] w-auto px-[10px] mb-[5px]  rounded-md h-[40px] border border-[#beb0f4] flex justify-center items-center" +
                       (mode == "Online UPI"
-                        ? " bg-[#ffddc5] text-[black]"
+                        ? " bg-[#beb0f4] text-[black]"
                         : " text-[#535353]")
                     }
                     onClick={() => {
@@ -462,26 +556,40 @@ export const MoreAboutTransaction = (props) => {
                   </span>
                   <span
                     className={
-                      "p-[10px] w-auto px-[20px]  mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
-                      (mode == "Offline Cash"
-                        ? " bg-[#ffddc5] text-[black]"
+                      "p-[5px] w-auto px-[10px] mb-[5px]  rounded-md h-[40px] border border-[#beb0f4] flex justify-center items-center" +
+                      (mode == "Credit/Debit Card"
+                        ? " bg-[#beb0f4] text-[black]"
                         : " text-[#535353]")
                     }
                     onClick={() => {
-                      setMode("Offline Cash");
+                      setMode("Credit/Debit Card");
                     }}
                   >
-                    Offline Cash
+                    Credit/Debit Card
                   </span>
+                  <span
+                    className={
+                      "p-[10px] w-auto px-[20px]  mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#beb0f4] flex justify-center items-center" +
+                      (mode == "Cash"
+                        ? " bg-[#beb0f4] text-[black]"
+                        : " text-[#535353]")
+                    }
+                    onClick={() => {
+                      setMode("Cash");
+                    }}
+                  >
+                    Cash
+                  </span> */}
                 </div>
               </div>
             </span>
 
-            <div className="w-full flex justify-end items-end font-[google] font-normal text-[15px] text-black h-[20px] mt-[20px]">
+            <div className="w-full flex justify-center items-end font-[google] font-normal text-[15px] text-black mt-[20px]">
               <div
-                className="h-full mr-[20px] flex justify-center items-center cursor-pointer  "
+                className="flex justify-center mr-[15px]  px-[15px] py-[10px] rounded-3xl bg-[#efefef] text-[black] items-center cursor-pointer  "
                 onClick={() => {
                   setConfirmModal(false);
+                  setMode("");
                   // setInclude(false);
                   // setNewIncome("");
                   // setError("");
@@ -489,17 +597,27 @@ export const MoreAboutTransaction = (props) => {
               >
                 Cancel
               </div>
-              <div
-                className="h-full  flex justify-center items-center text-[#de8544] cursor-pointer "
-                onClick={() => {
-                  // updateIncome();
-                  // deleteReminder();
-                  setConfirmModal(false);
-                  addToTransaction();
-                }}
-              >
-                Confirm
-              </div>
+              {mode.length == 0 ? (
+                <>
+                  <div className=" flex justify-center  px-[15px] py-[10px] rounded-3xl bg-[#e8e3fd] items-center text-[#0000006c]  ">
+                    Confirm
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div
+                    className="flex justify-center  px-[15px] py-[10px] rounded-3xl bg-[#beb0f4] text-[black] items-center cursor-pointer  "
+                    onClick={() => {
+                      // updateIncome();
+                      // deleteReminder();
+                      setConfirmModal(false);
+                      addToTransaction();
+                    }}
+                  >
+                    Confirm
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -577,278 +695,319 @@ export const MoreAboutTransaction = (props) => {
       ) : (
         <></>
       )}
-      <div className="w-full h-[100svh] fixed top-0 left-0 flex justify-start items-center flex-col p-[20px] bg-[#ffffff] font-[google] font-normal z-30 overflow-y-scroll pt-[50px] pb-[10px]">
-        <div className="w-[calc(100%-40px)] h-[40px] flex justify-between items-center fixed top-[20px] ">
-          <div
-            className="w-[40px] aspect-square flex justify-start items-center cursor-pointer"
-            onClick={() => {
-              props?.setShowMore(false);
-            }}
-          >
-            <FiArrowLeft className="text-[black] text-[23px]" />
-          </div>
-          {/* <div
-            className="w-[40px] aspect-square flex justify-end items-center cursor-pointer"
-            onClick={() => {
-              // props?.setShowMore(false);
-            }}
-          >
-            <HiMiniBell className="text-[black] text-[23px]" />
-          </div> */}
-        </div>
 
-        <div className="w-full h-[60px] flex justify-center items-center text-[#23a8d2] text-[55px]">
-          {props?.data?.Category === "Food & Drinks" ? (
-            <IoFastFood />
-          ) : props?.data?.Category === "Shopping" ? (
-            <FaShopify />
-          ) : props?.data?.Category === "Grocery" ? (
-            <HiShoppingBag />
-          ) : props?.data?.Category === "Medical" ? (
-            <FaTruckMedical />
-          ) : props?.data?.Category === "Travel" ? (
-            // <MdOutlineTravelExplore />
-            // <PiMapPinLineFill />
-            // <BiSolidPlaneTakeOff />
-            <MdOutlineAirplanemodeActive className="rotate-45" />
-          ) : props?.data?.Category === "Entertainment" ? (
-            <GiPartyPopper />
-          ) : props?.data?.Category === "Electricity Bill" ? (
-            <MdElectricBolt />
-          ) : props?.data?.Category === "Petrol / Diesel" ? (
-            <BsFillFuelPumpFill />
-          ) : props?.data?.Category === "Taxi Fare" ? (
-            <BsTaxiFrontFill />
-          ) : props?.data?.Category === "Car Maintanance" ? (
-            <GiAutoRepair />
-          ) : props?.data?.Category === "Education" ? (
-            <MdSchool />
-          ) : props?.data?.Category === "Pet Care" ? (
-            <MdOutlinePets />
-          ) : (
-            <>
-              <PiSealQuestionFill />
-            </>
-          )}
+      <div className="w-full fixed top-0 left-0 h-[100svh] p-[20px] flex flex-col justify-start items-start bg-[white] text-black font-[google] font-normal z-30">
+        <div
+          className=" h-[30px] fixed left-[20px] top-[20px] flex justify-start items-center"
+          onClick={() => {
+            props?.setShowMore(false);
+          }}
+        >
+          <LuArrowLeft className="text-[24px] " />{" "}
         </div>
-        <div className="font-[google] font-normal h-[50px]  text-black mt-[15px] text-[24px] w-full flex flex-col justify-center items-center">
-          <span>{props?.data?.Lable}</span>
-          <span className="text-[15px] text-[#828282]">
-            {props?.data?.Members?.length === 0 ? (
-              <></>
-            ) : (
-              <>{props?.data?.Members?.length} member's, </>
-            )}
-            {calculateDuration(props?.data?.Date)}
-          </span>
+        <div className=" h-[30px] flex justify-start items-center mb-[20px]">
+          {/* <LuArrowLeft className="text-[24px] h-[30px] flex justify-start items-center" />{" "} */}
         </div>
-        {/* <div className="w-full border-[.7px] border-[#fee6d7] my-[30px]"></div> */}
-        <div className="w-full flex justify-between items-start bg-[#e4f2ff] border-[1px] border-[#e4f2ff] rounded-3xl p-[20px] mt-[30px] text-black">
-          <div className="w-[calc(100%/2)] flex flex-col justify-center items-start">
-            <span className=" flex justify-center items-center text-[14px] text-[#828282]">
-              {props?.owner ? (
-                <span className="text-[#828282] ">Total Remaining</span>
-              ) : (
-                <span className="text-[#828282]">Total to Pay</span>
-              )}
-            </span>
-            <span
-              className={
-                " font-[google] font-normal text-[22px]  flex justify-start items-center" +
-                (props?.owner ? " text-[#00bb00]" : " text-[#de8544]")
-              }
-            >
-              <BiRupee className="ml-[-3px] " />{" "}
-              {props?.owner ? (
-                <>
-                  {formatAmountWithCommas(
-                    parseFloat(props?.data?.Amount) -
-                      (
-                        parseFloat(props?.data?.Amount) /
-                        parseInt(props?.data?.MemberCount)
-                      ).toFixed(2) *
-                        (splitRemaining.length + 1)
-                  )}
-                </>
-              ) : (
-                <>
-                  {formatAmountWithCommas(
-                    (
-                      parseFloat(props?.data?.Amount) /
-                      parseInt(props?.data?.MemberCount)
-                    ).toFixed(2)
-                  )}
-                </>
-              )}
-            </span>
-            {props?.owner ? (
-              <>
-                <span className="font-[google] font-normal text-[14px]  text-[#828282] flex justify-end items-center">
-                  Remaining :{" "}
-                  <span className="text-black flex justify-end items-center ml-[6px]">
-                    {parseInt(props?.data?.MemberCount) -
-                      splitRemaining.length -
-                      1}{" "}
-                    Person
+        <div className="w-full h-[calc(100svh-50px)] flex flex-col justify-start items-start overflow-y-scroll overflow-x-hidden">
+          <div className="w-full h-auto rounded-2xl bg-[#ebebf5] flex flex-col justify-start items-start p-[20px]">
+            <div className="w-full h-auto flex justify-between items-center">
+              <div className="w-full h-auto flex flex-col justify-start items-start">
+                <span className="text-[25px] w-[90%] overflow-hidden text-ellipsis line-clamp-1 ">
+                  {props?.data?.Lable}
+                </span>
+                <span className="flex justify-start items-center mt-[-3px]">
+                  <LuCornerDownRight className="text-[24px]" />{" "}
+                  <span className="mt-[4px] ml-[3px]">
+                    {props?.data?.Members?.length === 0 ? (
+                      <></>
+                    ) : (
+                      <>Members {props?.data?.Members?.length} , </>
+                    )}{" "}
+                    <span className="text-[#6f6f6f]">
+                      {(props?.data?.Date).split("/")[0]}{" "}
+                      {months[parseInt((props?.data?.Date).split("/")[1]) - 1]}{" "}
+                      {(props?.data?.Date).split("/")[2]}
+                    </span>
                   </span>
                 </span>
+
+                {/* <span className="flex justify-start items-center mt-[3px]">
+                Spent <BiRupee className="text-[20px] ml-[2px]" />{" "}
+                <span className="text-[20px]">25,000.00</span>
+              </span> */}
+              </div>
+              <div className="text-[55px]">
+                {props?.data?.Category === "Food & Drinks" ? (
+                  <IoFastFood />
+                ) : props?.data?.Category === "Shopping" ? (
+                  <FaShopify />
+                ) : props?.data?.Category === "Grocery" ? (
+                  <HiShoppingBag />
+                ) : props?.data?.Category === "Medical" ? (
+                  <FaTruckMedical />
+                ) : props?.data?.Category === "Travel" ? (
+                  <MdOutlineAirplanemodeActive className="rotate-45" />
+                ) : props?.data?.Category === "Entertainment" ? (
+                  <GiPartyPopper />
+                ) : props?.data?.Category === "Electricity Bill" ? (
+                  <MdElectricBolt />
+                ) : props?.data?.Category === "Petrol / Diesel" ? (
+                  <BsFillFuelPumpFill />
+                ) : props?.data?.Category === "Taxi Fare" ? (
+                  <BsTaxiFrontFill />
+                ) : props?.data?.Category === "Car Maintanance" ? (
+                  <GiAutoRepair />
+                ) : props?.data?.Category === "Education" ? (
+                  <MdSchool />
+                ) : props?.data?.Category === "Pet Care" ? (
+                  <MdOutlinePets />
+                ) : (
+                  <>
+                    <PiSealQuestionFill />
+                  </>
+                )}
+              </div>
+            </div>
+            <div className="w-[calc(100%+70px)] h-auto flex justify-center items-center ml-[-35px] my-[5px]">
+              <div className="w-[30px] aspect-square rounded-full bg-[white]"></div>
+              <div className="w-full border-b-[2px] border-[#d1d1d1] border-dashed "></div>
+              <div className="w-[30px] aspect-square rounded-full bg-[white]"></div>
+            </div>
+            <div className="w-full h-auto flex flex-col justify-start items-start ">
+              <div className="w-full flex justify-start items-start h-auto">
+                <div className="w-[60%] h-auto flex flex-col justify-start items-start text-[14px]">
+                  <span className="">Date</span>
+                  <span className="text-[#6f6f6f] mt-[-3px]">
+                    {formatDate(props?.data?.Date)}
+                  </span>
+                  <span className="mt-[3px]">Category</span>
+                  <span className="text-[#6f6f6f] mt-[-3px]">
+                    {props?.data?.Category}
+                  </span>
+                  <span className="mt-[3px]">Payment Method</span>
+                  <span className="text-[#6f6f6f] mt-[-3px]">
+                    {props?.data?.Mode}
+                  </span>
+                  {props?.data?.TransactionType === "Split" ? (
+                    <>
+                      <span className="mt-[3px]">Splitted By</span>
+                      <span className="text-[#6f6f6f] mt-[-3px]">
+                        {props?.owner ? <>You</> : <>{name}</>}
+                      </span>
+                    </>
+                  ) : (
+                    <></>
+                  )}
+                </div>
+                <div className="w-[40%] h-auto flex flex-col justify-start items-start">
+                  <span className="text-[15px] mb-[10px]">
+                    Scan for Reciept
+                  </span>
+                  <QR
+                    className="w-full aspect-square"
+                    color="#000"
+                    backgroundColor="#ebebf5"
+                    rounding={100}
+                    errorCorrectionLevel="L"
+                  >
+                    https://qph.cf2.quoracdn.net/main-qimg-e68b4c3d6705f994907bb86a1b6a5803-lq
+                  </QR>
+                </div>
+              </div>
+              <div className="w-full h-auto mt-[20px] flex justify-evenly items-center py-[20px] rounded-2xl bg-[#ffffff]">
+                <div className="flex flex-col justify-center items-center ">
+                  <span className="text-[14px] text-[#6f6f6f]">Spent</span>
+                  <span className="text-[20px] mt-[-4px]">
+                    {formatAmountWithCommas(props?.data?.Amount)}
+                  </span>
+                </div>
+                <div className="border border-[#eaeaea] rounded-full h-[40px]"></div>
+                <div className="flex flex-col justify-center items-center ">
+                  <span className="text-[14px] text-[#6f6f6f]">
+                    {props?.owner ? <>Owed</> : <>Due</>}
+                  </span>
+                  <span
+                    className={
+                      "text-[20px] mt-[-4px] " +
+                      (props?.owner
+                        ? formatAmountWithCommas(
+                            parseFloat(props?.data?.Amount) -
+                              (
+                                parseFloat(props?.data?.Amount) /
+                                parseInt(props?.data?.MemberCount)
+                              ).toFixed(2) *
+                                (splitRemaining.length + 1)
+                          ) == 0
+                          ? " text-[#000000]"
+                          : " text-[#00bb00]"
+                        : props?.data?.Paid
+                        ? " text-[#000000]"
+                        : " text-[#e61d0f]")
+                    }
+                  >
+                    {props?.owner ? (
+                      <>
+                        {formatAmountWithCommas(
+                          parseFloat(props?.data?.Amount) -
+                            (
+                              parseFloat(props?.data?.Amount) /
+                              parseInt(props?.data?.MemberCount)
+                            ).toFixed(2) *
+                              (splitRemaining.length + 1)
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        {props?.data?.Paid ? (
+                          <>0.00</>
+                        ) : (
+                          <>
+                            {formatAmountWithCommas(
+                              (
+                                parseFloat(props?.data?.Amount) /
+                                parseInt(props?.data?.MemberCount)
+                              ).toFixed(2)
+                            )}
+                          </>
+                        )}
+                      </>
+                    )}
+                  </span>
+                </div>
+                <div className="border border-[#eaeaea] rounded-full h-[40px]"></div>
+                <div className="flex flex-col justify-center items-center ">
+                  <span className="text-[14px] text-[#6f6f6f]">
+                    {props?.owner ? <>Debtors</> : <>Members</>}
+                  </span>
+                  <span className="text-[20px] mt-[-4px]">
+                    {props?.owner ? (
+                      <>
+                        {parseInt(props?.data?.MemberCount) -
+                          splitRemaining.length -
+                          1}
+                        /{props?.data?.MemberCount}
+                      </>
+                    ) : (
+                      <>{props?.data?.MemberCount}</>
+                    )}
+                  </span>
+                </div>
+                {/* <div className="flex flex-col justify-center items-center">
+                <span className="text-[14px] text-[#6f6f6f]">Per Head</span>
+                <span className="text-[20px]">5,000.00</span>
+              </div> */}
+              </div>
+            </div>
+          </div>
+          {/* {props?.owner ? ( */}
+          <div className="w-full h-auto rounded-2xl bg-[#ebebf5] flex flex-col justify-start items-start p-[20px] mt-[20px]">
+            <div className="w-full h-auto flex justify-between items-center">
+              <div className="w-full h-auto flex flex-col justify-start items-start">
+                <span className="text-[25px] w-[90%] overflow-hidden text-ellipsis line-clamp-1 ">
+                  {props?.owner ? <>Memeber's Status</> : <>Payment Status</>}
+                </span>
+                <span className="flex justify-start items-center mt-[-3px]">
+                  {props?.owner ? (
+                    <>
+                      <RxPerson className="text-[18px]" />{" "}
+                    </>
+                  ) : (
+                    <>
+                      <LuCornerDownRight className="text-[24px]" />{" "}
+                    </>
+                  )}
+
+                  <span className="mt-[4px] ml-[3px]">
+                    {props?.owner ? (
+                      <>{props?.data?.MemberCount}</>
+                    ) : (
+                      <>
+                        {props?.data?.Paid ? (
+                          <span className=" text-[#00bb00]">Paid</span>
+                        ) : (
+                          <span className=" text-[#e61d0f]">Pending</span>
+                        )}
+                      </>
+                    )}
+                  </span>
+                </span>
+                {/* <span className="flex justify-start items-center mt-[3px]">
+                Spent <BiRupee className="text-[20px] ml-[2px]" />{" "}
+                <span className="text-[20px]">25,000.00</span>
+              </span> */}
+              </div>
+              <div className="">
+                {" "}
+                <IoIosCard className="text-[55px] " />
+              </div>
+            </div>
+            <div className="w-[calc(100%+70px)] h-auto flex justify-center items-center ml-[-35px] my-[5px]">
+              <div className="w-[30px] aspect-square rounded-full bg-[white]"></div>
+              <div className="w-full border-b-[2px] border-[#d1d1d1] border-dashed "></div>
+              <div className="w-[30px] aspect-square rounded-full bg-[white]"></div>
+            </div>
+            {props?.owner ? (
+              <>
+                <div className="w-full h-auto flex flex-col justify-start items-start ">
+                  <div className="w-full h-auto flex flex-col justify-start items-center ">
+                    {props?.data?.Members.map((data) => {
+                      return (
+                        <MemberProfile
+                          userId={data}
+                          usersPaid={splitRemaining}
+                          notificationModal={notificationModal}
+                          setNotificationModal={setNotificationModal}
+                          isPaid={isPaid}
+                          setIsPaid={setIsPaid}
+                          setNotName={setNotName}
+                          owner={props?.data?.Owner}
+                          isOwner={props?.owner}
+                        />
+                      );
+                    })}
+                  </div>
+                </div>
               </>
             ) : (
-              <></>
+              <>
+                <div className="w-full h-auto flex  justify-between items-center ">
+                  <div className="flex flex-col justify-center items-start">
+                    <span className="text-[14px] text-[#6f6f6f]">To Pay</span>
+                    <span className="text-[24px] mt-[-3px]">
+                      {formatAmountWithCommas(
+                        (
+                          parseFloat(props?.data?.Amount) /
+                          parseInt(props?.data?.MemberCount)
+                        ).toFixed(2)
+                      )}
+                    </span>
+                  </div>
+                  {props?.data?.Paid ? (
+                    <>
+                      <div className="flex justify-center items-center px-[10px] py-[5px] rounded-xl text-white bg-[#00bb00] ">
+                        Paid
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div
+                        className="flex justify-center items-center px-[10px] py-[5px] rounded-xl bg-[white] cursor-pointer"
+                        onClick={() => {
+                          setConfirmModal(true);
+                        }}
+                      >
+                        Mark Paid
+                      </div>
+                    </>
+                  )}
+                </div>
+              </>
             )}
           </div>
-          <div className="w-[calc(100%/2)] flex flex-col justify-center items-end ">
-            <span className=" flex justify-center items-center text-[14px]  text-[#828282]">
-              <span className=" ">Total Expense</span>
-            </span>
-            <span className=" font-[google] font-normal text-[22px]  flex justify-start items-center">
-              {/* <BiRupee className="ml-[-3px] " /> 345 /{" "} */}
-              <span className="text-[#000000] ml-[5px] flex justify-end items-center">
-                <BiRupee className="ml-[-3px] " />{" "}
-                {formatAmountWithCommas(props?.data?.Amount)}
-              </span>
-            </span>
-            {/* {props?.owner ? (
-              <> */}
-            <span className="font-[google] font-normal text-[14px]  text-[#828282] flex justify-end items-center">
-              Per Person{" "}
-              <span className="text-black flex justify-end items-center ml-[6px]">
-                <BiRupee className=" " />
-                {formatAmountWithCommas(
-                  parseFloat(props?.data?.Amount) /
-                    parseInt(props?.data?.MemberCount).toFixed(2)
-                )}
-              </span>
-            </span>
-            {/* </>
-            ) : (
-              <></>
-            )} */}
-          </div>
+          {/* ) : ( */}
+          {/* <></> */}
+          {/* )} */}
         </div>
-        <div className="font-[google] font-normal  text-black mt-[15px]  w-full flex flex-col justify-center items-start text-[15px]">
-          <span className="text-[16px] w-full flex justify-start items-center h-[40px]">
-            <span
-              className="text-black h-full w-[calc(100%/2)] flex justify-start items-center  " // {
-              //   + (section === 1 ? " border-b-[1px] border-[#98d832]" : " border-b-[1px] border-transparent")
-              // }
-              onClick={() => {
-                setSection(1);
-              }}
-            >
-              Transaction Details :
-            </span>
-            {/* <span
-              className={
-                "text-white h-full w-[calc(100%/2)] flex justify-end items-center border-b-[1px]" +
-                (section === 2 ? " border-[#98d832]" : " border-transparent")
-              }
-              onClick={() => {
-                setSection(2);
-              }}
-            >
-              Bill Info
-            </span> */}
-          </span>
-          {section === 1 ? (
-            <>
-              <span className=" text-[#828282] text-[14px] w-full flex justify-between items-center mt-[10px]">
-                <span>Date </span>{" "}
-                <span className="text-black ">
-                  {formatDate(props?.data?.Date)}
-                </span>
-              </span>
-              <span className=" text-[#828282] text-[14px] mt-[4px] w-full flex justify-between items-center">
-                <span>Category </span>{" "}
-                <span className="text-black ">{props?.data?.Category}</span>
-              </span>
-              <span className=" text-[#828282] text-[14px] mt-[4px] w-full flex justify-between items-center">
-                <span>Total Transaction </span>{" "}
-                <span className="text-black flex justify-end items-center">
-                  <BiRupee className="" /> {props?.data?.Amount}
-                </span>
-              </span>
-              <span className=" text-[#828282] text-[14px] mt-[4px] w-full flex justify-between items-center">
-                <span>Payment Method </span>{" "}
-                <span className="text-black ">{props?.data?.Mode}</span>
-              </span>
-              <span className=" text-[#828282] text-[14px] mt-[4px] w-full flex justify-between items-center">
-                <span>Bill Splitted By </span>{" "}
-                <span className="text-black ">
-                  {props?.owner ? <>You</> : <>{name}</>}
-                </span>
-              </span>
-              <div className="w-full h-[60px] rounded-3xl bg-[#e4f2ff]  border-[1px] border-[#e4f2ff] cursor-pointer mt-[20px] flex justify-between items-center text-[14px] text-black px-[20px]">
-                <div className="flex justify-start items-center">
-                  <FaReceipt className="text-[20px] mr-[9px]" /> View Reciept /
-                  Bill
-                </div>
-                <div>
-                  <LuChevronRight className="text-[20px] " />
-                </div>
-              </div>
-              <div className="w-full mt-[20px] flex flex-col justify-start items-center">
-                <span className="w-full flex justify-start items-center">
-                  Member's
-                </span>
-                <div className="w-full flex justify-start flex-wrap conta mt-[10px]">
-                  {props?.data?.Members.map((data) => {
-                    return (
-                      <MemberProfile
-                        userId={data}
-                        usersPaid={splitRemaining}
-                        notificationModal={notificationModal}
-                        setNotificationModal={setNotificationModal}
-                        isPaid={isPaid}
-                        setIsPaid={setIsPaid}
-                        setNotName={setNotName}
-                        owner={props?.data?.Owner}
-                        isOwner={props?.owner}
-                      />
-                    );
-                  })}
-                </div>
-              </div>
-            </>
-          ) : (
-            <>
-              <img
-                src="https://media-cdn.tripadvisor.com/media/photo-l/12/e6/36/67/receipt.jpg"
-                className="w-[100px] h-[100px] rounded-2xl object-cover mt-[30px]"
-              ></img>
-            </>
-          )}
-        </div>
-        {props?.owner ? (
-          <></>
-        ) : (
-          <>
-            <div className="w-full h-[55px] flex justify-center items-center font-[google] bg-[#ffffff] z-40 font-normal fixed  bottom-0 left-0 text-[#000000]  text-[16px]">
-              {props?.data?.Paid === true ? (
-                <div className="w-auto h-[40px] flex justify-center items-center rounded-full px-[14px] bg-[#e4f2ff] cursor-default">
-                  Paid
-                </div>
-              ) : (
-                <div
-                  className="w-auto h-[40px] flex justify-center items-center rounded-full px-[14px] bg-[#6bb7ff] cursor-pointer text-black"
-                  onClick={() => {
-                    setConfirmModal(true);
-                  }}
-                >
-                  Mark as Paid
-                </div>
-              )}
-            </div>
-          </>
-        )}
-
-        {props?.owner ? (
-          <></>
-        ) : (
-          <>
-            <div className="w-full min-h-[55px] "></div>
-          </>
-        )}
       </div>
     </>
   );
@@ -941,7 +1100,7 @@ const SplitTransaction = (props) => {
     const monthName = months[month - 1];
 
     // Return the formatted string
-    return `${dayWithSuffix} ${monthName}, ${year}`;
+    return `${monthName}, ${dayWithSuffix}`;
   }
 
   function getSameSplitTransaction() {
@@ -988,7 +1147,7 @@ const SplitTransaction = (props) => {
       )}
 
       <div
-        className="w-[calc(100%-40px)] min-h-[60px] border-b-[.7px] border-[#eff7ff] font-[google] font-normal text-[15px] flex justify-start  items-center cursor-pointer"
+        className="independentTran  w-[calc(100%-40px)] min-h-[64px]  font-[google] font-normal text-[15px] text-white flex justify-center items-center  cursor-pointer  border-b-[.7px] border-[#f2eeff]"
         onClick={() => {
           setShowMore(true);
         }}
@@ -1006,7 +1165,7 @@ const SplitTransaction = (props) => {
                       ).toFixed(2) *
                         (splitRemaining.length + 1) ===
                     0
-                    ? " text-[#a3a3a3]"
+                    ? " text-[#d5d5d5]"
                     : " text-[#00bb00]"
                   : " text-[#828282]")
               }
@@ -1017,7 +1176,7 @@ const SplitTransaction = (props) => {
                 "" +
                 (!props?.data?.PaymentStatus
                   ? props?.data?.Paid === true
-                    ? " text-[#a3a3a3]"
+                    ? " text-[#d5d5d5]"
                     : " text-[#de8544]"
                   : " text-[#828282]")
               }
@@ -1032,7 +1191,7 @@ const SplitTransaction = (props) => {
         >
           <span
             className={
-              "" +
+              "text-[16px]" +
               (parseFloat(props?.data?.Amount) -
                 (
                   parseFloat(props?.data?.Amount) /
@@ -1040,7 +1199,7 @@ const SplitTransaction = (props) => {
                 ).toFixed(2) *
                   (splitRemaining.length + 1) ===
                 0 || props?.data?.Paid === true
-                ? " text-[#a3a3a3]"
+                ? " text-[#d5d5d5] "
                 : " ")
             }
           >
@@ -1048,7 +1207,7 @@ const SplitTransaction = (props) => {
           </span>
           <span
             className={
-              "text-[13px] " +
+              "text-[14px]  " +
               (parseFloat(props?.data?.Amount) -
                 (
                   parseFloat(props?.data?.Amount) /
@@ -1056,50 +1215,33 @@ const SplitTransaction = (props) => {
                 ).toFixed(2) *
                   (splitRemaining.length + 1) ===
                 0 || props?.data?.Paid === true
-                ? " text-[#a3a3a3]"
+                ? " text-[#d5d5d5]"
                 : " text-[#828282]")
             }
           >
             {/* {props?.member} Members */}
             {checkOwner(props?.data?.Owner) ? (
               <>
-                <span className="">Splitted By</span>, You
+                <span className="">By</span>, You
               </>
             ) : (
               <>
-                <span className="">Splitted By</span>, {name}
+                <span className="">By</span>, {name}
               </>
             )}
           </span>
         </div>
         <div
           className={
-            "w-[100px]  flex flex-col justify-center items-end" +
+            "w-[100px] whitespace-nowrap overflow-visible flex flex-col justify-center items-end" +
             (!props?.data?.PaymentStatus ? " text-black" : " text-[#828282]")
           }
         >
-          <div
-            className={
-              "text-[12px] " +
-              (parseFloat(props?.data?.Amount) -
-                (
-                  parseFloat(props?.data?.Amount) /
-                  parseInt(props?.data?.MemberCount)
-                ).toFixed(2) *
-                  (splitRemaining.length + 1) ===
-                0 || props?.data?.Paid === true
-                ? " text-[#a3a3a3]"
-                : " text-[#828282]")
-            }
-          >
-            {formatDate(props?.data?.Date)}
-          </div>
-
           {checkOwner(props?.data?.Owner) ? (
             <>
               <div
                 className={
-                  "" +
+                  "text-[16px] w-full flex justify-end items-center whitespace-nowrap" +
                   (parseFloat(props?.data?.Amount) -
                     (
                       parseFloat(props?.data?.Amount) /
@@ -1107,7 +1249,7 @@ const SplitTransaction = (props) => {
                     ).toFixed(2) *
                       (splitRemaining.length + 1) ===
                   0
-                    ? " text-[#a3a3a3]"
+                    ? " text-[#d5d5d5]"
                     : " text-[#00bb00]")
                 }
               >
@@ -1132,9 +1274,9 @@ const SplitTransaction = (props) => {
             <>
               <div
                 className={
-                  "" +
+                  "text-[16px] w-full flex justify-end items-center whitespace-nowrap" +
                   (props?.data?.Paid === true
-                    ? " text-[#a3a3a3]"
+                    ? " text-[#d5d5d5]"
                     : " text-[#de8544]")
                 }
               >
@@ -1147,6 +1289,22 @@ const SplitTransaction = (props) => {
               </div>
             </>
           )}
+          <div
+            className={
+              "text-[13px] " +
+              (parseFloat(props?.data?.Amount) -
+                (
+                  parseFloat(props?.data?.Amount) /
+                  parseInt(props?.data?.MemberCount)
+                ).toFixed(2) *
+                  (splitRemaining.length + 1) ===
+                0 || props?.data?.Paid === true
+                ? " text-[#00000057]"
+                : " text-[#00000057]")
+            }
+          >
+            {formatDate(props?.data?.Date)}
+          </div>
         </div>
       </div>
     </>

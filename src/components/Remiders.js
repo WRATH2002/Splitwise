@@ -328,19 +328,20 @@ const RemiderCard = (props) => {
       ) : (
         <></>
       )}
+      {/* <div className="h-[130px] w-full overflow-x-scroll flex justify-start items-center py-[15px] bg-slate-200"> */}
       <div
         className={
-          "min-w-[280px] h-full  rounded-3xl flex font-[google] justify-center items-center font-normal ml-[10px]" +
+          "min-w-[280px] h-full  rounded-2xl flex font-[google] justify-center items-center font-normal ml-[10px]" +
           (getRemainingTime(props?.data?.Date).includes("due")
-            ? " bg-[#6bb7ff]"
-            : " bg-[#c3e2ff]")
+            ? " bg-[#181F32]"
+            : " bg-[#181F32]")
         }
       >
         <div className="w-[50px] h-full flex flex-col justify-center items-center">
-          <div className="text-[12px] text-[#000000]">
+          <div className="text-[12px] text-[#ffffff]">
             {monthsShort[props?.data?.Date?.split("/")[1] - 1]}
           </div>
-          <div className="text-black text-[20px] ">
+          <div className="text-[white] text-[20px] ">
             {props?.data?.Date?.split("/")[0]}
           </div>
         </div>
@@ -348,11 +349,11 @@ const RemiderCard = (props) => {
           className={
             "w-[140px] h-full  flex flex-col justify-center items-start px-[10px] " +
             (getRemainingTime(props?.data?.Date).includes("due")
-              ? " bg-[#aad6ff] text-[#4a4a4a]"
-              : " bg-[#e4f2ff] text-[#6a6a6a]")
+              ? " bg-[#F5F6FA] text-[#4a4a4a]"
+              : " bg-[#F5F6FA] text-[#6a6a6a]")
           }
         >
-          <div className="text-[14px] leading-[19px] text-[#6a6a6a] line-clamp-2 w-full overflow-hidden text-ellipsis">
+          <div className="text-[14px] leading-[19px] text-[#000000] line-clamp-2 w-full overflow-hidden text-ellipsis">
             {props?.data?.Lable}
           </div>
           <div className="text-black text-[17px] w-full flex justify-start items-center ">
@@ -362,10 +363,10 @@ const RemiderCard = (props) => {
         </div>
         <div
           className={
-            "w-[90px] h-full flex flex-col justify-center items-end pr-[10px] rounded-r-3xl" +
+            "w-[90px] h-full flex flex-col justify-center items-end pr-[10px] rounded-r-2xl" +
             (getRemainingTime(props?.data?.Date).includes("due")
-              ? " bg-[#aad6ff] text-[#e61d0f]"
-              : " bg-[#e4f2ff] text-[#000000]")
+              ? " bg-[#F5F6FA] text-[#e61d0f]"
+              : " bg-[#F5F6FA] text-[#000000]")
           }
         >
           <div className="text-[13px] whitespace-nowrap ">
@@ -373,10 +374,10 @@ const RemiderCard = (props) => {
           </div>
           <div
             className={
-              "text-black w-[30px] h-[30px]  mt-[5px] rounded-full text-[20px] flex justify-center items-center cursor-pointer" +
+              "text-[white] w-[30px] h-[30px]  mt-[5px] rounded-full text-[20px] flex justify-center items-center cursor-pointer" +
               (getRemainingTime(props?.data?.Date).includes("due")
-                ? " bg-[#6bb7ff] "
-                : " bg-[#c3e2ff] ")
+                ? " bg-[#181F32] "
+                : " bg-[#181F32] ")
             }
             onClick={() => {
               setApproveModal(true);
@@ -386,6 +387,7 @@ const RemiderCard = (props) => {
           </div>
         </div>
       </div>
+      {/* </div> */}
     </>
   );
 };

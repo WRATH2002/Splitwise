@@ -75,7 +75,7 @@ const AddReminderModal = (props) => {
   const [price, setPrice] = useState("");
   const [type, setType] = useState("");
   const [category, setCategory] = useState("");
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState(props?.reminderDate);
   const [member, setMember] = useState("");
   const [preDate, setPreDate] = useState(0);
   const [mode, setMode] = useState("");
@@ -87,7 +87,7 @@ const AddReminderModal = (props) => {
     console.log(value?.day + "/" + value?.month?.number + "/" + value?.year);
   }, []);
 
-  const [value, setValue] = useState(new Date());
+  const [value, setValue] = useState(props?.reminderDate);
 
   function addToFirebase() {
     const user = firebase.auth().currentUser;
@@ -96,7 +96,7 @@ const AddReminderModal = (props) => {
       .update({
         Reminders: arrayUnion({
           Lable: label,
-          Date: value?.day + "/" + value?.month?.number + "/" + value?.year,
+          Date: value,
           Amount: price,
           TransactionType: "Single",
           Members: "0",
@@ -111,6 +111,7 @@ const AddReminderModal = (props) => {
     setCategory("");
     setMode("");
     setBill("");
+    props?.setReminderDate("");
   }
 
   function isNumeric(str) {
@@ -120,31 +121,43 @@ const AddReminderModal = (props) => {
   }
 
   return (
-    <div className="w-full h-[100svh] fixed z-30 bg-[#68686871] top-0 left-0 flex justify-center items-center backdrop-blur-md">
-      <div className="w-[320px] max-h-[400px] py-[27px] bg-[#fff5ee] rounded-3xl flex flex-col justify-center items-start z-40">
+    <div className="w-full h-[100svh] fixed z-30 bg-[#70708628] top-0 left-0 flex justify-center items-center backdrop-blur-md p-[20px]">
+      <div className="w-full max-h-[400px] py-[27px] bg-[#ffffff] drop-shadow-sm rounded-3xl flex flex-col justify-center items-start z-40">
         <div className="w-full h-auto px-[30px] bg-transparent overflow-y-scroll flex flex-col justify-start items-start z-40">
-          <span className="w-full text-[25px] text-black font-[google] font-normal flex justify-start items-center ">
-            Set New <span className="text-[#de8544] ml-[10px]">Reminder</span>
+          <span className="w-full text-[22px] text-black font-[google] font-normal flex justify-start items-center ">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-bell-dot"
+            >
+              <path d="M19.4 14.9C20.2 16.4 21 17 21 17H3s3-2 3-9c0-3.3 2.7-6 6-6 .7 0 1.3.1 1.9.3" />
+              <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+              <circle cx="18" cy="8" r="3" />
+            </svg>
+            &nbsp;&nbsp;Set New{" "}
+            <span className="text-[#a397d2] ml-[10px]">Reminder</span>
           </span>
 
-          <div className="flex flex-col w-full justify-between items-start mt-[20px]">
-            <span className="text-[#000000] font-[google] font-normal text-[15px] mb-[10px]">
+          <div className="flex flex-col w-full justify-between items-start mt-[5px]">
+            {/* <span className="text-[#000000] font-[google] font-normal text-[15px] mb-[10px]">
               About Transaction{" "}
               <span className="text-[#ff6c00] h-auto pt-[3px]">*</span>
-            </span>
+            </span> */}
             <div
-              className={
-                " w-auto  rounded-md flex justify-start items-center bg-transparent ml-[5px] px-[5px]   font-[google] font-normal " +
-                (label?.length === 0
-                  ? " h-[40px] mb-[-40px] z-30 border border-transparent text-[#8b8b8b] text-[15px]"
-                  : " h-[1px] mb-[-1px] z-50 border border-[#fff5ee] text-[#de8544] text-[14px]")
-              }
+              className=" w-auto  rounded-md flex justify-start items-center bg-transparent text-[14px] mb-[5px] text-[#0000005d]  font-[google] font-normal "
               style={{ transition: ".4s" }}
             >
               Label
             </div>
             <input
-              className="outline-none rounded-md w-full h-[40px] bg-transparent border border-[#ffd8be] px-[10px] text-black font-[google] font-normal text-[15px] z-40"
+              className="outline-none rounded-md w-full h-[45px] bg-transparent border border-[#efebff] px-[10px] text-black font-[google] font-normal text-[16px] z-40"
               value={label}
               onChange={(e) => {
                 setLabel(e.target.value);
@@ -153,15 +166,10 @@ const AddReminderModal = (props) => {
           </div>
           {/* <div className="flex w-full justify-between h-[50px] items-center mt-[10px]"></div> */}
 
-          <div className="flex w-full justify-between items-center mt-[10px]">
-            <div className="flex flex-col justify-between items-start  w-[calc((100%-10px)/2)] h-[40px]">
+          <div className="flex w-full justify-between items-center mt-[5px] mb-[10px]">
+            <div className="flex flex-col justify-between items-start  w-[calc((100%-10px)/2)] h-[45px]">
               <div
-                className={
-                  " w-auto  flex justify-start items-center bg-transparent ml-[5px] px-[5px]   font-[google] font-normal " +
-                  (value?.length === 0
-                    ? " h-[40px] mb-[-40px] z-30 border border-transparent text-[#8b8b8b] text-[15px]"
-                    : " h-[1px] mb-[-1px] z-50 border border-[#fff5ee] text-[#de8544] text-[14px]")
-                }
+                className=" w-auto  rounded-md flex justify-start items-center bg-transparent text-[14px] mb-[5px] text-[#0000005d]  font-[google] font-normal "
                 style={{ transition: ".4s" }}
               >
                 Due Date
@@ -172,7 +180,7 @@ const AddReminderModal = (props) => {
                   width: "320px",
                 }}
                 arrow={false}
-                className="bg-[#212121] teal h-full min-w-[260px] flex justify-center items-center font-[google] font-normal  bg-transparent border-[1px] border-[#535353]"
+                className="bg-[#212121] teal h-full w-full flex justify-center items-center font-[google] font-normal  bg-transparent border-[1px] border-[#535353]"
                 // disableYearPicker
                 // disableMonthPicker
                 weekDays={weekDays}
@@ -182,17 +190,19 @@ const AddReminderModal = (props) => {
                 // render={<InputIcon />}
                 // buttons={false}
                 value={value}
-                onChange={setValue}
+                onChange={(e) => {
+                  setValue(e?.day + "/" + e?.month?.number + "/" + e?.year);
+                }}
                 format="DD/MM/YYYY"
                 shadow={false}
                 render={(value, openCalendar) => {
                   return (
-                    <button
-                      className="border-[1px] border-[#ffd8be] flex justify-start items-center px-[10px] font-[google] text-[15px] w-[125px] h-[40px] rounded-md text-black z-40"
+                    <div
+                      className="border-[1px] border-[#efebff] flex justify-start items-center px-[10px] font-[google] text-[16px] min-w-full h-[45px] rounded-md text-black z-40"
                       onClick={openCalendar}
                     >
                       {value}
-                    </button>
+                    </div>
                   );
                 }}
 
@@ -200,25 +210,20 @@ const AddReminderModal = (props) => {
               />
             </div>
 
-            <div className="flex flex-col justify-between items-start  w-[calc((100%-10px)/2)] h-[40px] ">
+            <div className="flex flex-col justify-between items-start  w-[calc((100%-10px)/2)] h-[45px] ">
               <div
-                className={
-                  " w-auto  flex justify-start items-center rounded-md bg-transparent ml-[5px]    font-[google] font-normal " +
-                  (price?.length === 0
-                    ? " h-[40px] mb-[-40px] z-30 border border-transparent text-[#8b8b8b] text-[15px] ml-[20px] px-[19px]"
-                    : " h-[1px] mb-[-1px] z-50 border border-[#fff5ee] text-[#de8544] text-[14px] ml-[5px] px-[5px]")
-                }
+                className=" w-auto  rounded-md flex justify-start items-center bg-transparent text-[14px] mb-[5px] text-[#0000005d]  font-[google] font-normal "
                 style={{ transition: ".4s" }}
               >
                 Amount
               </div>
               {/* <BiRupee /> */}
-              <div className="w-full h-[40px] flex justify-start items-center">
+              <div className="w-full h-[45px] flex justify-start items-center">
                 <div className="w-[30px] h-[50px] flex justify-center items-center mr-[-30px] text-black ">
                   <BiRupee className="text-[17px]" />
                 </div>
                 <input
-                  className="outline-none w-full h-[40px] rounded-md pl-[25px] bg-transparent border border-[#ffd8be] px-[10px] text-black font-[google] font-normal text-[14px] z-40"
+                  className="outline-none w-full h-[45px] rounded-md pl-[25px] bg-transparent border border-[#efebff] px-[10px] text-black font-[google] font-normal text-[16px] z-40"
                   // placeholder="Price"
                   value={price}
                   onChange={(e) => {
@@ -233,14 +238,47 @@ const AddReminderModal = (props) => {
           </div>
 
           <div className="flex flex-col w-full justify-center items-start mt-[20px] font-[google] font-normal text-black text-[15px]">
-            <span className="text-[#000000]">
-              Select Category{" "}
-              <span className="text-[#ff6c00] h-auto pt-[3px]">*</span>
-            </span>
+            <div
+              className=" w-auto  rounded-md flex justify-start items-center bg-transparent text-[14px] mb-[5px] text-[#0000005d]  font-[google] font-normal "
+              style={{ transition: ".4s" }}
+            >
+              Category
+            </div>
+            <div className="w-full h-[45px] flex justify-start items-center">
+              <div
+                className="outline-none w-full h-[45px] rounded-md pl-[25px] bg-transparent border border-[#efebff] px-[10px] text-black font-[google] font-normal text-[14px] z-40"
+                // placeholder="Price"
+                // value={price}
+                // onChange={(e) => {
+                //   console.log(isNumeric(e.target.value));
+                //   if (isNumeric(e.target.value) === true) {
+                //     setPrice(e.target.value);
+                //   }
+                // }}
+              >
+                {category}
+              </div>
+              <div className="w-[40px] h-[45px] flex justify-center items-center ml-[-40px]">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-chevron-down"
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </div>
+            </div>
             <div className="w-full flex justify-start items-center flex-wrap text-[#535353] choose mt-[10px]">
               <span
                 className={
-                  "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                  "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#efebff] flex justify-center items-center" +
                   (category == "Shopping"
                     ? " bg-[#ffddc5] text-[black]"
                     : " text-[#535353]")
@@ -377,6 +415,7 @@ const AddReminderModal = (props) => {
                 setCategory("");
                 setMode("");
                 setBill("");
+                props?.setReminderDate("");
               }}
             >
               Cancel

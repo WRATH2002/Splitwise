@@ -33,6 +33,27 @@ import {
 } from "react-icons/md";
 import { HiShoppingBag } from "react-icons/hi2";
 import { PiSealQuestionFill } from "react-icons/pi";
+import { QRCode } from "react-qrcode";
+import { LuArrowLeft, LuCornerDownRight } from "react-icons/lu";
+import { QR } from "react-qr-rounded";
+import { BigSizeIcon } from "./NornmalSizeIcon";
+import { mirage } from "ldrs";
+mirage.register();
+
+const months = [
+  "JAN",
+  "FEB",
+  "MAR",
+  "APR",
+  "MAY",
+  "JUN",
+  "JUL",
+  "AUG",
+  "SEP",
+  "OCT",
+  "NOV",
+  "DEC",
+];
 
 const MemberProfile = () => {
   return (
@@ -46,8 +67,54 @@ const AboutTransaction = (props) => {
   const [section, setSection] = useState(1);
   const [showReciept, setShowReciept] = useState(false);
   const [duration, setDuration] = useState("");
+  const [scanner, setScanner] = useState(false);
+  const [showBill, setShowBill] = useState(false);
 
   const [name, setName] = useState("");
+
+  function formatDate(dateStr) {
+    const months = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+
+    // Split the input date string
+    const [day, month, year] = dateStr.split("/").map(Number);
+
+    // Function to get the ordinal suffix
+    function getOrdinalSuffix(day) {
+      if (day > 3 && day < 21) return "th"; // Handle 11th to 19th
+      switch (day % 10) {
+        case 1:
+          return "st";
+        case 2:
+          return "nd";
+        case 3:
+          return "rd";
+        default:
+          return "th";
+      }
+    }
+
+    // Get the ordinal day
+    const dayWithSuffix = day + getOrdinalSuffix(day);
+
+    // Get the month name
+    const monthName = months[month - 1];
+
+    // Return the formatted string
+    return `${dayWithSuffix} ${monthName}, ${year}`;
+  }
 
   useEffect(() => {
     fetchName(props?.data?.Sender);
@@ -165,278 +232,285 @@ const AboutTransaction = (props) => {
     return formattedDate;
   }
 
+  const clipPath = `path(borderRadius ${20}px)`;
+
   return (
     <>
-      {showReciept ? (
+      {scanner && !showBill ? (
         <>
-          <div className="w-full h-[100svh] top-0 left-0 flex justify-center items-center z-40 fixed bg-[#1717177a] backdrop-blur-md">
+          <div className="w-full h-[100svh] top-0 left-0 flex justify-center items-center z-40 fixed p-[20px] bg-[#70708628] backdrop-blur-md">
+            <div className="w-full h-[230px] flex justify-center items-center p-[30px] bg-white rounded-3xl drop-shadow-sm flex-col">
+              <l-mirage size="60" speed="2.5" color="#181F32"></l-mirage>
+              <span className="text-[17px] mt-[7px]">Scanning QR Code</span>
+            </div>
+          </div>
+        </>
+      ) : scanner && showBill ? (
+        <>
+          <div className="w-full h-[100svh] top-0 left-0 flex justify-center items-center z-40 fixed p-[20px] bg-[#70708628] backdrop-blur-md">
             <div
-              className="fixed top-[20px] left-[20px] rounded-full bg-[#171717] flex justify-center items-center"
+              className="w-[35px] h-[35px] rounded-full bg-[white] flex justify-center items-center fixed top-[20px] left-[20px]"
               onClick={() => {
-                setShowReciept(!showReciept);
+                setShowBill(false);
+                setScanner(false);
               }}
             >
-              <RxCross2 className="text-white text-[24px] " />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="21"
+                height="21"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.7"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-x"
+              >
+                <path d="M18 6 6 18" />
+                <path d="m6 6 12 12" />
+              </svg>
             </div>
             <img
-              src="https://qph.cf2.quoracdn.net/main-qimg-e68b4c3d6705f994907bb86a1b6a5803-lq"
-              className="max-w-[calc(100%-40px)] max-h-[calc(100%-40px)] w-full object-cover"
+              src={props?.data?.BillUrl}
+              className="max-w-[100%] bg-[white] max-h-[100%] object-cover"
             ></img>
           </div>
         </>
       ) : (
         <></>
       )}
-      <div className="w-full h-[100svh] fixed top-0 left-0 flex justify-start items-center flex-col p-[20px] bg-[#FFF5EE] z-30">
-        <div className="w-full h-[40px] flex justify-between items-center">
-          <div
-            className="w-[40px] aspect-square flex justify-start items-center cursor-pointer"
-            onClick={() => {
-              props?.setShowMore(false);
-            }}
-          >
-            <FiArrowLeft className="text-[black] text-[23px]" />
-          </div>
-          <div
-            className="w-[40px] aspect-square flex justify-end items-center cursor-pointer"
-            onClick={() => {
-              // props?.setShowMore(false);
-            }}
-          >
-            <HiMiniBell className="text-[#000000] text-[23px]" />
-          </div>
-        </div>
 
-        <div className="w-full h-[60px] flex justify-center items-center text-[#de8544] text-[55px]">
-          {props?.data?.Category === "Food & Drinks" ? (
-            <IoFastFood />
-          ) : props?.data?.Category === "Shopping" ? (
-            <FaShopify />
-          ) : props?.data?.Category === "Grocery" ? (
-            <HiShoppingBag />
-          ) : props?.data?.Category === "Medical" ? (
-            <FaTruckMedical />
-          ) : props?.data?.Category === "Travel" ? (
-            // <MdOutlineTravelExplore />
-            // <PiMapPinLineFill />
-            // <BiSolidPlaneTakeOff />
-            <MdOutlineAirplanemodeActive className="rotate-45" />
-          ) : props?.data?.Category === "Entertainment" ? (
-            <GiPartyPopper />
-          ) : props?.data?.Category === "Electricity Bill" ? (
-            <MdElectricBolt />
-          ) : props?.data?.Category === "Petrol / Diesel" ? (
-            <BsFillFuelPumpFill />
-          ) : props?.data?.Category === "Taxi Fare" ? (
-            <BsTaxiFrontFill />
-          ) : props?.data?.Category === "Car Maintanance" ? (
-            <GiAutoRepair />
-          ) : props?.data?.Category === "Education" ? (
-            <MdSchool />
-          ) : props?.data?.Category === "Pet Care" ? (
-            <MdOutlinePets />
-          ) : (
-            <>
-              <PiSealQuestionFill />
-            </>
-          )}
-          {/* <IoFastFood className="text-[55px] text-[#98d832]" /> */}
+      <div className="w-full fixed top-0 left-0 h-[100svh] p-[20px] flex flex-col justify-start items-start bg-[white] text-black font-[google] font-normal z-30">
+        <div
+          className=" h-[30px] fixed left-[20px] top-[20px] flex justify-start items-center"
+          onClick={() => {
+            props?.setShowMore(false);
+          }}
+        >
+          <LuArrowLeft className="text-[24px] " />{" "}
         </div>
-        <div className="font-[google] font-normal h-[50px]  text-black mt-[15px] text-[24px] w-full flex flex-col justify-center items-center">
-          <span>{props?.data?.Lable}</span>
-          <span className="text-[15px] text-[#828282]">
-            {props?.data?.TransactionType === "Normal" ? (
-              <></>
-            ) : (
-              <>{props?.data?.MemberCount} members,</>
-            )}{" "}
-            {duration}
-          </span>
-        </div>
-        {/* <div className="w-full border-[.7px] border-[#fee6d7] my-[30px]"></div> */}
-        {/* <div className="w-[260px] h-[1.5px] bg-gradient-to-r from-[#2a2a2a]  via-[#caff76] via-50% to-[#2a2a2a] mb-[-1.5px] z-50 "></div> */}
-        {/* <div className="w-full h-[100px] mb-[-100px] flex justify-center items-start bg-[#282828] rounded-2xl ">
-          <div className="min-w-[80px] min-h-[40px] rounded-b-full bg-[#41f6ea]"></div>
-        </div> */}
-        <div className="w-full h-[100px] mt-[30px] flex justify-between bg-[#ffeadc] border-[1px] border-[#ffe6d7] items-start  backdrop-blur-2xl rounded-2xl p-[20px]  ">
-          <div
-            className={
-              " flex flex-col justify-center " +
-              (props?.data?.TransactionType === "Single"
-                ? " items-center w-full"
-                : " items-start w-[calc(100%/2)]")
-            }
-          >
-            <span className=" flex justify-center items-center text-[14px] text-[#828282] font-[google] font-normal">
-              {props?.data?.TransactionType === "Single" ? (
-                <span className=" ">Total Expense</span>
-              ) : (
-                <span className=" ">Paid to You</span>
-              )}
-            </span>
-            <span
-              className={
-                " font-[google] font-normal text-[26px]  flex justify-start items-center" +
-                (props?.data?.MoneyIsAdded
-                  ? " text-[#00bb00]"
-                  : " text-[#de8544]")
-              }
-            >
-              <BiRupee className="ml-[-3px] " />{" "}
-              {formatAmountWithCommas(parseFloat(props?.data?.Amount))}
-            </span>
-          </div>
-          {props?.data?.TransactionType === "Split" ? (
-            <div
-              className={
-                " flex flex-col justify-center " +
-                (props?.data?.TransactionType === "Single"
-                  ? " items-end w-full"
-                  : " items-end w-[calc(100%/2)]")
-              }
-            >
-              <span className=" flex justify-center items-center text-[14px] text-[#828282] font-[google] font-normal">
-                <span className=" ">Total Expense</span>
-              </span>
-              <span className=" font-[google] font-normal text-[26px] text-[#000000] flex justify-start items-center">
-                <BiRupee className="ml-[-3px] " />{" "}
-                {/* {formatAmountWithCommas(parseFloat(props?.data?.TotalAmount))} */}
-              </span>
-            </div>
-          ) : (
-            <></>
-          )}
-          {/* <div className="w-[calc(100%/2)] flex flex-col justify-center items-end">
-            <span className=" flex justify-center items-center text-[12px] text-[#ffffff]">
-              <span className=" ">Remaining</span>
-            </span>
-            <span className=" font-[google] font-normal text-[22px] text-[#ff6c00] flex justify-start items-center">
-              <BiRupee className="ml-[-3px] " /> 345 /{" "}
-              <span className="text-[#828282] ml-[5px]">3000</span>
-            </span>
-            <span className="font-[google] font-normal text-[13px] text-[#828282] flex justify-end items-center">
-              Per Person{" "}
-              <span className="text-white flex justify-end items-center ml-[6px]">
-                <BiRupee className=" " />
-                345
-              </span>
-            </span>
-          </div> */}
-        </div>
-        <div className="font-[google] font-normal  text-black mt-[15px]  w-full flex flex-col justify-center items-start text-[15px]">
-          <span className="text-[16px] w-full flex justify-start items-center h-[40px]">
-            <span
-              className="text-black h-full w-[calc(100%/2)] flex justify-start items-center  " // {
-              //   + (section === 1 ? " border-b-[1px] border-[#98d832]" : " border-b-[1px] border-transparent")
-              // }
-              onClick={() => {
-                setSection(1);
-              }}
-            >
-              Transaction Details :
-            </span>
-            {/* <span
-              className={
-                "text-white h-full w-[calc(100%/2)] flex justify-end items-center border-b-[1px]" +
-                (section === 2 ? " border-[#98d832]" : " border-transparent")
-              }
-              onClick={() => {
-                setSection(2);
-              }}
-            >
-              Bill Info
-            </span> */}
-          </span>
-          {section === 1 ? (
-            <>
-              <span className=" text-[#828282] text-[14px] w-full flex justify-between items-center mt-[10px]">
-                <span>Date </span>{" "}
-                <span className="text-black ">
-                  {formatDateString(props?.data?.Date)}
+        <div className=" h-[30px] flex justify-start items-center mb-[20px]"></div>
+        <div className="w-full h-[calc(100svh-50px)] flex flex-col justify-start items-start overflow-y-scroll overflow-x-hidden">
+          <div className="w-full h-auto rounded-2xl bg-[#F4F5F9] flex flex-col justify-start items-start p-[20px]">
+            <div className="w-full h-auto flex justify-between items-center">
+              <div className="w-full h-auto flex flex-col justify-start items-start">
+                <span className="text-[25px] w-[90%] overflow-hidden text-ellipsis line-clamp-2 leading-7 ">
+                  {props?.data?.Lable}
                 </span>
-              </span>
-              <span className=" text-[#828282] text-[14px] mt-[4px] w-full flex justify-between items-center">
-                <span>Category </span>{" "}
-                <span className="text-black ">{props?.data?.Category}</span>
-              </span>
-              <span className=" text-[#828282] text-[14px] mt-[4px] w-full flex justify-between items-center">
-                <span>Total Transaction </span>{" "}
-                <span className="text-black flex justify-end items-center">
-                  <BiRupee className="" />{" "}
-                  {formatAmountWithCommas(parseFloat(props?.data?.Amount))}
-                </span>
-              </span>
-              <span className=" text-[#828282] text-[14px] mt-[4px] w-full flex justify-between items-center">
-                <span>Mode of Transaction </span>{" "}
-                <span className="text-black flex justify-end items-center">
-                  {props?.data?.Mode}
-                </span>
-              </span>
-              <span className=" text-[#828282] text-[14px] mt-[4px] w-full flex justify-between items-center">
-                <span>Payment Type </span>{" "}
-                <span className="text-black ">
-                  {props?.data?.TransactionType === "Single" ? (
-                    <>{props?.data?.TransactionType}</>
-                  ) : (
-                    <>{props?.data?.TransactionType}</>
-                  )}
-                </span>
-              </span>
-              {props?.data?.TransactionType === "Split" ? (
-                <span className=" text-[#828282] text-[14px] mt-[4px] w-full flex justify-between items-center">
-                  <span>Total Member </span>{" "}
-                  <span className="text-black ">
-                    {props?.data?.MemberCount}
+                <span className="flex justify-start items-center mt-[-3px]">
+                  <LuCornerDownRight className="text-[24px]" />{" "}
+                  <span className="mt-[4px] ml-[3px]">
+                    {props?.data?.Members?.length === 0 ? (
+                      <></>
+                    ) : (
+                      <>
+                        {props?.data?.MoneyIsAdded ? (
+                          <span className="text-[#00bb00]">Credited</span>
+                        ) : (
+                          <span className="text-[#e61d0f]">Debited</span>
+                        )}{" "}
+                        ,{" "}
+                      </>
+                    )}{" "}
+                    <span className="text-[#6f6f6f]">
+                      {/* {(props?.data?.Date).split("/")[0]}{" "}
+                      {months[parseInt((props?.data?.Date).split("/")[1]) - 1]}{" "}
+                      {(props?.data?.Date).split("/")[2]} */}
+                      {props?.data?.TransactionType === "Split" ? (
+                        <>Split</>
+                      ) : (
+                        <>Single</>
+                      )}
+                    </span>
                   </span>
                 </span>
-              ) : (
-                <></>
-              )}
-              <span className=" text-[#828282] text-[14px] mt-[4px] w-full flex justify-between items-center">
-                {props?.data?.TransactionType === "Single" ? (
-                  <></>
-                ) : (
-                  <>
-                    <span>Payment Done By </span>{" "}
-                    <span className="text-black ">{name}</span>
-                  </>
-                )}
-              </span>
-              <div
-                className="w-full h-[60px] rounded-2xl bg-[#ffeadc] border-[1px] border-[#ffe6d7] cursor-pointer mt-[20px] flex justify-between items-center text-[14px] text-black px-[20px]"
-                onClick={() => {
-                  setShowReciept(!showReciept);
-                }}
-              >
-                <div className="flex justify-start items-center">
-                  <FaReceipt className="text-[20px] mr-[9px]" /> View Reciept /
-                  Bill
+
+                {/* <span className="flex justify-start items-center mt-[3px]">
+                Spent <BiRupee className="text-[20px] ml-[2px]" />{" "}
+                <span className="text-[20px]">25,000.00</span>
+              </span> */}
+              </div>
+              <div className="text-[55px]">
+                <BigSizeIcon data={props?.data} />
+              </div>
+            </div>
+            <div className="w-[calc(100%+70px)] h-auto flex justify-center items-center ml-[-35px] my-[5px]">
+              <div className="w-[30px] aspect-square rounded-full bg-[white]"></div>
+              <div className="w-full px-[5px]">
+                <div className="w-full border-b-[2px] border-[#d1d1d1] border-dashed "></div>
+              </div>
+              <div className="w-[30px] aspect-square rounded-full bg-[white]"></div>
+            </div>
+            <div className="w-full h-auto flex flex-col justify-start items-start ">
+              {/* <div className="w-[calc((100%-20px)/2)] h-[65px] rounded-2xl bg-transparent flex justify-center items-start flex-col pl-[0px] p-[15px]">
+                <div className="text-[14px] text-[#00000085]">Date</div>
+                <div className="text-[18px]">20/05/2024</div>
+              </div>
+              <div className="w-[calc((100%-20px)/2)] h-[65px] rounded-2xl bg-transparent flex justify-center items-start flex-col p-[15px]">
+                <div className="text-[14px] text-[#00000085]">Category</div>
+                <div className="text-[18px]">Food & Drinks</div>
+              </div>
+              <div className="w-[calc((100%-20px)/2)] h-[65px] rounded-2xl bg-transparent flex justify-center items-start flex-col pl-[0px] p-[15px]">
+                <div className="text-[14px] text-[#00000085]">Amount</div>
+                <div className="text-[18px]">3452.23</div>
+              </div>
+              <div className="w-[calc((100%-20px)/2)] h-[65px] rounded-2xl bg-transparent flex justify-center items-start flex-col p-[15px]">
+                <div className="text-[14px] text-[#00000085]">Trn. Mode</div>
+                <div className="text-[18px]">Online UPI</div>
+              </div>
+              <div className="w-[calc((100%-20px)/2)] h-[65px] rounded-2xl bg-transparent flex justify-center items-start flex-col pl-[0px] p-[15px]">
+                <div className="text-[14px] text-[#00000085]">Trn. Type</div>
+                <div className="text-[18px]">Normal</div>
+              </div>
+              <div className="w-[calc((100%-20px)/2)] h-auto rounded-2xl bg-transparent flex justify-center items-start flex-col p-[15px]">
+                <QR
+                  className="w-full aspect-square"
+                  color="#000"
+                  backgroundColor="#ebebf5"
+                  rounding={100}
+                  errorCorrectionLevel="L"
+                >
+                  {props?.data?.BillUrl}
+                </QR>
+              </div> */}
+              <div className="w-full flex justify-start items-start h-auto">
+                <div className="w-[60%] h-auto flex flex-col justify-start items-start text-[14px]">
+                  <span className="mt-[5px] text-[#9a9a9a]">Date</span>
+                  <span className="text-[#000000] mt-[-3px] text-[18px] mb-[10px]">
+                    {props?.data?.Date}
+                  </span>
+                  <span className="mt-[5px] text-[#9a9a9a]">Category</span>
+                  <span className="text-[#000000] mt-[-3px] text-[18px] mb-[10px]">
+                    {props?.data?.Category}
+                  </span>
+                  <span className="mt-[5px] text-[#9a9a9a]">Payment Mode</span>
+                  <span className="text-[#000000] mt-[-3px] text-[18px] mb-[10px]">
+                    {props?.data?.Mode}
+                  </span>
+                  {/* <span className="mt-[5px] text-[#9a9a9a]">Payment Type</span>
+                  <span className="text-[#000000] mt-[-3px] text-[18px] mb-[10px]">
+                    {props?.data?.TransactionType === "Split" ? (
+                      <>Split</>
+                    ) : (
+                      <>Single</>
+                    )}
+                  </span> */}
+
+                  {props?.data?.TransactionType === "Split" ? (
+                    <>
+                      <span className="mt-[5px] text-[#9a9a9a]">
+                        Splitted By
+                      </span>
+                      <span className="text-[#000000] mt-[-3px] text-[18px] mb-[10px]">
+                        {props?.owner ? <>You</> : <>{name}</>}
+                      </span>
+                    </>
+                  ) : (
+                    <></>
+                  )}
                 </div>
-                <div>
-                  <LuChevronRight className="text-[20px] " />
+                <div className="w-[40%] h-auto flex flex-col justify-start items-start">
+                  <span
+                    className="text-[15px] mb-[15px] flex justify-start mt-[5px] items-center"
+                    onClick={() => {
+                      setScanner(true);
+                      setTimeout(() => {
+                        setShowBill(true);
+                      }, 2500);
+                    }}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="21"
+                      height="21"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.7"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="lucide lucide-scan-line"
+                    >
+                      <path d="M3 7V5a2 2 0 0 1 2-2h2" />
+                      <path d="M17 3h2a2 2 0 0 1 2 2v2" />
+                      <path d="M21 17v2a2 2 0 0 1-2 2h-2" />
+                      <path d="M7 21H5a2 2 0 0 1-2-2v-2" />
+                      <path d="M7 12h10" />
+                    </svg>{" "}
+                    <span className="ml-[5px]">Scan QR</span>
+                  </span>
+                  <QR
+                    className="w-full aspect-square"
+                    color="#000"
+                    backgroundColor="#ebebf5"
+                    rounding={100}
+                    errorCorrectionLevel="L"
+                  >
+                    {props?.data?.BillUrl}
+                  </QR>
                 </div>
               </div>
-              {/* <div className="w-full mt-[30px] flex flex-col justify-start items-center">
-                    <span className="w-full flex justify-start items-center">
-                    Member's Owed
-                    </span>
-                    <div className="w-full flex justify-start flex-wrap conta mt-[20px]">
-                    <MemberProfile />
-                    <MemberProfile />
-                    <MemberProfile />
-                    <MemberProfile />
-                    <MemberProfile />
-                    </div>
-                </div> */}
-            </>
-          ) : (
-            <>
-              <img
-                src="https://media-cdn.tripadvisor.com/media/photo-l/12/e6/36/67/receipt.jpg"
-                className="w-[100px] h-[100px] rounded-2xl object-cover mt-[30px]"
-              ></img>
-            </>
-          )}
+              <div className="w-full h-auto mt-[20px] flex justify-evenly items-center py-[20px] rounded-2xl bg-[#181F32] text-[white]">
+                <div className="flex flex-col justify-center items-center ">
+                  <span className="text-[14px] text-[#a7a7a7]">Amount</span>
+                  <span className="text-[20px] mt-[-4px]">
+                    {formatAmountWithCommas(props?.data?.Amount)}
+                  </span>
+                </div>
+                <div className="border border-[#454545] rounded-full h-[40px]"></div>
+                <div className="flex flex-col justify-center items-center ">
+                  <span className="text-[14px] text-[#a7a7a7]">Date</span>
+                  <span className="text-[20px] mt-[-4px]">
+                    {props?.data?.Date}
+                  </span>
+                </div>
+                <div className="border border-[#454545] rounded-full h-[40px]"></div>
+                <div className="flex flex-col justify-center items-center ">
+                  <span className="text-[14px] text-[#a7a7a7]">Type</span>
+                  <span className="text-[20px] mt-[-4px]">
+                    {props?.data?.TransactionType === "Split" ? (
+                      <>Split</>
+                    ) : (
+                      <>Single</>
+                    )}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* 
+          <div className="w-full h-[300px] mt-[20px] rounded-2xl bg-[#F4F5F9] flex justify-center items-center p-[60px]">
+            <QR
+              className="h-full aspect-square"
+              color="#000"
+              backgroundColor="#ebebf5"
+              rounding={100}
+              errorCorrectionLevel="L"
+            >
+              {props?.data?.BillUrl}
+            </QR>
+          </div> */}
+
+          <div className="w-full h-[70px] mt-[20px] rounded-2xl bg-[#181F32] text-[white] font-[google] font-normal text-[18px] flex justify-center items-center p-[20px]">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="21"
+              height="21"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.9"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-download"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" x2="12" y1="15" y2="3" />
+            </svg>{" "}
+            &nbsp;&nbsp; Download Reciept
+          </div>
         </div>
       </div>
     </>

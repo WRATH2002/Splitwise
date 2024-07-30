@@ -35,6 +35,7 @@ import {
 
 import { PiMapPinLineFill, PiSealQuestionFill } from "react-icons/pi";
 import { AiOutlineSwap } from "react-icons/ai";
+import NornmalSizeIcon from "./NornmalSizeIcon";
 
 const IndependentTransaction = (props) => {
   const [showTransaction, setShowTransaction] = useState(false);
@@ -80,7 +81,7 @@ const IndependentTransaction = (props) => {
     const monthName = months[month - 1];
 
     // Return the formatted string
-    return `${dayWithSuffix} ${monthName}, ${year}`;
+    return `${monthName}, ${dayWithSuffix}`;
   }
 
   useEffect(() => {
@@ -110,6 +111,13 @@ const IndependentTransaction = (props) => {
     });
   }
 
+  function capitalizeFirstLetter(str) {
+    return str
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(" ");
+  }
+
   return (
     <>
       {showTransaction ? (
@@ -127,7 +135,10 @@ const IndependentTransaction = (props) => {
         <></>
       )}
       <div
-        className="w-[calc(100%-40px)] min-h-[60px]  font-[google] font-normal text-[15px] text-white flex justify-center items-center border-b-[.7px] border-[#eff7ff] cursor-pointer "
+        className={
+          "independentTran  w-[calc(100%-40px)] min-h-[64px] bg-[#F5F6FA] my-[3px] rounded-2xl px-[20px] font-[google] font-normal text-[15px] text-white flex justify-center items-center  cursor-pointer " +
+          (props?.isLast ? " border-none" : " border-none")
+        }
         onClick={() => {
           setShowTransaction(true);
         }}
@@ -135,61 +146,48 @@ const IndependentTransaction = (props) => {
         {props?.data?.TransactionType == "Split" ? (
           <div
             className={
-              "w-[30px] h-full flex justify-end items-center text-[19px] z-10 mr-[-30px]  " +
+              "w-[30px] h-full flex justify-end items-center  z-10 mr-[-30px]  " +
               (props?.data?.MoneyIsAdded
                 ? " text-[#00bb00]"
                 : " text-[#e61d0f]")
             }
           >
             {/* <AiOutlineSwap /> */}
-            <div className="bg-[#ffffff] mt-[20px] w-[18px] h-[18px] aspect-square rounded-full flex justify-center items-center">
-              <IoGitBranchOutline />
+            <div className="bg-[#ffffff] mt-[20px] w-[16px] h-[16px] p-[1px] aspect-square rounded-lg flex justify-center items-center">
+              {/* <IoGitBranchOutline /> */}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="17"
+                height="17"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-git-pull-request-arrow"
+              >
+                <circle cx="5" cy="6" r="3" />
+                <path d="M5 9v12" />
+                <circle cx="19" cy="18" r="3" />
+                <path d="m15 9-3-3 3-3" />
+                <path d="M12 6h5a2 2 0 0 1 2 2v7" />
+              </svg>
             </div>
           </div>
         ) : (
           <></>
         )}
-        <div className="w-[30px] flex justify-start items-center text-[22px] text-[#23a8d2] z-0 ">
-          {props?.data?.Category === "Food & Drinks" ? (
-            <IoFastFood />
-          ) : props?.data?.Category === "Shopping" ? (
-            <FaShopify />
-          ) : props?.data?.Category === "Grocery" ? (
-            <HiShoppingBag />
-          ) : props?.data?.Category === "Medical" ? (
-            <FaTruckMedical />
-          ) : props?.data?.Category === "Travel" ? (
-            // <MdOutlineTravelExplore />
-            // <PiMapPinLineFill />
-            // <BiSolidPlaneTakeOff />
-            <MdOutlineAirplanemodeActive className="rotate-45" />
-          ) : props?.data?.Category === "Entertainment" ? (
-            <GiPartyPopper />
-          ) : props?.data?.Category === "Electricity Bill" ? (
-            <MdElectricBolt />
-          ) : props?.data?.Category === "Petrol / Diesel" ? (
-            <BsFillFuelPumpFill />
-          ) : props?.data?.Category === "Taxi Fare" ? (
-            <BsTaxiFrontFill />
-          ) : props?.data?.Category === "Car Maintanance" ? (
-            <GiAutoRepair />
-          ) : props?.data?.Category === "Education" ? (
-            <MdSchool />
-          ) : props?.data?.Category === "Pet Care" ? (
-            <MdOutlinePets />
-          ) : (
-            <>
-              <PiSealQuestionFill />
-            </>
-          )}
+        <div className="w-[30px] flex justify-start items-center text-[22px] text-[#000000] z-0 ">
+          <NornmalSizeIcon data={props?.data} />
         </div>
         <div className="w-[calc(100%-130px)] h-full flex flex-col justify-center items-start px-[10px] text-black ">
-          <span className="w-full overflow-hidden text-ellipsis line-clamp-1">
+          <span className="w-full overflow-hidden text-ellipsis line-clamp-1 text-[16px]">
             {props?.data?.Lable}
           </span>
           {props?.data?.Sender ? (
             <>
-              <span className="w-full flex justify-start items-center text-[14px] text-[#989898] ">
+              <span className="w-full flex justify-start items-center text-[13px] text-[#00000057] ">
                 By, {name}
               </span>
               {/* <div className="text-[12px] text-[#828282] w-full flex justify-start items-center">
@@ -206,7 +204,7 @@ const IndependentTransaction = (props) => {
         <div className="w-[100px]  flex flex-col justify-center items-end">
           <div
             className={
-              " flex justify-end items-center whitespace-nowrap " +
+              " flex justify-end items-center whitespace-nowrap text-[16px]" +
               (props?.data?.MoneyIsAdded
                 ? " text-[#00bb00]"
                 : " text-[#e61d0f]")
@@ -224,7 +222,7 @@ const IndependentTransaction = (props) => {
               </>
             )}
           </div>
-          <div className="text-[13px] text-[#989898]">
+          <div className="text-[13px] text-[#00000057]">
             {/* {props?.data?.Date} */}
             {formatDate(props?.data?.Date)}
           </div>

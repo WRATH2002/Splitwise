@@ -15,6 +15,34 @@
   font-family: waka;
   src: url(./assets/font/WAKANDA\ PANTHER.ttf);
 }
+@font-face {
+  font-family: roboto;
+  src: url(./assets/font/Satoshi-Regular.otf);
+}
+@font-face {
+  font-family: robotot;
+  src: url(./assets/font/Satoshi-Medium.otf);
+}
+@font-face {
+  font-family: gaia;
+  src: url(./assets/font/Gaia.otf);
+}
+@font-face {
+  font-family: doctor;
+  src: url(./assets/font/Doctor\ Glitch.otf);
+}
+@font-face {
+  font-family: dolla;
+  src: url(./assets/font/Dollamin-1GlzL.ttf);
+}
+@font-face {
+  font-family: sairaT;
+  src: url(./assets/font/SairaCondensed-Thin.ttf);
+}
+@font-face {
+  font-family: sairaB;
+  src: url(./assets/font/SairaCondensed-Regular.ttf);
+}
 .contt :nth-child(1) {
   margin-top: 0px;
 }
@@ -38,6 +66,17 @@ input::placeholder {
   /* font-family: "Ubuntu", sans-serif; */
   /* font-family: "Work Sans", sans-serif; */
   /* font-weight: 400; */
+}
+
+.gradBg {
+  background-image: linear-gradient(
+    to bottom,
+    #181f32,
+    #4d4f60,
+    #858591,
+    #c1c0c7,
+    #ffffff
+  );
 }
 
 ::-webkit-scrollbar {
@@ -120,4 +159,24 @@ textarea:focus {
   -webkit-appearance: none;
   box-shadow: none !important;
   border: none;
+}
+
+.loader {
+  width: 43px;
+  height: 43px;
+  border: 3.5px solid #5e5e9d;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
