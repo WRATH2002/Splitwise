@@ -194,7 +194,7 @@ const AddIndependentTransaction = () => {
     // );
   };
 
-  const genAI = new GoogleGenerativeAI(process.env.REACT_APP_FIREBASE_API_KEY);
+  const genAI = new GoogleGenerativeAI(process.env.REACT_APP_GEMINI_KEY);
 
   // Converts a File object to a GoogleGenerativeAI.Part object.
   async function fileToGenerativePart(file) {
