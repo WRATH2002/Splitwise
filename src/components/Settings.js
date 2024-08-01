@@ -21,6 +21,9 @@ import firebase from "../firebase";
 import { arrayUnion, onSnapshot } from "firebase/firestore";
 import { TbLogout } from "react-icons/tb";
 // import { BadgeIndianRupee } from "lucide-react";
+import { mirage } from "ldrs";
+
+mirage.register();
 
 const Down = () => {
   return (
@@ -91,6 +94,13 @@ const Settings = (props) => {
   const [transactionHistory, setTransactionHistory] = useState([]);
   const [monthWiseData, setMonthWiseData] = useState([]);
   const [price, setPrice] = useState("");
+  const [reportModal, setReportModal] = useState(false);
+  const [monthDrop, setMonthDrop] = useState(false);
+  const [month, setMonth] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [subLoading, setSubLoading] = useState(false);
+  const [error, setError] = useState(false);
+
   const userSignOut = () => {
     signOut(auth)
       .then(() => console.log("Signed Out Successfully"))
@@ -208,8 +218,8 @@ const Settings = (props) => {
     return str;
   }
 
-  function sortObjectsByDateAsc() {
-    return transactionHistory.sort((a, b) => {
+  function sortObjectsByDateAsc(data) {
+    return data.sort((a, b) => {
       const [dayA, monthA, yearA] = a.Date.split("/").map(Number);
       const [dayB, monthB, yearB] = b.Date.split("/").map(Number);
 
@@ -221,7 +231,7 @@ const Settings = (props) => {
     });
   }
 
-  const downloadPDF = () => {
+  const downloadPDF = (data) => {
     const doc = new jsPDF();
 
     // Add title
@@ -238,7 +248,7 @@ const Settings = (props) => {
       "Credited",
       "Debited",
     ];
-    const rows = sortObjectsByDateAsc().map((tx) => [
+    const rows = sortObjectsByDateAsc(data)?.map((tx) => [
       format(tx.Date),
       tx.Lable,
       tx.Category,
@@ -248,18 +258,18 @@ const Settings = (props) => {
       !tx.MoneyIsAdded ? formatAmountWithCommas(tx.Amount) : "",
     ]);
 
-    const totalExpense = transactionHistory.reduce((acc, tx) => {
+    const totalExpense = data?.reduce((acc, tx) => {
       return tx.MoneyIsAdded
         ? acc - parseFloat(tx.Amount)
         : acc + parseFloat(tx.Amount);
     }, 0);
-    let splitCount = transactionHistory.reduce((acc, tx) => {
+    let splitCount = data?.reduce((acc, tx) => {
       if (tx.TransactionType == "Split") {
         acc = acc + 1;
       }
       return acc;
     }, 0);
-    let splitExpense = transactionHistory.reduce((acc, tx) => {
+    let splitExpense = data?.reduce((acc, tx) => {
       if (tx.TransactionType == "Split") {
         if (tx.MoneyIsAdded) {
           acc = acc - parseFloat(tx.Amount);
@@ -269,13 +279,13 @@ const Settings = (props) => {
       }
       return acc;
     }, 0);
-    let normCount = transactionHistory.reduce((acc, tx) => {
+    let normCount = data?.reduce((acc, tx) => {
       if (tx.TransactionType == "Single") {
         acc = acc + 1;
       }
       return acc;
     }, 0);
-    let normExpense = transactionHistory.reduce((acc, tx) => {
+    let normExpense = data?.reduce((acc, tx) => {
       if (tx.TransactionType == "Single") {
         acc = acc + parseFloat(tx.Amount);
       }
@@ -340,6 +350,14 @@ const Settings = (props) => {
     if (typeof str !== "string") return false;
     if (str === "") return true;
     return /^[0-9]+(\.[0-9]*)?$/.test(str);
+  }
+
+  function filterByMonth() {
+    return transactionHistory?.filter((data) => {
+      if (parseInt(data.Date.split("/")[1]) == month) {
+        return data;
+      }
+    });
   }
 
   return (
@@ -550,6 +568,176 @@ const Settings = (props) => {
       ) : (
         <></>
       )}
+
+      {reportModal ? (
+        <>
+          <div className="w-full h-[100svh] top-0 left-0 fixed bg-[#70708628] backdrop-blur-md flex justify-center items-end p-[20px] z-30 font-[google] font-normal">
+            <div
+              className="w-full h-auto min-h-[150px] flex flex-col justify-center items-start p-[30px] py-[25px] bg-[white] rounded-3xl drop-shadow-sm"
+              // style={{ transition: ".3s" }}
+            >
+              {loading ? (
+                <>
+                  <div className="w-full h-full flex justify-center items-center">
+                    <l-mirage size="60" speed="2.5" color="#191A2C"></l-mirage>
+                  </div>
+                </>
+              ) : subLoading ? (
+                <>
+                  <div className="w-full h-full flex justify-center items-center text-[18px]">
+                    {error ? (
+                      <div className="text-[#e61d0f]">
+                        No Transactions Found
+                      </div>
+                    ) : (
+                      <>PDF Download Initiated</>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <>
+                  <span className="text-[22px] ">Monthly Report</span>
+                  <span className="text-[14.5px] mt-[5px] text-[#000000a9]">
+                    Select a month to generate the monthly report and
+                    transaction details as a PDF.
+                  </span>
+                  {monthDrop ? (
+                    <>
+                      <div className="mt-[10px] h-0 w-full flex justify-center items-end overflow-visible mb-[5px] text-[16px]">
+                        <div className="w-full h-[90px] bg-[#F4F5F7] rounded-xl p-[15px] overflow-y-scroll py-[12px]">
+                          {monthNames?.map((data, index) => {
+                            return (
+                              <div
+                                className="w-full h-[30px] flex justify-start items-center"
+                                onClick={() => {
+                                  setMonth(index + 1);
+                                  setMonthDrop(false);
+                                }}
+                              >
+                                {data}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="mt-[10px] h-0 w-full flex justify-center items-end overflow-visible mb-[5px]"></div>
+                    </>
+                  )}
+                  <div className="w-full h-auto flex justify-start items-center mb-[10px] ">
+                    <div
+                      className="w-full h-[45px] rounded-xl bg-[#F4F5F7] px-[15px] flex justify-start items-center text-[16px]"
+                      onClick={() => {
+                        setMonthDrop(!monthDrop);
+                      }}
+                    >
+                      {month == 0 ? (
+                        <div className="text-[#00000085]">Select Month</div>
+                      ) : (
+                        <>{monthNames[month - 1]}</>
+                      )}
+                    </div>
+                    <div
+                      className="w-[30px] h-[45px] flex justify-start items-center ml-[-30px]"
+                      onClick={() => {
+                        setMonthDrop(!monthDrop);
+                      }}
+                    >
+                      {!monthDrop ? (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="lucide lucide-chevron-up"
+                        >
+                          <path d="m18 15-6-6-6 6" />
+                        </svg>
+                      ) : (
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="lucide lucide-chevron-down"
+                        >
+                          <path d="m6 9 6 6 6-6" />
+                        </svg>
+                      )}
+                    </div>
+                  </div>
+                  <div className="w-full h-auto mt-[10px] flex justify-end items-end">
+                    <div
+                      className="w-auto h-auto rounded-2xl cursor-pointer px-[15px] py-[8px] text-[14px] bg-[#F4F5F7]"
+                      onClick={() => {
+                        setReportModal(false);
+                        setMonth(0);
+                        setMonthDrop(false);
+                        // setDeleteConfirmModal(false);
+                      }}
+                    >
+                      Close
+                    </div>
+                    <div
+                      className="w-auto h-auto rounded-2xl cursor-pointer px-[15px] py-[8px] text-[14px] bg-[#191A2C] ml-[10px] text-[white]"
+                      onClick={() => {
+                        // console.log("Filterd Array By Mointh");
+                        // console.log(filterByMonth());
+                        setLoading(true);
+                        setTimeout(() => {
+                          if (filterByMonth().length > 0) {
+                            downloadPDF(filterByMonth());
+                          } else {
+                            setError(true);
+                            setTimeout(() => {
+                              setError(false);
+                            }, 6000);
+                          }
+                          setLoading(false);
+                          setSubLoading(true);
+                          setTimeout(() => {
+                            setSubLoading(false);
+                            setReportModal(false);
+                            setMonth(0);
+                            setMonthDrop(false);
+                          }, 1000);
+                        }, 2000);
+
+                        // setDeleteInProcess(true);
+                        // deleteSplitTransaction();
+                        // setTimeout(() => {
+                        //   setDeleteInProcess(false);
+                        //   setDelSuccess(true);
+                        //   setTimeout(() => {
+                        //     setDelSuccess(false);
+                        //     setDeleteConfirmModal(false);
+                        //   }, 1000);
+                        // }, 1500);
+                      }}
+                    >
+                      Download
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </>
+      ) : (
+        <></>
+      )}
       {/* <div className="w-full h-[100svh] top-0 left-0 fixed bg-[#70708628] backdrop-blur-md flex justify-center items-center p-[20px] z-50 font-[google] font-normal">
         <div className="w-full flex flex-col justify-center items-start p-[30px] bg-[white] rounded-3xl drop-shadow-sm">
           <div className="text-[22px]">Update Budget</div>
@@ -627,17 +815,47 @@ const Settings = (props) => {
         </div>
       </div> */}
       <div className="w-full h-full bg-[#ffffff]  text-black font-[google] font-normal flex flex-col justify-start items-start ">
-        <div className="w-full h-[230px]  flex flex-col bg-[#181F32] p-[20px] justify-center items-center">
-          <div className="w-[90px] aspect-square rounded-full object-cover bg-[#F5F6FA] text-black flex justify-center items-center text-[37px]">
+        <div className="w-full h-[140px]  flex flex-col bg-[#181F32] p-[20px] justify-center items-center">
+          {/* <div className="w-[90px] aspect-square rounded-full object-cover bg-[#F5F6FA] text-black flex justify-center items-center text-[37px]">
             {name.charAt(0)?.toUpperCase()}
             {name.split(" ")[1]?.charAt(0)?.toUpperCase()}
-          </div>
-          <div className="text-[25px] mt-[15px] text-white ">{name}</div>
+          </div> */}
+          {/* <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="40"
+            height="40"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#fff"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-bolt"
+          >
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+            <circle cx="12" cy="12" r="4" />
+          </svg> */}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="40"
+            height="40"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#fff"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-user"
+          >
+            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
+          </svg>
+          <div className="text-[25px] mt-[10px] text-white ">{name}</div>
           <div className="text-[17px] text-[#a7a7a7] mt-[-4px]">{email}</div>
         </div>
         {/* <div className="w-full border-[.7px] border-[#f2f2f7] my-[20px]"></div> */}
-        <div className="w-full h-[calc(100%-255px)] flex flex-col justify-start items-start overflow-y-scroll px-[20px]">
-          <span className="mt-[25px] ">General</span>
+        <div className="w-full h-[calc(100%-140px)] flex flex-col justify-start items-start overflow-y-scroll px-[20px]">
+          <span className="mt-[15px] ">General</span>
           <div className="w-full flex flex-col justify-start items-start px-[20px] bg-[#F5F6FA] py-[10px]  p-[20px] rounded-2xl mt-[5px]">
             <div className="w-full h-[40px] flex justify-between items-center">
               <div className="flex justify-start items-center">
@@ -846,7 +1064,10 @@ const Settings = (props) => {
             </div>
             <div
               className="w-full h-[40px] flex justify-start items-center "
-              onClick={downloadPDF}
+              // onClick={downloadPDF}
+              onClick={() => {
+                setReportModal(true);
+              }}
             >
               <div className="w-[24px] h-full flex justify-start items-center mr-[9px]">
                 <svg
@@ -1133,7 +1354,7 @@ const Settings = (props) => {
             </div>
             {/* <div className=""></div> */}
             <div
-              className="w-full h-[40px] flex justify-start items-center"
+              className="w-full h-[40px] flex justify-start items-center text-[#e61d0f]"
               onClick={() => {
                 userSignOut();
               }}
@@ -1160,104 +1381,6 @@ const Settings = (props) => {
             </div>
           </div>
         </div>
-
-        {/* <div
-          className="w-auto flex justify-start items-center my-[7px]"
-          onClick={() => {
-            setPermission(true);
-          }}
-        >
-          {" "}
-          Total Savings
-        </div> */}
-
-        {/* <div
-          className="w-auto flex justify-start items-center my-[7px]"
-          onClick={() => {
-            doneTutorial();
-          }}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="lucide lucide-shapes"
-          >
-            <path d="M8.3 10a.7.7 0 0 1-.626-1.079L11.4 3a.7.7 0 0 1 1.198-.043L16.3 8.9a.7.7 0 0 1-.572 1.1Z" />
-            <rect x="3" y="14" width="7" height="7" rx="1" />
-            <circle cx="17.5" cy="17.5" r="3.5" />
-          </svg>
-          Tutorial
-        </div> */}
-        {/* <div
-          className="w-auto flex justify-start items-center my-[7px]"
-          onClick={downloadPDF}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="lucide lucide-file-text"
-          >
-            <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
-            <path d="M14 2v4a2 2 0 0 0 2 2h4" />
-            <path d="M10 9H8" />
-            <path d="M16 13H8" />
-            <path d="M16 17H8" />
-          </svg>
-          Get Report
-        </div> */}
-
-        {/* <div
-          className="w-auto flex justify-start items-center my-[7px]"
-          onClick={() => {
-            userSignOut();
-          }}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="lucide lucide-log-out"
-          >
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-            <polyline points="16 17 21 12 16 7" />
-            <line x1="21" x2="9" y1="12" y2="12" />
-          </svg>
-          Log Out
-        </div> */}
-
-        {/* <div
-          className="w-[calc(100%-40px)] fixed h-[100px] bottom-[60px] left-[20px] font-[google] font-normal text-black rounded-3xl flex flex-col justify-center items-center bg-[#e4f2ff] text-[14px]"
-          onClick={() => {
-            setPop(!pop);
-            // setNewIncome("");
-            // setError("");
-          }}
-        >
-          <span className="text-[#6d6d6d]">Coming Soon to</span>
-          <span className="flex justify-center items-center text-[19px] font-semibold tracking-wide">
-            <FaGooglePlay className="text-[25px] mr-[10px]" /> Google Pay
-          </span>
-        </div> */}
       </div>
     </>
   );

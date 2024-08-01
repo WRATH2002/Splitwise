@@ -19,10 +19,15 @@ import { BsPersonFill } from "react-icons/bs";
 import { auth } from "../firebase";
 import { db } from "../firebase";
 import firebase from "../firebase";
-import { arrayUnion, onSnapshot } from "firebase/firestore";
+import { arrayRemove, arrayUnion, onSnapshot } from "firebase/firestore";
 import Friends, { Profile, ProfileTwo } from "./Friends";
 import { RiSearchLine } from "react-icons/ri";
 import { FaFilter } from "react-icons/fa";
+import { mirage } from "ldrs";
+
+mirage.register();
+
+// Default values shown
 
 const options = {
   title: "Demo Title",
@@ -96,6 +101,7 @@ const months = [
 
 const SplitExpense = () => {
   const [splitModal, setSplitModal] = useState(false);
+  const [deleteConfirmModal, setDeleteConfirmModal] = useState(false);
   const [addModal, setAddModal] = useState(false);
   const [label, setLabel] = useState("");
   const [price, setPrice] = useState("");
@@ -117,6 +123,11 @@ const SplitExpense = () => {
   const [finalTransaction, setFinalTransaction] = useState([]);
   const [searchName, setSearchName] = useState("");
   const [error, setError] = useState("");
+  const [edit, setEdit] = useState(false);
+  const [selectedTran, setSelectedTran] = useState([]);
+  const [popUp, setPopUp] = useState(false);
+  const [deleteInProcess, setDeleteInProcess] = useState(false);
+  const [delSuccess, setDelSuccess] = useState(false);
 
   useEffect(() => {
     // const user = firebase.auth().currentUser;
@@ -444,6 +455,18 @@ const SplitExpense = () => {
       const dateB = new Date(b.Date.split("/").reverse().join("-"));
       return dateB - dateA;
     });
+  }
+
+  function deleteSplitTransaction() {
+    const user = firebase.auth().currentUser;
+    selectedTran?.forEach((data) => {
+      db.collection("Expense")
+        .doc(user?.uid)
+        .update({
+          SplitTransaction: arrayRemove(data),
+        });
+    });
+    setSelectedTran([]);
   }
 
   return (
@@ -973,10 +996,18 @@ const SplitExpense = () => {
         </span>
 
         <div className="w-full flex flex-col justify-start items-center">
-          {finalTransaction?.map((data) => {
+          {finalTransaction?.map((data, index) => {
             return (
               <>
-                <SplitTransaction data={data} />
+                <SplitTransaction
+                  setPopUp={setPopUp}
+                  data={data}
+                  index={index}
+                  setEdit={setEdit}
+                  edit={edit}
+                  setSelectedTran={setSelectedTran}
+                  selectedTran={selectedTran}
+                />
               </>
             );
           })}
@@ -1007,14 +1038,207 @@ const SplitExpense = () => {
           status={true}
         /> */}
       </div>
-      <div
-        className="w-[40px] h-[40px] rounded-full bg-[#98d832] fixed right-[20px] bottom-[70px] flex justify-center items-center"
-        onClick={() => {
-          setSplitModal(true);
-        }}
-      >
-        <FiPlus className="text-black text-[23px]" />
+      <div className="w-full h-[140px]  fixed right-[0px] top-[0px] flex justify-center items-center">
+        <div
+          className={
+            "w-[40px] h-[40px] rounded-2xl bg-[#F4F5F7] flex justify-center items-center" +
+            (edit ? " text-[#e61d0f]" : " text-[black]")
+          }
+          onClick={() => {
+            if (edit) {
+              setDeleteConfirmModal(true);
+            } else {
+              setSplitModal(true);
+            }
+          }}
+        >
+          {/* <FiPlus className="text-black text-[20px]" /> */}
+          {edit ? (
+            <>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-trash"
+              >
+                <path d="M3 6h18" />
+                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+              </svg>
+            </>
+          ) : (
+            <>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.3"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-plus"
+              >
+                <path d="M5 12h14" />
+                <path d="M12 5v14" />
+              </svg>
+            </>
+          )}
+        </div>
       </div>
+      {popUp ? (
+        <>
+          <div
+            className="fixed w-full h-[60px] z-40 bottom-[10px] font-[google] font-normal flex justify-center items-center text-white "
+            style={{ transition: ".4s" }}
+          >
+            <div
+              className="bg-[#191A2C] rounded-2xl h-[50px] flex justify-center items-center px-[20px] w-[140px] whitespace-nowrap"
+              style={{ transition: ".4s" }}
+            >
+              {edit ? (
+                <span style={{ transition: ".2s", transitionDelay: ".2s" }}>
+                  Edit Mode ON
+                </span>
+              ) : (
+                <span style={{ transition: ".2s", transitionDelay: ".2s" }}>
+                  Edit Mode OF
+                </span>
+              )}
+            </div>
+          </div>
+        </>
+      ) : (
+        <>
+          <div
+            className="fixed  h-[60px] z-40 bottom-[10px] mb-[-80px] w-[30px] font-[google] font-normal flex justify-center items-center text-white  "
+            style={{ transition: ".4s" }}
+          >
+            <div
+              className="bg-[#191A2C] rounded-2xl h-[0px]  flex justify-center items-center px-[20px] w-[0px]"
+              style={{ transition: ".4s" }}
+            >
+              {/* {edit ? <>Edit Mode ON</> : <>Edit Mode OF</>} */}
+            </div>
+          </div>
+        </>
+      )}
+      {deleteConfirmModal ? (
+        <div className="w-full h-[100svh] top-0 left-0 fixed bg-[#70708628] backdrop-blur-md flex justify-center items-end p-[20px] z-30 font-[google] font-normal">
+          <div
+            className="w-full h-auto min-h-[150px] flex flex-col justify-center items-start p-[30px] py-[25px] bg-[white] rounded-3xl drop-shadow-sm"
+            // style={{ transition: ".3s" }}
+          >
+            {deleteInProcess ? (
+              <div className="w-full h-full flex justify-center items-center">
+                <l-mirage size="60" speed="2.5" color="#191A2C"></l-mirage>
+              </div>
+            ) : delSuccess ? (
+              <div className="w-full h-full flex justify-center items-center text-[18px]">
+                Delete Successful
+              </div>
+            ) : (
+              <>
+                <span className="text-[22px] ">Delete Transaction History</span>
+                <span className="text-[14.5px] mt-[5px] text-[#000000a9]">
+                  All selected split transaction history and associated media
+                  files will be permanently deleted and cannot be recovered. Are
+                  you sure you want to proceed ?
+                </span>
+                <div className="w-full h-auto mt-[10px] flex justify-end items-end">
+                  <div
+                    className="w-auto h-auto rounded-2xl cursor-pointer px-[15px] py-[8px] text-[14px] bg-[#F4F5F7]"
+                    onClick={() => {
+                      setDeleteConfirmModal(false);
+                    }}
+                  >
+                    Close
+                  </div>
+                  <div
+                    className="w-auto h-auto rounded-2xl cursor-pointer px-[15px] py-[8px] text-[14px] bg-[#191A2C] ml-[10px] text-[white]"
+                    onClick={() => {
+                      setDeleteInProcess(true);
+                      deleteSplitTransaction();
+                      setTimeout(() => {
+                        setDeleteInProcess(false);
+                        setDelSuccess(true);
+                        setTimeout(() => {
+                          setDelSuccess(false);
+                          setDeleteConfirmModal(false);
+                        }, 1000);
+                      }, 1500);
+                    }}
+                  >
+                    Delete
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* </div> */}
+        </div>
+      ) : (
+        <></>
+      )}
+
+      {edit ? (
+        <div
+          className="w-[50px] h-[40px] whitespace-nowrap rounded-2xl left-[20px] bottom-[60px] fixed flex justify-center items-center bg-[#191A2C] text-[white] font-[google] font-normal text-[16px] "
+          style={{ transition: ".4s" }}
+          onClick={() => {
+            setSelectedTran([]);
+            setEdit(false);
+            setPopUp(true);
+            setTimeout(() => {
+              setPopUp(false);
+            }, 1500);
+          }}
+        >
+          <span
+            className="opacity-100"
+            style={{ transition: ".2s", transitionDelay: ".2s" }}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="21"
+              height="21"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-door-open"
+            >
+              <path d="M13 4h3a2 2 0 0 1 2 2v14" />
+              <path d="M2 20h3" />
+              <path d="M13 20h9" />
+              <path d="M10 12v.01" />
+              <path d="M13 4.562v16.157a1 1 0 0 1-1.242.97L5 20V5.562a2 2 0 0 1 1.515-1.94l4-1A2 2 0 0 1 13 4.561Z" />
+            </svg>
+          </span>
+        </div>
+      ) : (
+        <div
+          className="w-0 h-0 rounded-2xl left-[20px] bottom-[80px] fixed flex justify-center items-center bg-[#191A2C] text-[white] font-[google] font-normal text-[16px] ml-[-100px] "
+          style={{ transition: ".4s" }}
+        >
+          <span
+            className="opacity-0"
+            style={{ transition: ".2s", transitionDelay: ".2s" }}
+          >
+            {/* Exit Edit Mode */}
+          </span>
+        </div>
+      )}
     </>
   );
 };

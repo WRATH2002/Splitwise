@@ -45,6 +45,7 @@ import { PiSealQuestionFill } from "react-icons/pi";
 import { QR } from "react-qr-rounded";
 import { RxPerson } from "react-icons/rx";
 import { TbClockFilled } from "react-icons/tb";
+import { useLongPress } from "use-long-press";
 
 const MemberProfile = (props) => {
   const [name, setName] = useState("");
@@ -1030,6 +1031,10 @@ const SplitTransaction = (props) => {
     fetchName(props?.data?.Owner);
     fetchNormalTransaction();
   }, [props?.data?.Owner]);
+  useEffect(() => {
+    console.log("Array Selected");
+    console.log(props?.selectedTran);
+  }, [props?.selectedTran]);
 
   useEffect(() => {
     getSameSplitTransaction();
@@ -1133,6 +1138,19 @@ const SplitTransaction = (props) => {
     });
   }
 
+  const bind = useLongPress(() => {
+    // alert("Your are now in Edit Mode");.;
+    if (props?.edit == false) {
+      props?.setPopUp(true);
+      setTimeout(() => {
+        props?.setPopUp(false);
+      }, 1500);
+    }
+    props?.setEdit(true);
+
+    console.log("i edit mode");
+  });
+
   return (
     <>
       {showMore ? (
@@ -1147,40 +1165,185 @@ const SplitTransaction = (props) => {
       )}
 
       <div
-        className="independentTran  w-[calc(100%-40px)] min-h-[64px]  font-[google] font-normal text-[15px] text-white flex justify-center items-center  cursor-pointer  border-b-[.7px] border-[#f2eeff]"
+        key={props?.index}
+        className={
+          "independentTran  w-[calc(100%-40px)] min-h-[64px]  my-[3px] rounded-2xl px-[20px] font-[google] font-normal text-[15px] text-white  justify-center items-center  cursor-pointer " +
+          (props?.isLast ? " border-none" : " border-none") +
+          (parseFloat(props?.data?.Amount) -
+            (
+              parseFloat(props?.data?.Amount) /
+              parseInt(props?.data?.MemberCount)
+            ).toFixed(2) *
+              (splitRemaining.length + 1) ===
+            0 || props?.data?.Paid === true
+            ? props?.edit &&
+              props?.selectedTran?.filter((data) => {
+                if (data == props.data) {
+                  return data;
+                }
+              }).length > 0
+              ? " flex bg-[#c7c7c7]"
+              : " flex bg-[#f9fafc]"
+            : " flex bg-[#F5F6FA]")
+        }
         onClick={() => {
-          setShowMore(true);
+          if (props?.edit == true) {
+            if (
+              parseFloat(props?.data?.Amount) -
+                (
+                  parseFloat(props?.data?.Amount) /
+                  parseInt(props?.data?.MemberCount)
+                ).toFixed(2) *
+                  (splitRemaining.length + 1) ===
+                0 ||
+              props?.data?.Paid === true
+            ) {
+              if (
+                props?.selectedTran?.filter((data) => {
+                  if (data == props.data) {
+                    return data;
+                  }
+                }).length > 0
+              ) {
+                props?.setSelectedTran(
+                  props?.selectedTran?.filter((data) => {
+                    if (data != props.data) {
+                      return data;
+                    }
+                  })
+                );
+              } else {
+                props?.setSelectedTran((prevData) => [
+                  ...prevData,
+                  props?.data,
+                ]);
+              }
+            } else {
+            }
+          } else {
+            setShowMore(true);
+          }
         }}
+        {...bind()}
       >
-        <div className="w-[30px] flex justify-start items-center text-[22px] ">
-          {checkOwner(props?.data?.Owner) ? (
-            <IoGitNetworkOutline
-              className={
-                "" +
-                (!props?.data?.PaymentStatus
-                  ? parseFloat(props?.data?.Amount) -
-                      (
-                        parseFloat(props?.data?.Amount) /
-                        parseInt(props?.data?.MemberCount)
-                      ).toFixed(2) *
-                        (splitRemaining.length + 1) ===
-                    0
-                    ? " text-[#d5d5d5]"
-                    : " text-[#00bb00]"
-                  : " text-[#828282]")
-              }
-            />
+        <div
+          className={
+            "w-[30px] flex justify-start items-center text-[22px] " +
+            (props?.data?.Paid === false
+              ? " text-[#e61d0f]"
+              : " text-[#00bb00]")
+          }
+        >
+          {props?.edit ? (
+            <>
+              {parseFloat(props?.data?.Amount) -
+                (
+                  parseFloat(props?.data?.Amount) /
+                  parseInt(props?.data?.MemberCount)
+                ).toFixed(2) *
+                  (splitRemaining.length + 1) ===
+                0 || props?.data?.Paid === true ? (
+                <>
+                  <div
+                    className={
+                      "w-[25px] h-[25px] rounded-full flex justify-center items-center" +
+                      (props?.selectedTran?.filter((data) => {
+                        if (data == props.data) {
+                          return data;
+                        }
+                      }).length > 0
+                        ? " bg-[#191A2C] text-white"
+                        : " bg-[white] text-white")
+                    }
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="3.4"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="lucide lucide-check"
+                    >
+                      <path d="M20 6 9 17l-5-5" />
+                    </svg>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div
+                    className={
+                      "w-[25px] h-[25px] rounded-full flex justify-center items-center bg-[#ffffff] text-[#e61d0f] text-[15px] font-bold"
+                    }
+                  >
+                    {/* <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="3.4"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="lucide lucide-x"
+                    >
+                      <path d="M18 6 6 18" />
+                      <path d="m6 6 12 12" />
+                    </svg> */}
+                    !
+                  </div>
+                </>
+              )}
+            </>
           ) : (
-            <IoGitNetworkOutline
-              className={
-                "" +
-                (!props?.data?.PaymentStatus
-                  ? props?.data?.Paid === true
-                    ? " text-[#d5d5d5]"
-                    : " text-[#de8544]"
-                  : " text-[#828282]")
-              }
-            />
+            <>
+              {checkOwner(props?.data?.Owner) ? (
+                <div className="text-[#000000]">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-git-pull-request-arrow"
+                  >
+                    <circle cx="5" cy="6" r="3" />
+                    <path d="M5 9v12" />
+                    <circle cx="19" cy="18" r="3" />
+                    <path d="m15 9-3-3 3-3" />
+                    <path d="M12 6h5a2 2 0 0 1 2 2v7" />
+                  </svg>
+                </div>
+              ) : (
+                <div className="text-[#000000]">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-git-pull-request"
+                  >
+                    <circle cx="18" cy="18" r="3" />
+                    <circle cx="6" cy="6" r="3" />
+                    <path d="M13 6h3a2 2 0 0 1 2 2v7" />
+                    <line x1="6" x2="6" y1="9" y2="21" />
+                  </svg>{" "}
+                </div>
+              )}
+            </>
           )}
         </div>
         <div
@@ -1203,11 +1366,11 @@ const SplitTransaction = (props) => {
                 : " ")
             }
           >
-            {props?.data?.Lable}
+            {props?.edit ? <>true</> : <>false</>}
           </span>
           <span
             className={
-              "text-[14px]  " +
+              "text-[13px]  " +
               (parseFloat(props?.data?.Amount) -
                 (
                   parseFloat(props?.data?.Amount) /
@@ -1216,7 +1379,7 @@ const SplitTransaction = (props) => {
                   (splitRemaining.length + 1) ===
                 0 || props?.data?.Paid === true
                 ? " text-[#d5d5d5]"
-                : " text-[#828282]")
+                : " text-[#00000057]")
             }
           >
             {/* {props?.member} Members */}
@@ -1277,7 +1440,7 @@ const SplitTransaction = (props) => {
                   "text-[16px] w-full flex justify-end items-center whitespace-nowrap" +
                   (props?.data?.Paid === true
                     ? " text-[#d5d5d5]"
-                    : " text-[#de8544]")
+                    : " text-[#e61d0f]")
                 }
               >
                 {formatAmountWithCommas(

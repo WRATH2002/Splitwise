@@ -228,7 +228,7 @@ const ReminderPage = () => {
       {chooseMonth ? (
         <>
           <div
-            className="w-full h-[100svh]  flex flex-col justify-end items-center bg-[#0000003e] p-[20px] fixed top-0 left-0  z-40"
+            className="w-full h-[100svh]  flex flex-col justify-end items-center backdrop-blur-md bg-[#70708628] p-[20px] fixed top-0 left-0  z-40"
             style={{ zIndex: 70 }}
             onClick={() => {
               // setChooseMonth(false);
@@ -246,7 +246,7 @@ const ReminderPage = () => {
                   setChooseMonth(false);
                 }}
               ></div>
-              <div className="w-full h-[45px] flex justify-between items-end bg-transparent rounded-t-3xl font-[google] font-normal text-[14px]">
+              {/* <div className="w-full h-[45px] flex justify-between items-end bg-transparent rounded-t-3xl font-[google] font-normal text-[14px]">
                 <div className="w-[calc(100%-40px)] h-[20px] bg-[#fff5ee]  fixed z-30"></div>
 
                 <div
@@ -283,18 +283,43 @@ const ReminderPage = () => {
                     Year
                   </div>
                 </div>
-              </div>
+              </div> */}
 
               <div
                 className={
-                  "min-w-full z-50 h-auto bg-[#ffffff] drop-shadow-sm   text-black  rounded-b-3xl font-[google] font-normal text-[14px] flex flex-wrap justify-start items-start py-[17.5px]  px-[17.5px]" +
+                  "min-w-full z-50 h-auto bg-[#ffffff] drop-shadow-sm   text-black  rounded-3xl font-[google] font-normal text-[14px] flex flex-wrap justify-start items-start py-[17.5px]  px-[17.5px]" +
                   (section ? " rounded-tr-3xl" : " rounded-tl-3xl")
                 }
                 style={{ zIndex: 100 }}
                 onClick={() => {}}
               >
-                <div className="w-full flex justify-between items-center">
-                  {" "}
+                <div className="w-full flex justify-start items-start h-[45px]">
+                  <div
+                    className={
+                      "px-[10px] py-[5px] rounded-[14px]  " +
+                      (section
+                        ? " border border-[#191A2C]  bg-[#191A2C] text-[white]"
+                        : " border border-[#191A2C]")
+                    }
+                    onClick={() => {
+                      setSection(true);
+                    }}
+                  >
+                    Month
+                  </div>
+                  <div
+                    className={
+                      "px-[10px] py-[5px] rounded-[14px] border border-[#191A2C] ml-[8px]" +
+                      (!section
+                        ? " border border-[#191A2C]  bg-[#191A2C] text-[white]"
+                        : " border border-[#191A2C]")
+                    }
+                    onClick={() => {
+                      setSection(false);
+                    }}
+                  >
+                    Year
+                  </div>
                 </div>
                 {section ? (
                   <>
@@ -304,7 +329,7 @@ const ReminderPage = () => {
                           {monthsShort[month - 1] === name ? (
                             <span
                               key={index}
-                              className=" w-[calc((100%-20px)/4)] mx-[2.5px] my-[2.5px]  border border-[#ffd8be] bg-[#ffd8be] rounded-md flex justify-center items-center min-h-[35px] cursor-pointer"
+                              className=" w-[calc((100%-20px)/4)] mx-[2.5px] my-[2.5px]  border border-[#ffd8be] bg-[#ffd8be] rounded-[14px] flex justify-center items-center min-h-[35px] cursor-pointer"
                               onClick={() => {}}
                             >
                               {name}
@@ -312,7 +337,7 @@ const ReminderPage = () => {
                           ) : (
                             <span
                               key={index}
-                              className=" w-[calc((100%-20px)/4)] mx-[2.5px] my-[2.5px]  border border-[#ffd8be] rounded-md flex justify-center items-center min-h-[35px] cursor-pointer"
+                              className=" w-[calc((100%-20px)/4)] mx-[2.5px] my-[2.5px]  border border-[#ffd8be] rounded-[14px] flex justify-center items-center min-h-[35px] cursor-pointer"
                               onClick={() => {
                                 setMonth(index + 1);
                               }}
@@ -366,8 +391,103 @@ const ReminderPage = () => {
       </div> */}
 
       {sec === "Note" ? (
-        <div className="w-full h-[calc(100%-60px)] overflow-y-scroll flex justify-start items-start flex-wrap p-[15px] font-[google] ">
-          <div className="w-full flex justify-start items-start flex-wrap ">
+        <div className="w-full h-[calc(100%)]  flex flex-col justify-start items-start flex-wrap  font-[google] ">
+          <div className="w-[100%] h-[140px] flex  justify-between items-center  bg-[#191A2C] p-[20px]  ">
+            <div className="w-[calc((100%-40px)/2)]  flex flex-col justify-center items-start font-[google] font-normal text-[25px] text-white ">
+              <span className="text-[#ffffffd3] text-[14px]">
+                Total Due by -{" "}
+                <span className="text-white ml-[3px]">
+                  {monthsShort[parseInt(new Date().getMonth())]}
+                </span>
+              </span>
+              <span className="flex justify-start items-center text-[#ffffff] mt-[0px]">
+                <BiRupee className="ml-[-3px]" />{" "}
+                {formatAmountWithCommas(due()?.acc)}
+              </span>
+              <span className="flex justify-start items-center text-[14px] py-[2px] px-[7px] rounded-xl bg-[#F4F5F7] text-[#000000] mt-[0px]">
+                x {due()?.count}
+              </span>
+            </div>
+            <div className="w-[40px] h-full flex flex-col justify-center items-center font-[google] font-normal text-black">
+              <div
+                className="w-[40px] h-[40px] rounded-2xl bg-[#F4F5F7] flex justify-center items-center"
+                onClick={() => {
+                  setAddModal(true);
+                  // setSplitModal(true);
+                }}
+              >
+                {/* <FiPlus className="text-black text-[20px]" /> */}
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.3"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-plus"
+                >
+                  <path d="M5 12h14" />
+                  <path d="M12 5v14" />
+                </svg>
+              </div>
+            </div>
+            <div className="w-[calc((100%-40px)/2)]  flex flex-col justify-center items-end font-[google] font-normal text-[25px] text-white ">
+              <span className="text-[#ffffffd3] text-[14px]">
+                Upcoming for -{" "}
+                <span className="text-white ml-[3px]">
+                  {monthsShort[parseInt(new Date().getMonth())]}
+                </span>
+              </span>
+              <span className="flex justify-start items-center text-[#e61d0f] mt-[0px]">
+                <BiRupee className="text-white ml-[-3px]" />{" "}
+                <div className="text-[#ffffff]">
+                  {formatAmountWithCommas(upcoming()?.acc)}
+                </div>
+              </span>
+              <span className="flex justify-start items-center text-[#e61d0f] mt-[0px] text-[14px]">
+                <div className="py-[2px] px-[7px] rounded-xl bg-[#F4F5F7] text-[#000000] flex justify-center items-center">
+                  x {upcoming()?.count}
+                </div>
+              </span>
+            </div>
+          </div>
+          <div className="w-full h-[30px] mt-[-30px] z-50 flex justify-center items-start text-[white] mb-[20px] text-[14px] font-[google] font-normal">
+            <div className="w-[200px] flex justify-end items-start h-full pr-[10px] text-[#ffffff88]">
+              Reminders
+            </div>
+            <svg
+              onClick={() => {
+                if (sec == "Note") {
+                  setSec("Reminder");
+                } else {
+                  setSec("Note");
+                }
+              }}
+              className="mt-[1.6px] cursor-pointer"
+              xmlns="http://www.w3.org/2000/svg"
+              width="19"
+              height="19"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.9"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-arrow-left-right"
+            >
+              <path d="M8 3 4 7l4 4" />
+              <path d="M4 7h16" />
+              <path d="m16 21 4-4-4-4" />
+              <path d="M20 17H4" />
+            </svg>
+            <div className="w-[200px] flex justify-start items-start h-full pl-[10px]">
+              Notes
+            </div>
+          </div>
+          <div className="w-full h-[calc(100%-160px)] overflow-y-scroll flex justify-start items-start flex-wrap px-[15px] ">
             <div className="min-w-[calc((100%-20px)/2)] text-[16px] min-h-[100px] bg-[#F4F5F7] rounded-2xl mx-[5px] mb-[10px] flex justify-center items-center cursor-pointer">
               <div
                 className="w-auto flex justify-center items-center p-[20px]"
@@ -386,7 +506,7 @@ const ReminderPage = () => {
                 <div className="w-[30px] h-[30px] rounded-full bg-[#181F32] text-[#ffffff] flex justify-center items-center  mr-[10px]">
                   <BiPlus
                     className={
-                      "text-[25px] z-0" + (edit ? " rotate-45" : " rotate-0")
+                      "text-[22px] z-0" + (edit ? " rotate-45" : " rotate-0")
                     }
                     style={{ transition: ".4s" }}
                   />
@@ -459,8 +579,8 @@ const ReminderPage = () => {
           </div>
         </div>
       ) : (
-        <div className="w-full h-[calc(100%-200px)] bg-[#ffffff]">
-          <div className="w-[100%] h-[140px] flex  justify-between items-center  bg-[#191A2C] p-[20px]  mb-[20px]">
+        <div className="w-full h-[calc(100svh-60px)] bg-[#ffffff]">
+          <div className="w-[100%] h-[140px] flex  justify-between items-center  bg-[#191A2C] p-[20px]  ">
             <div className="w-[calc((100%-40px)/2)]  flex flex-col justify-center items-start font-[google] font-normal text-[25px] text-white ">
               <span className="text-[#ffffffd3] text-[14px]">
                 Total Due by -{" "}
@@ -520,6 +640,39 @@ const ReminderPage = () => {
                   x {upcoming()?.count}
                 </div>
               </span>
+            </div>
+          </div>
+          <div className="w-full h-[30px] mt-[-30px] z-50 flex justify-center items-start text-[white] mb-[20px] text-[14px] font-[google] font-normal">
+            <div className="w-[200px] flex justify-end items-start h-full pr-[10px] ">
+              Reminders
+            </div>
+            <svg
+              onClick={() => {
+                if (sec == "Note") {
+                  setSec("Reminder");
+                } else {
+                  setSec("Note");
+                }
+              }}
+              className="mt-[1.6px] cursor-pointer"
+              xmlns="http://www.w3.org/2000/svg"
+              width="19"
+              height="19"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.9"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-arrow-left-right"
+            >
+              <path d="M8 3 4 7l4 4" />
+              <path d="M4 7h16" />
+              <path d="m16 21 4-4-4-4" />
+              <path d="M20 17H4" />
+            </svg>
+            <div className="w-[200px] flex justify-start items-start h-full pl-[10px] text-[#ffffff88]">
+              Notes
             </div>
           </div>
 
@@ -588,7 +741,7 @@ const ReminderPage = () => {
             </span>
           </div>
 
-          <div className="contt w-full h-[calc(100%-225px)] flex flex-col justify-start items-center overflow-y-scroll mt-[10px] px-[20px]">
+          <div className="contt w-full h-[calc(100%-289px)] flex flex-col justify-start items-center overflow-y-scroll mt-[10px] px-[20px]">
             {tempTransactionHistory.length == 0 ? (
               <>
                 <span className=" w-[calc(100%-40px)] h-[100px] rounded-3xl border-[1px] border-[#ebebf500] bg-[#ebebf500]  flex justify-center items-center font-[google] font-normal text-[15px] text-[black] z-10">

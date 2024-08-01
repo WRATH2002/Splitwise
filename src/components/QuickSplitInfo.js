@@ -33,11 +33,11 @@ const QuickSplitInfo = (props) => {
     setMonth(currMonth);
   }
   return (
-    <div className="w-[calc(100%-40px)] h-[120px] flex justify-between items-center font-[google] font-normal px-[20px] bg-[#efebff] rounded-2xl p-[20px] mt-[20px]">
+    <div className="w-[calc(100%)] h-[140px] flex justify-between items-center font-[google] font-normal px-[20px] bg-[#191A2C]  p-[20px] ">
       <div className="w-[calc(100%/2)] flex flex-col justify-center items-start ">
         <span className=" flex justify-center items-center text-[14px] text-[#00bb00] ">
           {/* <IoCalendarSharp className="text-[12px] mr-[8px]" /> */}
-          <span className="text-[#00bb00]">Owed</span>{" "}
+          <span className="text-[#00bb00]">Total Owed</span>{" "}
           <svg
             className="text-[#00bb00]"
             xmlns="http://www.w3.org/2000/svg"
@@ -56,13 +56,16 @@ const QuickSplitInfo = (props) => {
           </svg>
         </span>
         <span className=" font-[google] font-normal text-[25px] text-[#000000] flex justify-start items-center">
-          <span className=" flex justify-start items-center text-[#000000]">
+          <span className=" flex justify-start items-center text-[#ffffff]">
             <BiRupee className="ml-[-4px] " /> {props?.willGet}{" "}
             {/* <LuCornerDownRight className="text-[25px]" /> */}
           </span>
         </span>
-        <span className="font-[google]  text-[13px] text-[#000000]   flex justify-start items-center mt-[5px]">
-          <span
+        <span className="font-[google]  text-[14px] text-[#000000]   flex justify-start items-center ">
+          <div className="py-[2px] px-[7px] rounded-xl bg-[#F4F5F7] text-[#000000] flex justify-center items-center">
+            x {props?.count}
+          </div>
+          {/* <span
             className="whitespace-nowrap flex justify-center items-center ml-[1px]"
             onClick={() => {
               // setBudgetModal(true);
@@ -70,7 +73,7 @@ const QuickSplitInfo = (props) => {
           >
             <span className="text-[#828282]  font-normal">Count : </span>
             {props?.count}
-          </span>
+          </span> */}
         </span>
       </div>
       <div className="w-[calc(100%/2)] flex flex-col justify-center items-end font-[google] font-normal">
@@ -91,26 +94,18 @@ const QuickSplitInfo = (props) => {
             <path d="M7 7h10v10" />
             <path d="M7 17 17 7" />
           </svg>{" "}
-          Due
+          Total Due
         </span>
         <span className=" font-[google] font-normal text-[25px] text-[#000000] flex justify-start items-center">
-          <span className=" flex justify-start items-center text-[#000000]">
+          <span className=" flex justify-start items-center text-[#ffffff]">
             <BiRupee className="ml-[-3px] " /> {props?.willPay}{" "}
             {/* <LuCornerDownLeft className="text-[25px]" /> */}
           </span>
         </span>
-        <span className="font-[google]  text-[13px] text-[#000000]   flex justify-start items-center mt-[5px]">
-          <span
-            className="whitespace-nowrap flex justify-center items-center "
-            onClick={() => {
-              // setBudgetModal(true);
-            }}
-          >
-            {props?.payCount}
-            <span className="text-[#828282] ml-[4px] font-normal">
-              Transactions
-            </span>
-          </span>
+        <span className="font-[google]  text-[13px] text-[#000000]   flex justify-start items-center ">
+          <div className="py-[2px] px-[7px] rounded-xl bg-[#F4F5F7] text-[#000000] flex justify-center items-center">
+            x {props?.payCount}
+          </div>
         </span>
       </div>
     </div>

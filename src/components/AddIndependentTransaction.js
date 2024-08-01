@@ -547,7 +547,7 @@ only return data containing 6 fields if no data is found then only one field`;
                         <l-jelly
                           size="40"
                           speed="0.9"
-                          color="#181F32"
+                          color="#191A2C"
                         ></l-jelly>
                         <span className="text-[17px] mt-[7px]">
                           {subLoading ? (
@@ -636,7 +636,7 @@ only return data containing 6 fields if no data is found then only one field`;
                               stroke-length="0.15"
                               bg-opacity="0.1"
                               speed="0.9"
-                              color="#181F32"
+                              color="#191A2C"
                             ></l-squircle>
                           </div>
                           <div className="w-full h-full mt-[-140px] flex justify-center items-center">
