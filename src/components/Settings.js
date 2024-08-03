@@ -22,6 +22,12 @@ import { arrayUnion, onSnapshot } from "firebase/firestore";
 import { TbLogout } from "react-icons/tb";
 // import { BadgeIndianRupee } from "lucide-react";
 import { mirage } from "ldrs";
+import UpdateModal, { LogoutModal, SavingsModal } from "./UpdateModal";
+import { ring } from "ldrs";
+
+ring.register();
+
+// Default values shown
 
 mirage.register();
 
@@ -86,6 +92,8 @@ const Settings = (props) => {
   const [btn2, setBtn2] = useState(false);
   const [btn3, setBtn3] = useState(false);
   const [btn4, setBtn4] = useState(false);
+  const [savings, setSavings] = useState("");
+
   const [income, setIncome] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -95,11 +103,16 @@ const Settings = (props) => {
   const [monthWiseData, setMonthWiseData] = useState([]);
   const [price, setPrice] = useState("");
   const [reportModal, setReportModal] = useState(false);
+  const [modal, setModal] = useState(false);
   const [monthDrop, setMonthDrop] = useState(false);
   const [month, setMonth] = useState(0);
   const [loading, setLoading] = useState(false);
   const [subLoading, setSubLoading] = useState(false);
   const [error, setError] = useState(false);
+  const [topic, setTopic] = useState("");
+  const [savingsLoading, setSavingsLoading] = useState(false);
+  const [savingsModal, setSavingsModal] = useState(false);
+  const [logoutModal, setLogoutModal] = useState(false);
 
   const userSignOut = () => {
     signOut(auth)
@@ -129,6 +142,9 @@ const Settings = (props) => {
       setBudget(snapshot?.data()?.Budget);
       setName(snapshot?.data()?.Name);
       setEmail(snapshot?.data()?.Email);
+      setBtn1(snapshot?.data()?.DueReminder);
+      setBtn2(snapshot?.data()?.MonthlyReminder);
+      setBtn3(snapshot?.data()?.NotePreviewBlur);
     });
   }
 
@@ -233,12 +249,31 @@ const Settings = (props) => {
 
   const downloadPDF = (data) => {
     const doc = new jsPDF();
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
 
-    // Add title
-    doc.setFontSize(18);
-    doc.text("Transactions History", 14, 14);
+    // Set custom font (replace with your font details)
+    const customFont = doc.addFont(
+      "your-google-font.ttf",
+      "your-google-font",
+      true
+    );
 
-    // Define the columns and rows for the table
+    doc.setFontSize(14);
+    doc.text(`Transactions History for Month ${monthNames[month - 1]}`, 14, 14);
+
     const columns = [
       "Date",
       "Lable",
@@ -258,91 +293,85 @@ const Settings = (props) => {
       !tx.MoneyIsAdded ? formatAmountWithCommas(tx.Amount) : "",
     ]);
 
-    const totalExpense = data?.reduce((acc, tx) => {
-      return tx.MoneyIsAdded
-        ? acc - parseFloat(tx.Amount)
-        : acc + parseFloat(tx.Amount);
-    }, 0);
-    let splitCount = data?.reduce((acc, tx) => {
-      if (tx.TransactionType == "Split") {
-        acc = acc + 1;
-      }
-      return acc;
-    }, 0);
-    let splitExpense = data?.reduce((acc, tx) => {
-      if (tx.TransactionType == "Split") {
-        if (tx.MoneyIsAdded) {
-          acc = acc - parseFloat(tx.Amount);
-        } else {
-          acc = acc + parseFloat(tx.Amount);
-        }
-      }
-      return acc;
-    }, 0);
-    let normCount = data?.reduce((acc, tx) => {
-      if (tx.TransactionType == "Single") {
-        acc = acc + 1;
-      }
-      return acc;
-    }, 0);
-    let normExpense = data?.reduce((acc, tx) => {
-      if (tx.TransactionType == "Single") {
-        acc = acc + parseFloat(tx.Amount);
-      }
-      return acc;
-    }, 0);
+    const totalExpense = data?.reduce(
+      (acc, tx) =>
+        tx.MoneyIsAdded
+          ? acc - parseFloat(tx.Amount)
+          : acc + parseFloat(tx.Amount),
+      0
+    );
+    const splitCount = data?.reduce(
+      (acc, tx) => (tx.TransactionType === "Split" ? acc + 1 : acc),
+      0
+    );
+    const splitExpense = data?.reduce(
+      (acc, tx) =>
+        tx.TransactionType === "Split"
+          ? tx.MoneyIsAdded
+            ? acc - parseFloat(tx.Amount)
+            : acc + parseFloat(tx.Amount)
+          : acc,
+      0
+    );
+    const normCount = data?.reduce(
+      (acc, tx) => (tx.TransactionType === "Single" ? acc + 1 : acc),
+      0
+    );
+    const normExpense = data?.reduce(
+      (acc, tx) =>
+        tx.TransactionType === "Single" ? acc + parseFloat(tx.Amount) : acc,
+      0
+    );
 
-    // Get the current month
     const currentDate = new Date();
-    const monthNames = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ];
+
     const currentMonth = monthNames[currentDate.getMonth()];
 
-    // Add table to the PDF
     doc.autoTable({
-      // theme: "grid",
       startY: 20,
       head: [columns],
       body: rows,
-      headStyles: { fillColor: [107, 183, 255], textColor: [0, 0, 0] },
+      theme: "plain",
+      headStyles: {
+        fillColor: [25, 26, 44],
+        textColor: [255, 255, 255],
+        fontSize: 10,
+        fontStyle: "bold",
+        halign: "center",
+      },
+      bodyStyles: {
+        fillColor: [255, 255, 255],
+        textColor: [0, 0, 0],
+        fontSize: 10,
+      },
       columnStyles: {
         0: { halign: "left" },
         5: { halign: "right" },
         6: { halign: "right" },
-      }, // Cells in first column centered and green
+        2: { cellWidth: "wrap" }, // Wrap text for Category
+        4: { cellWidth: "wrap" },
+      },
     });
 
-    const finalY = doc.lastAutoTable.finalY + 10;
-    doc.setFontSize(12);
-    doc.text(`Transaction Info :`, 14, finalY);
     doc.setFontSize(10);
-    doc.text(`Month : ${currentMonth}`, 14, finalY + 9);
+
+    const finalY = doc.lastAutoTable.finalY + 10;
+
+    doc.text(`Transaction Info :`, 15, finalY);
+    doc.text(`Month : ${monthNames[month - 1]}`, 15, finalY + 9);
 
     doc.text(
       `Normal Expense ( x${normCount} ) : ${normExpense}`,
-      14,
+      15,
       finalY + 15
     );
     doc.text(
-      `Split Expense ( x${splitCount} ) :  ${splitExpense}`,
-      14,
+      `Split Expense ( x${splitCount} ) : ${splitExpense}`,
+      15,
       finalY + 21
     );
-    doc.text(`Total Expense : ${totalExpense}`, 14, finalY + 27);
+    doc.text(`Total Expense : ${totalExpense}`, 15, finalY + 27);
 
-    // Save the PDF
     doc.save("transactions.pdf");
   };
 
@@ -358,6 +387,107 @@ const Settings = (props) => {
         return data;
       }
     });
+  }
+
+  function getTotalSavings() {
+    let sum = 0;
+    let startMonth = parseInt(
+      sortObjectsByDateAsc(transactionHistory)[0]?.Date?.split("/")[1]
+    );
+    let endMonth = parseInt(
+      sortObjectsByDateAsc(transactionHistory)[
+        sortObjectsByDateAsc(transactionHistory).length - 1
+      ]?.Date?.split("/")[1]
+    );
+    transactionHistory?.forEach((data) => {
+      if (data?.MoneyIsAdded == true) {
+        sum = sum - parseInt(data?.Amount);
+      } else {
+        sum = sum + parseInt(data?.Amount);
+      }
+    });
+    return formatAmountWithCommas(budget * (endMonth - startMonth + 1) - sum);
+  }
+
+  function monthWiseSavings() {
+    let savingsArray = [];
+    let sum = 0;
+    let currMonth = parseInt(
+      sortObjectsByDateAsc(transactionHistory)[0]?.Date?.split("/")[1]
+    );
+
+    sortObjectsByDateAsc(transactionHistory)?.forEach((data) => {
+      if (parseInt(data?.Date?.split("/")[1]) == currMonth) {
+      } else {
+        savingsArray.push({ Month: currMonth, Savings: budget - sum });
+        sum = 0;
+        currMonth = parseInt(data?.Date?.split("/")[1]);
+      }
+      if (data?.MoneyIsAdded == true) {
+        sum = sum - parseInt(data?.Amount);
+      } else {
+        sum = sum + parseInt(data?.Amount);
+      }
+    });
+    savingsArray.push({ Month: currMonth, Savings: budget - sum });
+
+    console.log("Savings Array");
+    console.log(savingsArray);
+
+    return savingsArray;
+
+    // return formatAmountWithCommas(budget * (endMonth - startMonth + 1) - sum);
+  }
+
+  useEffect(() => {
+    setSavingsLoading(true);
+    setTimeout(() => {
+      setSavingsLoading(false);
+    }, 2000);
+  }, []);
+
+  useEffect(() => {
+    if (transactionHistory.length != 0) {
+      setSavings(getTotalSavings());
+    }
+  }, [transactionHistory]);
+
+  function DueReminderShowFirebaseUpdate() {
+    const user = firebase.auth().currentUser;
+    if (btn1) {
+      const userRef = db.collection("Expense").doc(user?.uid).update({
+        DueReminder: false,
+      });
+    } else {
+      const userRef = db.collection("Expense").doc(user?.uid).update({
+        DueReminder: true,
+      });
+    }
+  }
+
+  function MonthlyReminderFirebaseUpdate() {
+    const user = firebase.auth().currentUser;
+    if (btn2) {
+      const userRef = db.collection("Expense").doc(user?.uid).update({
+        MonthlyReminder: false,
+      });
+    } else {
+      const userRef = db.collection("Expense").doc(user?.uid).update({
+        MonthlyReminder: true,
+      });
+    }
+  }
+  function NotePreviewBlurFirebaseUpdate() {
+    const user = firebase.auth().currentUser;
+    if (btn3) {
+      const userRef = db.collection("Expense").doc(user?.uid).update({
+        NotePreviewBlur: false,
+      });
+    } else {
+      const userRef = db.collection("Expense").doc(user?.uid).update({
+        NotePreviewBlur: true,
+      });
+    }
   }
 
   return (
@@ -572,10 +702,7 @@ const Settings = (props) => {
       {reportModal ? (
         <>
           <div className="w-full h-[100svh] top-0 left-0 fixed bg-[#70708628] backdrop-blur-md flex justify-center items-end p-[20px] z-30 font-[google] font-normal">
-            <div
-              className="w-full h-auto min-h-[150px] flex flex-col justify-center items-start p-[30px] py-[25px] bg-[white] rounded-3xl drop-shadow-sm"
-              // style={{ transition: ".3s" }}
-            >
+            <div className="w-full h-auto min-h-[150px] flex flex-col justify-center items-start p-[30px] py-[25px] bg-[white] rounded-3xl drop-shadow-sm">
               {loading ? (
                 <>
                   <div className="w-full h-full flex justify-center items-center">
@@ -685,7 +812,6 @@ const Settings = (props) => {
                         setReportModal(false);
                         setMonth(0);
                         setMonthDrop(false);
-                        // setDeleteConfirmModal(false);
                       }}
                     >
                       Close
@@ -693,8 +819,6 @@ const Settings = (props) => {
                     <div
                       className="w-auto h-auto rounded-2xl cursor-pointer px-[15px] py-[8px] text-[14px] bg-[#191A2C] ml-[10px] text-[white]"
                       onClick={() => {
-                        // console.log("Filterd Array By Mointh");
-                        // console.log(filterByMonth());
                         setLoading(true);
                         setTimeout(() => {
                           if (filterByMonth().length > 0) {
@@ -714,17 +838,6 @@ const Settings = (props) => {
                             setMonthDrop(false);
                           }, 1000);
                         }, 2000);
-
-                        // setDeleteInProcess(true);
-                        // deleteSplitTransaction();
-                        // setTimeout(() => {
-                        //   setDeleteInProcess(false);
-                        //   setDelSuccess(true);
-                        //   setTimeout(() => {
-                        //     setDelSuccess(false);
-                        //     setDeleteConfirmModal(false);
-                        //   }, 1000);
-                        // }, 1500);
                       }}
                     >
                       Download
@@ -738,6 +851,20 @@ const Settings = (props) => {
       ) : (
         <></>
       )}
+      <UpdateModal
+        modal={modal}
+        setModal={setModal}
+        topic={topic}
+        setTopic={setTopic}
+        income={income}
+      />
+      <SavingsModal
+        data={monthWiseSavings()}
+        savingsModal={savingsModal}
+        setSavingsModal={setSavingsModal}
+      />
+      <LogoutModal logoutModal={logoutModal} setLogoutModal={setLogoutModal} />
+
       {/* <div className="w-full h-[100svh] top-0 left-0 fixed bg-[#70708628] backdrop-blur-md flex justify-center items-center p-[20px] z-50 font-[google] font-normal">
         <div className="w-full flex flex-col justify-center items-start p-[30px] bg-[white] rounded-3xl drop-shadow-sm">
           <div className="text-[22px]">Update Budget</div>
@@ -815,7 +942,7 @@ const Settings = (props) => {
         </div>
       </div> */}
       <div className="w-full h-full bg-[#ffffff]  text-black font-[google] font-normal flex flex-col justify-start items-start ">
-        <div className="w-full h-[140px]  flex flex-col bg-[#181F32] p-[20px] justify-center items-center">
+        <div className="w-full h-[140px]  flex flex-col bg-[#191A2C] p-[20px] justify-center items-center">
           {/* <div className="w-[90px] aspect-square rounded-full object-cover bg-[#F5F6FA] text-black flex justify-center items-center text-[37px]">
             {name.charAt(0)?.toUpperCase()}
             {name.split(" ")[1]?.charAt(0)?.toUpperCase()}
@@ -857,7 +984,13 @@ const Settings = (props) => {
         <div className="w-full h-[calc(100%-140px)] flex flex-col justify-start items-start overflow-y-scroll px-[20px]">
           <span className="mt-[15px] ">General</span>
           <div className="w-full flex flex-col justify-start items-start px-[20px] bg-[#F5F6FA] py-[10px]  p-[20px] rounded-2xl mt-[5px]">
-            <div className="w-full h-[40px] flex justify-between items-center">
+            <div
+              className="w-full h-[40px] flex justify-between items-center"
+              onClick={() => {
+                setModal(true);
+                setTopic("Name");
+              }}
+            >
               <div className="flex justify-start items-center">
                 <div className="w-[24px] h-full flex justify-start items-center mr-[9px]">
                   {" "}
@@ -897,7 +1030,13 @@ const Settings = (props) => {
                 </svg>
               </div>
             </div>
-            <div className="w-full h-[40px] flex justify-between items-center">
+            <div
+              className="w-full h-[40px] flex justify-between items-center"
+              onClick={() => {
+                setModal(true);
+                setTopic("Budget");
+              }}
+            >
               {" "}
               <div className="flex justify-start items-center">
                 <div className="w-[24px] h-full flex justify-start items-center mr-[9px]">
@@ -936,7 +1075,13 @@ const Settings = (props) => {
                 </svg>
               </div>
             </div>
-            <div className="w-full h-[40px] flex justify-between items-center">
+            <div
+              className="w-full h-[40px] flex justify-between items-center"
+              onClick={() => {
+                setModal(true);
+                setTopic("Income");
+              }}
+            >
               {" "}
               <div className="flex justify-start items-center">
                 <div className="w-[24px] h-full flex justify-start items-center mr-[9px]">
@@ -981,26 +1126,73 @@ const Settings = (props) => {
           </div>
           <span className="mt-[14px] ">About Transaction</span>
           <div className="w-full flex flex-col justify-start items-start px-[20px] bg-[#F5F6FA] py-[10px]  p-[20px] rounded-2xl mt-[5px]">
-            <div className="w-full h-[40px] flex justify-start items-center">
-              <div className="w-[24px] h-full flex justify-start items-center mr-[9px]">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="21"
-                  height="21"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.7"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="lucide lucide-piggy-bank"
-                >
-                  <path d="M19 5c-1.5 0-2.8 1.4-3 2-3.5-1.5-11-.3-11 5 0 1.8 0 3 2 4.5V20h4v-2h3v2h4v-4c1-.5 1.7-1 2-2h2v-4h-2c0-1-.5-1.5-1-2V5z" />
-                  <path d="M2 9v1c0 1.1.9 2 2 2h1" />
-                  <path d="M16 11h.01" />
-                </svg>
+            {/* <div className="w-full h-[40px] flex justify-start items-center">
+              <div className="w-[24px] h-full flex justify-start items-center mr-[9px]"></div>
+            </div> */}
+            <div
+              className="w-full h-[40px] flex justify-between items-center"
+              onClick={() => {
+                // monthWiseSavings();
+                setSavingsModal(true);
+              }}
+            >
+              <div className="w-auto flex justify-start items-center">
+                <div className="w-[24px] h-full flex justify-start items-center mr-[9px]">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="21"
+                    height="21"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-piggy-bank"
+                  >
+                    <path d="M19 5c-1.5 0-2.8 1.4-3 2-3.5-1.5-11-.3-11 5 0 1.8 0 3 2 4.5V20h4v-2h3v2h4v-4c1-.5 1.7-1 2-2h2v-4h-2c0-1-.5-1.5-1-2V5z" />
+                    <path d="M2 9v1c0 1.1.9 2 2 2h1" />
+                    <path d="M16 11h.01" />
+                  </svg>
+                </div>
+                Total Savings
               </div>
-              Total Savings
+              <div className="w-auto flex justify-end h-full items-center text-[#191A2C]">
+                {savingsLoading ? (
+                  <>
+                    <l-ring
+                      size="18"
+                      stroke="2.3"
+                      bg-opacity="0"
+                      speed="2"
+                      color="#191A2C"
+                    ></l-ring>
+                  </>
+                ) : (
+                  <>
+                    <svg
+                      className="mr-[3px]"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.7"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="lucide lucide-indian-rupee"
+                    >
+                      <path d="M6 3h12" />
+                      <path d="M6 8h12" />
+                      <path d="m6 13 8.5 8" />
+                      <path d="M6 13h3" />
+                      <path d="M9 13c6.667 0 6.667-10 0-10" />
+                    </svg>
+                    {savings}
+                  </>
+                )}
+              </div>
             </div>
             <div className="w-full h-[40px] flex justify-between items-center">
               <div className="w-auto flex justify-start items-center">
@@ -1027,7 +1219,7 @@ const Settings = (props) => {
               <div className="w-auto flex justify-end items-center text-[#6f6f6f]">
                 INR
                 <svg
-                  className="ml-[3px]"
+                  className="ml-[4px] mr-[-2px]"
                   xmlns="http://www.w3.org/2000/svg"
                   width="14"
                   height="14"
@@ -1045,24 +1237,44 @@ const Settings = (props) => {
                   <path d="M6 13h3" />
                   <path d="M9 13c6.667 0 6.667-10 0-10" />
                 </svg>
-                <svg
-                  className="text-black"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="21"
-                  height="21"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.7"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="lucide lucide-chevron-right"
-                >
-                  <path d="m9 18 6-6-6-6" />
-                </svg>
               </div>
             </div>
+
             <div
+              className="w-full h-[40px] flex justify-between items-center"
+              onClick={() => {
+                setReportModal(true);
+              }}
+            >
+              <div className="w-auto flex justify-start items-center">
+                <div className="w-[24px] h-full flex justify-start items-center mr-[9px]">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="21"
+                    height="21"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-file-bar-chart-2"
+                  >
+                    <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
+                    <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+                    <path d="M8 18v-1" />
+                    <path d="M12 18v-6" />
+                    <path d="M16 18v-3" />
+                  </svg>
+                </div>
+                Monthly Report
+              </div>
+              <div className="w-auto flex justify-end items-center text-[#6f6f6f]">
+                .pdf
+              </div>
+            </div>
+
+            {/* <div
               className="w-full h-[40px] flex justify-start items-center "
               // onClick={downloadPDF}
               onClick={() => {
@@ -1090,7 +1302,7 @@ const Settings = (props) => {
                 </svg>
               </div>
               Monthly Report
-            </div>
+            </div> */}
           </div>
 
           <span className="mt-[14px] ">Features</span>
@@ -1161,7 +1373,8 @@ const Settings = (props) => {
                   }
                   style={{ transition: ".3s" }}
                   onClick={() => {
-                    setBtn1(!btn1);
+                    // setBtn1(!btn1);
+                    DueReminderShowFirebaseUpdate();
                   }}
                 >
                   <div
@@ -1224,8 +1437,8 @@ const Settings = (props) => {
                 }
               >
                 <div className="w-[calc(100%-82px)] h-auto flex justify-start items-start text-[14px] text-[#6f6f6f] ml-[33px]">
-                  If this option is enabled in Reminfer Page only the due &
-                  upcoming reminders for current month will be visible only.
+                  If this option is enabled in Reminder Page all the Reminders
+                  including Due and Upcoming will be showed.
                 </div>
                 <div
                   className={
@@ -1234,7 +1447,8 @@ const Settings = (props) => {
                   }
                   style={{ transition: ".3s" }}
                   onClick={() => {
-                    setBtn2(!btn2);
+                    // setBtn2(!btn2);
+                    MonthlyReminderFirebaseUpdate();
                   }}
                 >
                   <div
@@ -1248,47 +1462,82 @@ const Settings = (props) => {
               </div>
             </div>
             <div
-              className="w-full h-[40px] flex justify-between items-center"
+              className={
+                "w-full flex flex-col justify-start items-start" +
+                (feature == 3 ? " h-auto" : " h-[40px]")
+              }
               onClick={() => {
                 setFeature(3);
               }}
             >
-              <div className="w-auto h-full flex justify-start items-center">
-                <div className="w-[24px] h-full flex justify-start items-center mr-[9px]">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="21"
-                    height="21"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="1.7"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="lucide lucide-notepad-text"
-                  >
-                    <path d="M8 2v4" />
-                    <path d="M12 2v4" />
-                    <path d="M16 2v4" />
-                    <rect width="16" height="18" x="4" y="4" rx="2" />
-                    <path d="M8 10h6" />
-                    <path d="M8 14h8" />
-                    <path d="M8 18h5" />
-                  </svg>
+              <div className="w-full h-[40px] flex justify-between items-center">
+                <div className="w-auto h-full flex justify-start items-center">
+                  <div className="w-[24px] h-full flex justify-start items-center mr-[9px]">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="21"
+                      height="21"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.7"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="lucide lucide-notepad-text"
+                    >
+                      <path d="M8 2v4" />
+                      <path d="M12 2v4" />
+                      <path d="M16 2v4" />
+                      <rect width="16" height="18" x="4" y="4" rx="2" />
+                      <path d="M8 10h6" />
+                      <path d="M8 14h8" />
+                      <path d="M8 18h5" />
+                    </svg>
+                  </div>
+                  Blur Notes Preview
                 </div>
-                Blur Notes Preview
+
+                <div className="w-auto h-full flex justify-end items-center">
+                  {feature == 3 ? (
+                    <>
+                      <Down />
+                    </>
+                  ) : (
+                    <>
+                      <Up />
+                    </>
+                  )}
+                </div>
               </div>
 
-              <div className="w-auto h-full flex justify-end items-center">
-                {feature == 3 ? (
-                  <>
-                    <Down />
-                  </>
-                ) : (
-                  <>
-                    <Up />
-                  </>
-                )}
+              <div
+                className={
+                  "w-full flex justify-between items-start overflow-hidden" +
+                  (feature == 3 ? " h-auto " : " h-0")
+                }
+              >
+                <div className="w-[calc(100%-82px)] h-auto flex justify-start items-start text-[14px] text-[#6f6f6f] ml-[33px]">
+                  Enabling this option will blur the note preview for privacy.
+                </div>
+                <div
+                  className={
+                    "w-[33px] h-[22px] rounded-full  flex justify-start items-center px-[2px]" +
+                    (btn3 ? " bg-[#00bb0034]" : " bg-white")
+                  }
+                  style={{ transition: ".3s" }}
+                  onClick={() => {
+                    // setBtn2(!btn2);
+                    NotePreviewBlurFirebaseUpdate();
+                  }}
+                >
+                  <div
+                    className={
+                      "w-[18px] aspect-square rounded-full " +
+                      (btn3 ? " ml-[11px] bg-[#00bb00]" : " ml-0 bg-[#ebebf5]")
+                    }
+                    style={{ transition: ".3s" }}
+                  ></div>
+                </div>
               </div>
             </div>
             <div
@@ -1304,8 +1553,8 @@ const Settings = (props) => {
                 Delete Split Transaction
               </div>
 
-              <div className="w-auto h-full flex justify-end items-center">
-                {feature == 4 ? (
+              <div className="w-auto h-full flex justify-end items-center text-[#00000085]">
+                {/* {feature == 4 ? (
                   <>
                     <Down />
                   </>
@@ -1313,7 +1562,8 @@ const Settings = (props) => {
                   <>
                     <Up />
                   </>
-                )}
+                )} */}
+                Coming Soon
               </div>
             </div>
           </div>
@@ -1356,7 +1606,8 @@ const Settings = (props) => {
             <div
               className="w-full h-[40px] flex justify-start items-center text-[#e61d0f]"
               onClick={() => {
-                userSignOut();
+                setLogoutModal(true);
+                // userSignOut();
               }}
             >
               <div className="w-[24px] h-full flex justify-start items-center mr-[9px]">

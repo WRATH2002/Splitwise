@@ -67,6 +67,8 @@ const ReminderPage = () => {
   const [edit, setEdit] = useState(false);
   const [sideBar, setSideBar] = useState(false);
   const [sec, setSec] = useState("Reminder");
+  const [monthlyReminderShow, setMonthlyReminderShow] = useState(false);
+  const [notePreview, setNotePreview] = useState(false);
   // const [Date, Date] = useState("");
   const [reminderDate, setReminderDate] = useState("");
 
@@ -87,11 +89,11 @@ const ReminderPage = () => {
       sortTransactionsByDate();
     }
     console.log(transactionHistory);
-  }, [transactionHistory, month, year]);
+  }, [transactionHistory, month, year, monthlyReminderShow]);
 
   function sortTransactionsByDate() {
-    setTempTransactionHistory(
-      filterByPresentDate(
+    if (monthlyReminderShow) {
+      setTempTransactionHistory(
         transactionHistory.sort((a, b) => {
           const [dayA, monthA, yearA] = a.Date.split("/").map(Number);
           const [dayB, monthB, yearB] = b.Date.split("/").map(Number);
@@ -99,17 +101,20 @@ const ReminderPage = () => {
           const dateB = new Date(yearB, monthB - 1, dayB);
           return dateA - dateB;
         })
-
-        // transactionHistory.filter((data) => {
-        //   if (
-        //     data.Date.split("/")[1] == month &&
-        //     data.Date.split("/")[2] == year
-        //   ) {
-        //     return data;
-        //   }
-        // })
-      )
-    );
+      );
+    } else {
+      setTempTransactionHistory(
+        filterByPresentDate(
+          transactionHistory.sort((a, b) => {
+            const [dayA, monthA, yearA] = a.Date.split("/").map(Number);
+            const [dayB, monthB, yearB] = b.Date.split("/").map(Number);
+            const dateA = new Date(yearA, monthA - 1, dayA);
+            const dateB = new Date(yearB, monthB - 1, dayB);
+            return dateA - dateB;
+          })
+        )
+      );
+    }
   }
 
   function filterByPresentDate(data) {
@@ -132,6 +137,8 @@ const ReminderPage = () => {
       // setMonth(snapshot?.data()?.Photo);
       setTransactionHistory(snapshot?.data()?.Reminders);
       setNotes(snapshot?.data()?.Notes);
+      setMonthlyReminderShow(snapshot?.data()?.MonthlyReminder);
+      setNotePreview(snapshot?.data()?.NotePreviewBlur);
       // setTempTransactionHistory(snapshot?.data()?.Reminders);
     });
   }
@@ -519,7 +526,7 @@ const ReminderPage = () => {
                 <>
                   <div
                     className={
-                      "w-[calc((100%-20px)/2)] min-h-[210px]  rounded-2xl mx-[5px] mb-[10px] flex flex-col justify-between items-start overflow-hidden p-[20px] cursor-pointer" +
+                      "w-[calc((100%-20px)/2)] min-h-[210px] max-h-[210px]  rounded-2xl mx-[5px] mb-[10px] flex flex-col justify-between items-start overflow-hidden p-[20px] cursor-pointer" +
                       (index % 2 != 0 ? " mt-[-110px]" : " mt-[0px]") +
                       (deleteData.includes(data)
                         ? " bg-[#d0d1d4] "
@@ -544,6 +551,24 @@ const ReminderPage = () => {
                     }}
                     {...bind()}
                   >
+                    <div className="w-[calc(100%+40px)] ml-[-20px] h-[210px] bg-[#191a2c00] backdrop-blur-[8px] flex justify-center items-center relative mb-[-210px] mt-[-20px]">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#00000085"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="lucide lucide-folder-lock"
+                      >
+                        <rect width="8" height="5" x="14" y="17" rx="1" />
+                        <path d="M10 20H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H20a2 2 0 0 1 2 2v2.5" />
+                        <path d="M20 17v-2a2 2 0 1 0-4 0v2" />
+                      </svg>
+                    </div>
                     <div className="flex flex-col justify-start items-start">
                       <span className="text-[22px] w-full  overflow-hidden line-clamp-1 text-ellipsis">
                         {data?.Title}
@@ -726,12 +751,18 @@ const ReminderPage = () => {
             tempTransactionHistory={tempTransactionHistory}
             setAddModal={setAddModal}
           />
-          <div className="flex justify-start items-center text-[14px] font-[google] font-normal mt-[10px] px-[20px] text-[#00000057]">
+          <div className="flex justify-start items-center text-[14px] font-[google] font-normal mt-[10px] px-[20px] text-[#00000057] whitespace-nowrap">
             Reminders,{" "}
             <span
-              className=" ml-[2px] text-[14px] text-[black] cursor-pointer flex justify-start items-center px-[6px] pl-[8px] h-full rounded-full  py-[2px]"
+              className={
+                " ml-[2px] text-[14px] whitespace-nowrap  cursor-pointer flex justify-start items-center px-[6px] pl-[8px] h-full rounded-full  py-[2px]" +
+                (monthlyReminderShow ? " text-[#00000057]" : " text-[black]")
+              }
               onClick={() => {
-                setChooseMonth(true);
+                if (monthlyReminderShow) {
+                } else {
+                  setChooseMonth(true);
+                }
                 // setAddModal(true);
                 // setSplitModal(true);
               }}

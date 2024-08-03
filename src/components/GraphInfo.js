@@ -202,7 +202,7 @@ const GraphInfo = (props) => {
 
   return (
     <>
-      <div className="w-full h-[120px] flex justify-between items-center font-[google] font-normal px-[20px]">
+      <div className="w-full  h-[140px] flex justify-between items-start font-[google] font-normal bg-[#191A2C] pt-[30px] px-[20px]">
         <div className="w-[calc(100%/2)] flex flex-col justify-center items-start ">
           <span className=" flex justify-center items-center text-[14px] text-[#828282]">
             <IoCalendarSharp className="text-[12px] mr-[8px]" />

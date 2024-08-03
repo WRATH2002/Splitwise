@@ -42,15 +42,18 @@ const monthsShort = [
 const IndividualReminder = (props) => {
   const [aprroveModal, setApproveModal] = useState(false);
   const [include, setInclude] = useState(false);
+
   function monthName(data) {
     // console.log(props?.data);
     let arr = data.split("/");
     return monthsShort[parseInt(arr[1]) - 1];
   }
+
   function date(data) {
     let arr = data.split("/");
     return arr[0];
   }
+
   function formatAmountWithCommas(amountStr) {
     // Convert the string to a number
     const amount = parseFloat(amountStr);
@@ -63,6 +66,7 @@ const IndividualReminder = (props) => {
     // Format the number with commas
     return amount.toLocaleString();
   }
+
   function getRemainingTime(dateString) {
     // Parse the input date string
     const [day, month, year] = dateString.split("/").map(Number);

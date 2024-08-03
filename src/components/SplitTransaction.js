@@ -1183,7 +1183,7 @@ const SplitTransaction = (props) => {
                 }
               }).length > 0
               ? " flex bg-[#c7c7c7]"
-              : " flex bg-[#f9fafc]"
+              : " flex bg-[#F5F6FA]"
             : " flex bg-[#F5F6FA]")
         }
         onClick={() => {
@@ -1349,7 +1349,7 @@ const SplitTransaction = (props) => {
         <div
           className={
             "w-[calc(100%-130px)] px-[10px] flex flex-col justify-center items-start " +
-            (!props?.data?.PaymentStatus ? " text-black" : " text-[#828282]")
+            (!props?.data?.PaymentStatus ? " text-black" : " text-black")
           }
         >
           <span
@@ -1362,11 +1362,12 @@ const SplitTransaction = (props) => {
                 ).toFixed(2) *
                   (splitRemaining.length + 1) ===
                 0 || props?.data?.Paid === true
-                ? " text-[#d5d5d5] "
+                ? " text-[#000000] "
                 : " ")
             }
           >
-            {props?.edit ? <>true</> : <>false</>}
+            {props?.data?.Lable}
+            {/* {props?.edit ? <>true</> : <>false</>} */}
           </span>
           <span
             className={
@@ -1378,7 +1379,7 @@ const SplitTransaction = (props) => {
                 ).toFixed(2) *
                   (splitRemaining.length + 1) ===
                 0 || props?.data?.Paid === true
-                ? " text-[#d5d5d5]"
+                ? " text-[#00000057]"
                 : " text-[#00000057]")
             }
           >
@@ -1412,7 +1413,7 @@ const SplitTransaction = (props) => {
                     ).toFixed(2) *
                       (splitRemaining.length + 1) ===
                   0
-                    ? " text-[#d5d5d5]"
+                    ? " text-[#000000]"
                     : " text-[#00bb00]")
                 }
               >
@@ -1439,7 +1440,7 @@ const SplitTransaction = (props) => {
                 className={
                   "text-[16px] w-full flex justify-end items-center whitespace-nowrap" +
                   (props?.data?.Paid === true
-                    ? " text-[#d5d5d5]"
+                    ? " text-[#000000]"
                     : " text-[#e61d0f]")
                 }
               >
@@ -1454,7 +1455,7 @@ const SplitTransaction = (props) => {
           )}
           <div
             className={
-              "text-[13px] " +
+              "text-[13px] flex justify-end items-center" +
               (parseFloat(props?.data?.Amount) -
                 (
                   parseFloat(props?.data?.Amount) /
@@ -1466,7 +1467,33 @@ const SplitTransaction = (props) => {
                 : " text-[#00000057]")
             }
           >
-            {formatDate(props?.data?.Date)}
+            {formatDate(props?.data?.Date)}{" "}
+            {parseFloat(props?.data?.Amount) -
+              (
+                parseFloat(props?.data?.Amount) /
+                parseInt(props?.data?.MemberCount)
+              ).toFixed(2) *
+                (splitRemaining.length + 1) ===
+              0 || props?.data?.Paid === true ? (
+              <div className="w-[15px] h-[15px] rounded-full flex justify-center items-center bg-[#00bb00] text-[white] ml-[5px]">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="10"
+                  height="10"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="3.7"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-check"
+                >
+                  <path d="M20 6 9 17l-5-5" />
+                </svg>
+              </div>
+            ) : (
+              <></>
+            )}
           </div>
         </div>
       </div>

@@ -103,6 +103,9 @@ const Signup = (props) => {
       CategoryBudget: [],
       MonthlyData: [],
       Tutorial: true,
+      MonthlyReminder: false,
+      DueReminder: false,
+      NotePreviewBlur: false,
     });
     console.log("done");
   }

@@ -68,6 +68,17 @@ input::placeholder {
   /* font-weight: 400; */
 }
 
+.chartBg {
+  background: rgb(245, 246, 250);
+  background: linear-gradient(
+    90deg,
+    rgba(245, 246, 250, 1) 0%,
+    rgba(253, 29, 29, 0) 19%,
+    rgba(247, 190, 193, 0) 81%,
+    rgba(245, 246, 250, 1) 100%
+  );
+}
+
 .gradBg {
   background-image: linear-gradient(
     to bottom,

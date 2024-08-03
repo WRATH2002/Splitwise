@@ -48,6 +48,7 @@ const HomePage = () => {
   const [end, setEnd] = useState(false);
   const [chooseMonth, setChooseMonth] = useState(false);
   const [section, setSection] = useState(true);
+  const [dueReminderShow, setDueReminderShow] = useState(false);
 
   const [transactionHistoryOne, setTransactionHistoryOne] = useState([]);
   const [tempTransactionHistoryOne, setTempTransactionHistoryOne] = useState(
@@ -106,6 +107,7 @@ const HomePage = () => {
     onSnapshot(userRef, (snapshot) => {
       // setMonth(snapshot?.data()?.Photo);
       setTransactionHistoryOne(snapshot?.data()?.Reminders);
+      setDueReminderShow(snapshot?.data()?.DueReminder);
       // setTempTransactionHistory(snapshot?.data()?.Reminders);
     });
   }
@@ -626,7 +628,7 @@ const HomePage = () => {
         <div
           className={
             "w-full h-auto  flex flex-col items-center justify-start " +
-            (reminderCount === 0
+            (reminderCount === 0 || dueReminderShow == false
               ? " max-h-[calc(100%-240px)]"
               : " max-h-[calc(100%-370px)]")
           }
@@ -688,11 +690,17 @@ const HomePage = () => {
           <AddIndependentTransaction />
         </div>
 
-        {reminderCount !== 0 ? (
-          <Remiders
-            setReminderCount={setReminderCount}
-            data={tempTransactionHistoryOne}
-          />
+        {dueReminderShow ? (
+          <>
+            {reminderCount !== 0 ? (
+              <Remiders
+                setReminderCount={setReminderCount}
+                data={tempTransactionHistoryOne}
+              />
+            ) : (
+              <></>
+            )}
+          </>
         ) : (
           <></>
         )}

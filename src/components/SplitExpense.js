@@ -24,7 +24,15 @@ import Friends, { Profile, ProfileTwo } from "./Friends";
 import { RiSearchLine } from "react-icons/ri";
 import { FaFilter } from "react-icons/fa";
 import { mirage } from "ldrs";
-
+import { storage } from "../firebase";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import loadImage from "blueimp-load-image";
+import { jelly } from "ldrs";
+import { squircle } from "ldrs";
+import { SmallSizeIcon } from "./NornmalSizeIcon";
+squircle.register();
+jelly.register();
 mirage.register();
 
 // Default values shown
@@ -98,6 +106,23 @@ const months = [
   "Nov",
   "Dec",
 ];
+const categoryName = [
+  "Car Maintanance",
+  "Education",
+  "Electricity Bill",
+  "Entertainment",
+  "Food & Drinks",
+  "Grocery",
+  "Medical",
+  "Others",
+  "Pet Care",
+  "Petrol / Diesel",
+  "Shopping",
+  "Taxi Fare",
+  "Travel",
+];
+
+const paymentName = ["Online UPI", "Credit/Debit Card", "Cash"];
 
 const SplitExpense = () => {
   const [splitModal, setSplitModal] = useState(false);
@@ -128,6 +153,11 @@ const SplitExpense = () => {
   const [popUp, setPopUp] = useState(false);
   const [deleteInProcess, setDeleteInProcess] = useState(false);
   const [delSuccess, setDelSuccess] = useState(false);
+  const [categoryDropdown, setCategoryDropdown] = useState(false);
+  const [paymentDropdown, setCPaymentDropdown] = useState(false);
+  const [subSection, setSubSection] = useState("");
+  const [imageError, setImageError] = useState(false);
+  const [addNewTransaction, setAddNewTransaction] = useState(false);
 
   useEffect(() => {
     // const user = firebase.auth().currentUser;
@@ -199,7 +229,7 @@ const SplitExpense = () => {
     });
   }
 
-  const [value, setValue] = useState();
+  const [value, setValue] = useState("");
 
   function isNumeric(str) {
     if (typeof str !== "string") return false;
@@ -469,11 +499,51 @@ const SplitExpense = () => {
     setSelectedTran([]);
   }
 
+  function addToFirebase() {
+    const user = firebase.auth().currentUser;
+    if (value.length == undefined) {
+      db.collection("Expense")
+        .doc(user.uid)
+        .update({
+          NormalTransaction: arrayUnion({
+            Lable: label,
+            Date: value?.day + "/" + value?.month?.number + "/" + value?.year,
+            Amount: price,
+            TransactionType: "Single",
+            Members: "0",
+            Category: category,
+            Mode: mode,
+            BillUrl: bill,
+          }),
+        });
+    } else {
+      db.collection("Expense")
+        .doc(user.uid)
+        .update({
+          NormalTransaction: arrayUnion({
+            Lable: label,
+            Date: value,
+            Amount: price,
+            TransactionType: "Single",
+            Members: "0",
+            Category: category,
+            Mode: mode,
+            BillUrl: bill,
+          }),
+        });
+    }
+
+    setLabel("");
+    setPrice("");
+    setCategory("");
+    setMode("");
+    setBill("");
+  }
+
   return (
     <>
       {addModal ? (
         <div className="w-[calc(100%-40px)] h-[calc(100svh-40px)] rounded-3xl fixed  bg-[#fff5ee] top-[20px] left-[20px] flex flex-col justify-start items-start py-[30px] text-black z-50">
-          {/* <div className=" w-[320px] h-auto p-[30px]   bg-[#212121] rounded-3xl flex flex-col justify-start items-start "> */}
           <span className="px-[30px] w-full text-[25px] text-black font-[google] font-normal flex justify-start items-center mb-[10px] mt-[-10px]">
             Add <span className="text-[#de8544] ml-[10px]">Member</span>
           </span>
@@ -525,10 +595,7 @@ const SplitExpense = () => {
           >
             {userList.length === 0 ? (
               <>
-                <div className="w-full h-[60px] flex flex-col  justify-center text-[15px] items-center font-[google] font-normal text-[#de8544]">
-                  {/* <span>No Users Found</span>
-                  <span>Try searching with Full Name</span> */}
-                </div>
+                <div className="w-full h-[60px] flex flex-col  justify-center text-[15px] items-center font-[google] font-normal text-[#de8544]"></div>
               </>
             ) : (
               <>
@@ -608,15 +675,6 @@ const SplitExpense = () => {
             </div>
           </div>
           <div className="w-[calc(100%-40px)] flex justify-center items-end font-[google] font-normal text-[17px] fixed bottom-[20px] left-[20px] rounded-b-3xl  h-[50px] px-[20px]  bg-[#fff5ee] z-50 ">
-            {/* <div
-              className="h-full flex justify-center items-center cursor-pointer  mr-[30px]"
-              onClick={() => {
-                // setPersonName("");
-                // setAddModal(false);
-              }}
-            >
-              Cancel
-            </div> */}
             <div
               className="h-full  flex justify-center items-center text-[#de8544] cursor-pointer "
               onClick={() => {
@@ -629,126 +687,167 @@ const SplitExpense = () => {
               Done
             </div>
           </div>
-          {/* </div> */}
         </div>
       ) : (
         <></>
       )}
       {splitModal === true ? (
-        <div className="w-full h-[100svh] fixed z-30 bg-[#68686871] top-0 left-0 flex justify-center items-center backdrop-blur-md">
-          <div className="w-[320px] max-h-[400px] py-[27px] bg-[#ffffff] rounded-3xl flex flex-col justify-center items-start z-40">
-            <div className="w-full h-auto px-[30px] bg-transparent overflow-y-scroll flex flex-col justify-start items-start z-40">
-              <span className="w-full text-[25px] text-black font-[google] font-normal flex justify-start items-center ">
-                Transaction{" "}
-                <span className="text-[#de8544] ml-[10px]">Info</span>
-              </span>
-
-              <div className="flex flex-col w-full justify-between items-start mt-[20px]">
-                <span className="text-[#000000] font-[google] font-normal text-[15px] mb-[10px]">
-                  About Transaction{" "}
-                  <span className="text-[#ff6c00] h-auto pt-[3px]">*</span>
-                </span>
-                <div
-                  className={
-                    " w-auto  rounded-md flex justify-start items-center bg-transparent ml-[5px] px-[5px]   font-[google] font-normal " +
-                    (label?.length === 0
-                      ? " h-[40px] mb-[-40px] z-30 border border-transparent text-[#8b8b8b] text-[15px]"
-                      : " h-[1px] mb-[-1px] z-50 border border-[#fff5ee] text-[#de8544] text-[14px]")
-                  }
-                  style={{ transition: ".4s" }}
-                >
-                  Label
-                </div>
-                <input
-                  className="outline-none rounded-md w-full h-[40px] bg-transparent border border-[#ffd8be] px-[10px] text-black font-[google] font-normal text-[15px] z-40"
-                  // placeholder="Label"
-                  value={label}
-                  onChange={(e) => {
-                    setLabel(e.target.value);
-                  }}
-                ></input>
-              </div>
-              {/* <div className="flex w-full justify-between h-[50px] items-center mt-[10px]"></div> */}
-
-              <div className="flex w-full justify-between items-center mt-[10px]">
-                <div className="flex flex-col justify-between items-start  w-[calc((100%-10px)/2)] h-[40px]">
+        <>
+          <div className="w-full h-[100svh] fixed z-30 bg-[#70708628] backdrop-blur-md top-0 left-0 flex flex-col justify-end items-start p-[20px] ">
+            <div className="w-full h-auto py-[20px] bg-[#ffffff]   rounded-3xl flex flex-col justify-center items-start z-40">
+              <div className="w-full h-auto px-[20px] bg-transparent overflow-y-scroll flex flex-col justify-start items-start z-40">
+                <div className="flex flex-col w-full justify-between items-start ">
+                  <div
+                    className=" w-auto  rounded-md flex text-[#0000003c] mb-[2px] justify-start items-center bg-transparent text-[14px] font-[google] font-normal "
+                    style={{ transition: ".4s" }}
+                  ></div>
                   <div
                     className={
-                      " w-auto  flex justify-start items-center bg-transparent ml-[5px] px-[5px]   font-[google] font-normal " +
-                      (value?.length === 0
-                        ? " h-[40px] mb-[-40px] z-30 border border-transparent text-[#8b8b8b] text-[15px]"
-                        : " h-[1px] mb-[-1px] z-50 border border-[#fff5ee] text-[#de8544] text-[14px]")
+                      "w-full h-[60px] bg-[#F5F6FA] flex justify-start font-[google] font-normal    mb-[-60px] px-[15px] rounded-xl" +
+                      (label?.length > 0
+                        ? " items-start pt-[11px] text-[13px] text-[#00000061]"
+                        : " items-center pt-[0px] text-[16px] text-[#00000061]")
                     }
-                    style={{ transition: ".4s" }}
                   >
-                    Date
+                    Label
                   </div>
-                  <DatePicker
-                    // inputClass="custom-input"
-                    style={{
-                      width: "320px",
-                    }}
-                    arrow={false}
-                    className="bg-[#212121] teal h-full min-w-[260px] flex justify-center items-center font-[google] font-normal  bg-transparent border-[1px] border-[#535353]"
-                    disableYearPicker
-                    disableMonthPicker
-                    weekDays={weekDays}
-                    months={months}
-                    minDate={new Date().setDate(0)}
-                    maxDate={new Date().setDate(preDate)}
-                    // render={<InputIcon />}
-                    buttons={false}
-                    value={value}
-                    onChange={setValue}
-                    format="DD/MM/YYYY"
-                    shadow={false}
-                    render={(value, openCalendar) => {
-                      return (
-                        <button
-                          className="border-[1px] border-[#ffd8be] flex justify-start items-center px-[10px] font-[google] text-[15px] w-[125px] h-[40px] rounded-md text-black z-40"
-                          onClick={openCalendar}
-                        >
-                          {value}
-                        </button>
-                      );
-                    }}
-
-                    // render={<InputIcon />}
-                  />
-                </div>
-
-                <div className="flex flex-col justify-between items-start  w-[calc((100%-10px)/2)] h-[40px] ">
-                  <div
+                  <input
                     className={
-                      " w-auto  flex justify-start items-center rounded-md bg-transparent ml-[5px]    font-[google] font-normal " +
-                      (price?.length === 0
-                        ? " h-[40px] mb-[-40px] z-30 border border-transparent text-[#8b8b8b] text-[15px] ml-[20px] px-[19px]"
-                        : " h-[1px] mb-[-1px] z-50 border border-[#fff5ee] text-[#de8544] text-[14px] ml-[5px] px-[5px]")
+                      "outline-none rounded-xl w-full h-[60px] bg-transparent border  px-[15px]  text-black font-[google] font-normal text-[16px] z-40" +
+                      (label == "NotFound" || label?.length == 0
+                        ? " pt-[0px]"
+                        : " pt-[18px]") +
+                      (label == "NotFound"
+                        ? " border-[#d02d2d] "
+                        : " border-[#F5F6FA] ")
                     }
-                    style={{ transition: ".4s" }}
-                  >
-                    Amount
-                  </div>
-                  {/* <BiRupee /> */}
-                  <div className="w-full h-[40px] flex justify-start items-center">
-                    <div className="w-[30px] h-[50px] flex justify-center items-center mr-[-30px] text-black ">
-                      <BiRupee className="text-[17px]" />
+                    // placeholder="Label"
+                    value={label == "NotFound" ? "" : label}
+                    onChange={(e) => {
+                      setLabel(e.target.value);
+                    }}
+                  ></input>
+                </div>
+                {/* <div className="flex w-full justify-between h-[50px] items-center mt-[10px]"></div> */}
+
+                <div className="flex w-full justify-between items-center mt-[5px]">
+                  <div className="flex flex-col justify-between items-start  w-[calc((100%-10px)/2)]">
+                    <div
+                      className=" w-full  rounded-md flex text-[#0000005d] mb-[2px] justify-start items-center bg-transparent text-[14px] font-[google] font-normal "
+                      style={{ transition: ".4s" }}
+                    >
+                      {/* Date */}
                     </div>
-                    <input
-                      className="outline-none w-full h-[40px] rounded-md pl-[25px] bg-transparent border border-[#ffd8be] px-[10px] text-black font-[google] font-normal text-[14px] z-40"
-                      // placeholder="Price"
-                      value={price}
+                    <div
+                      className={
+                        "w-full h-[60px] bg-[#F5F6FA] flex justify-start font-[google] font-normal    mb-[-60px] px-[15px] rounded-xl" +
+                        (value.length > 0
+                          ? " items-start pt-[11px] text-[13px] text-[#00000061]"
+                          : " items-center pt-[0px] text-[16px] text-[#00000061]")
+                      }
+                    >
+                      Date
+                    </div>
+                    <DatePicker
+                      // inputClass="custom-input"
+                      // style={{
+                      //   width: "320px",
+                      // }}
+                      arrow={false}
+                      className="bg-[#212121] teal h-full w-full flex justify-center mt-[10px] rounded-xl items-center font-[google] font-normal  bg-transparent border-[1px] border-[#535353] text-[14px]"
+                      disableYearPicker
+                      disableMonthPicker
+                      weekDays={weekDays}
+                      months={months}
+                      // minDate={new Date().setDate(0)}
+                      // maxDate={new Date().setDate(preDate)}
+                      // render={<InputIcon />}
+                      buttons={false}
+                      value={value}
                       onChange={(e) => {
-                        console.log(isNumeric(e.target.value));
-                        if (isNumeric(e.target.value) === true) {
-                          setPrice(e.target.value);
-                        }
+                        setValue(
+                          e?.day + "/" + e?.month?.number + "/" + e?.year
+                        );
                       }}
-                    ></input>
+                      format="DD/MM/YYYY"
+                      shadow={false}
+                      render={(value, openCalendar) => {
+                        return (
+                          <button
+                            className={
+                              "border-[1px]  flex justify-start items-center bg-transparent px-[15px] font-[google] text-[16px] w-full h-[60px] rounded-xl text-black z-40" +
+                              (value == "NotFound" || value.length == 0
+                                ? " pt-[0px]"
+                                : " pt-[18px]") +
+                              (value == "NotFound"
+                                ? " border-[#d02d2d] "
+                                : " border-[#F5F6FA] ")
+                            }
+                            onClick={openCalendar}
+                          >
+                            {value == "NotFound" ? <></> : <>{value}</>}
+                            {/* {value} */}
+                          </button>
+                        );
+                      }}
+
+                      // render={<InputIcon />}
+                    />
+                  </div>
+
+                  <div className="flex flex-col justify-between items-start  w-[calc((100%-10px)/2)] ">
+                    <div
+                      className=" w-auto  rounded-md flex text-[#0000005d] mb-[2px] justify-start items-center bg-transparent text-[14px] font-[google] font-normal "
+                      style={{ transition: ".4s" }}
+                    >
+                      {/* Amount */}
+                    </div>
+                    <div
+                      className={
+                        "w-full h-[60px] bg-[#F5F6FA] flex justify-start font-[google] font-normal   mb-[-60px] px-[15px] rounded-xl" +
+                        (price.length > 0
+                          ? " items-start pt-[11px] text-[13px] text-[#00000061]"
+                          : " items-center pt-[0px] pl-[35px] text-[16px] text-[#00000061]")
+                      }
+                      // style={{ transition: ".3s" }}
+                    >
+                      Amount
+                    </div>
+                    {/* <BiRupee /> */}
+                    <div className="w-full h-[60px] flex justify-start items-center">
+                      <div
+                        className={
+                          "w-[30px] h-[50px] flex justify-end  items-center mr-[-30px] text-black z-50" +
+                          (price == "NotFound" || price.length == 0
+                            ? " pt-[0px]"
+                            : " pt-[18px]")
+                        }
+                      >
+                        <BiRupee className="text-[17px]" />
+                      </div>
+                      <input
+                        className={
+                          "outline-none w-full h-[45px] rounded-xl pl-[35px] bg-transparent border px-[20px] text-black font-[google] font-normal text-[16px] z-40" +
+                          (price == "NotFound" || price.length == 0
+                            ? " pt-[0px]"
+                            : " pt-[18px]") +
+                          (price == "NotFound"
+                            ? " border-[#d02d2d] "
+                            : " border-[#F5F6FA] ")
+                        }
+                        // placeholder="Amount"
+                        value={price == "NotFound" ? "" : price}
+                        onChange={(e) => {
+                          console.log(isNumeric(e.target.value));
+                          if (isNumeric(e.target.value) === true) {
+                            setPrice(e.target.value);
+                          }
+                        }}
+                      ></input>
+                    </div>
                   </div>
                 </div>
-              </div>
-              {/* <div className="flex w-full justify-between items-center mt-[10px]">
+                {/* <div className="flex w-full justify-between items-center mt-[10px]">
                 <input
                   className="outline-none w-[calc((100%-10px)/2)] h-[50px] bg-transparent border border-[#535353] px-[10px] text-white font-[google] font-normal text-[14px]"
                   placeholder="Transaction Type"
@@ -756,8 +855,6 @@ const SplitExpense = () => {
                     setType(e.target.value);
                   }}
                 ></input>
-
-             
 
                 <input
                   className="outline-none w-[calc((100%-10px)/2)] h-[50px]  bg-transparent border border-[#535353] px-[10px] text-white font-[google] font-normal text-[14px]"
@@ -767,203 +864,781 @@ const SplitExpense = () => {
                   }}
                 ></input>
               </div> */}
-              <div className="flex flex-col w-full justify-center items-start mt-[20px] font-[google] font-normal text-black text-[15px]">
-                <span className="text-[#000000]">
-                  Select Category{" "}
-                  <span className="text-[#ff6c00] h-auto pt-[3px]">*</span>
-                </span>
-                <div className="w-full flex justify-start items-center flex-wrap text-[#535353] choose mt-[10px]">
-                  <span
-                    className={
-                      "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
-                      (category == "Shopping"
-                        ? " bg-[#ffddc5] text-[black]"
-                        : " text-[#535353]")
-                    }
-                    onClick={() => {
-                      setCategory("Shopping");
-                    }}
-                  >
-                    Shopping
-                  </span>
-                  <span
-                    className={
-                      "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
-                      (category == "Medical"
-                        ? " bg-[#ffddc5] text-[black]"
-                        : " text-[#535353]")
-                    }
-                    onClick={() => {
-                      setCategory("Medical");
-                    }}
-                  >
-                    Medical
-                  </span>
-                  <span
-                    className={
-                      "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
-                      (category == "Grocery"
-                        ? " bg-[#ffddc5] text-[black]"
-                        : " text-[#535353]")
-                    }
-                    onClick={() => {
-                      setCategory("Grocery");
-                    }}
-                  >
-                    Grocery
-                  </span>
-                  <span
-                    className={
-                      "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
-                      (category == "Travel"
-                        ? " bg-[#ffddc5] text-[black]"
-                        : " text-[#535353]")
-                    }
-                    onClick={() => {
-                      setCategory("Travel");
-                    }}
-                  >
-                    Travel
-                  </span>
+                <div className="flex w-full  justify-between h-auto items-start  font-[google] font-normal text-black text-[15px]">
+                  {/* <span className="text-[#000000]">
+                        Select Category{" "}
+                        <span className="text-[#ff6c00] h-auto pt-[3px]">
+                          *
+                        </span>
+                      </span> */}
 
-                  <span
-                    className={
-                      "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
-                      (category == "Entertainment"
-                        ? " bg-[#ffddc5] text-[black]"
-                        : " text-[#535353]")
-                    }
-                    onClick={() => {
-                      setCategory("Entertainment");
-                    }}
-                  >
-                    Entertainment
-                  </span>
-                  <span
-                    className={
-                      "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
-                      (category == "Food & Drinks"
-                        ? " bg-[#ffddc5] text-[black]"
-                        : " text-[#535353]")
-                    }
-                    onClick={() => {
-                      setCategory("Food & Drinks");
-                    }}
-                  >
-                    Food & Drinks
-                  </span>
-                  <span
-                    className={
-                      "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
-                      (category == "Other"
-                        ? " bg-[#ffddc5] text-[black]"
-                        : " text-[#535353]")
-                    }
-                    onClick={() => {
-                      setCategory("Other");
-                    }}
-                  >
-                    Other
-                  </span>
-                </div>
-              </div>
-              <div className="flex flex-col w-full justify-center items-start mt-[15px] font-[google] font-normal text-black text-[15px]">
-                <span className="text-[#000000]">
-                  Select Mode of Transaction{" "}
-                  <span className="text-[#ff6c00] h-auto pt-[3px]">*</span>
-                </span>
-                <div className="w-full flex justify-start items-center flex-wrap text-[#535353] choose mt-[10px]">
-                  <span
-                    className={
-                      "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
-                      (mode == "Online UPI"
-                        ? " bg-[#ffddc5] text-[black]"
-                        : " text-[#535353]")
-                    }
-                    onClick={() => {
-                      setMode("Online UPI");
-                    }}
-                  >
-                    Online UPI
-                  </span>
-                  <span
-                    className={
-                      "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
-                      (mode == "Offline Cash"
-                        ? " bg-[#ffddc5] text-[black]"
-                        : " text-[#535353]")
-                    }
-                    onClick={() => {
-                      setMode("Offline Cash");
-                    }}
-                  >
-                    Offline Cash
-                  </span>
-                </div>
-              </div>
-              <div className="flex flex-col w-full justify-center items-start mt-[15px] font-[google] font-normal text-black text-[15px]">
-                <span className="text-[#000000]">Upload Reciept / Bill</span>
-                <div className="w-full flex justify-start items-center flex-wrap text-[#535353] choose mt-[10px]">
-                  <span className="p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md w-[80px] h-[80px] border border-[#ffd8be] bg-[#ffddc5] flex justify-center items-center text-[#535353]">
-                    <IoMdCloudUpload className="text-[25px]" />{" "}
-                    <span className="ml-[10px]">Upload Photo</span>
-                  </span>
-                </div>
-              </div>
-              <div className="flex flex-col w-full justify-center items-start mt-[15px] font-[google] font-normal text-black text-[15px]">
-                <span className="text-[#000000]">Add Members</span>
-                {/* <div className="w-full flex justify-start items-center flex-wrap text-[#535353] choose mt-[10px]">
-                  <span className="p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md w-[80px] h-[80px] border border-[#ffd8be] bg-[#ffddc5] flex justify-center items-center text-[#535353]">
-                    <IoMdCloudUpload className="text-[25px]" />{" "}
-                    <span className="ml-[10px]">Upload Photo</span>
-                  </span>
-                </div> */}
-                <div className="w-full h-auto mt-[10px] flex justify-start items-center flex-wrap">
-                  {addedMember.map((data) => {
-                    return (
-                      <>
-                        <ProfileTwo data={data} />{" "}
-                      </>
-                    );
-                  })}
-                  <div
-                    className="w-[40px] h-[40px] mb-[10px] rounded-full bg-[#ffddc5] flex justify-center items-center "
-                    onClick={() => {
-                      setAddModal(true);
-                    }}
-                  >
-                    <FiPlus className="text-[#535353] text-[20px]" />
+                  <div className="flex flex-col justify-between items-start  w-[calc((100%-10px)/2)] h-auto">
+                    <div
+                      className=" w-auto  rounded-md flex mb-[2px]  text-[#0000005d] justify-start items-center bg-transparent mt-[7px] text-[14px] font-[google] font-normal "
+                      style={{ transition: ".4s" }}
+                    >
+                      {/* Category */}
+                    </div>
+                    <div
+                      className={
+                        "w-full h-[60px] bg-[#F5F6FA] flex justify-start font-[google] font-normal   mb-[-60px] px-[15px] rounded-xl" +
+                        (category.length > 0
+                          ? " items-start pt-[11px] text-[13px] text-[#00000061]"
+                          : " items-center pt-[0px] text-[16px] text-[#00000061]")
+                      }
+                      // style={{ transition: ".3s" }}
+                    >
+                      Category
+                    </div>
+                    <div
+                      className="w-full h-auto flex justify-start items-center z-50"
+                      onClick={() => {
+                        setCategoryDropdown(!categoryDropdown);
+                        setCPaymentDropdown(false);
+                      }}
+                    >
+                      <div
+                        className={
+                          "outline-none w-full h-[60px] rounded-xl bg-transparent border px-[15px] text-black font-[google] font-normal text-[16px] z-40 flex justify-start items-center whitespace-nowrap overflow-hidden text-ellipsis line-clamp-1" +
+                          (category == "NotFound" || category.length == 0
+                            ? " pt-[0px]"
+                            : " pt-[18px]") +
+                          (category == "NotFound"
+                            ? " border-[#d02d2d] "
+                            : " border-[#F5F6FA] ")
+                        }
+                        // placeholder="Price"
+                        // value={price}
+                      >
+                        {category == "NotFound" ? <></> : <>{category}</>}
+                        {/* {category} */}
+                      </div>
+                      <div className="w-[30px] h-[45px] flex justify-start items-center ml-[-30px]">
+                        {categoryDropdown ? (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="lucide lucide-chevron-up"
+                          >
+                            <path d="m18 15-6-6-6 6" />
+                          </svg>
+                        ) : (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="lucide lucide-chevron-down"
+                          >
+                            <path d="m6 9 6 6 6-6" />
+                          </svg>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col justify-between items-start  w-[calc((100%-10px)/2)] h-auto ">
+                    <div
+                      className=" w-auto  rounded-md flex mb-[2px]  text-[#0000005d] justify-start items-center bg-transparent mt-[7px] text-[14px] font-[google] font-normal "
+                      style={{ transition: ".4s" }}
+                    >
+                      {/* Payment Mode */}
+                    </div>
+                    <div
+                      className={
+                        "w-full h-[60px] bg-[#F5F6FA] flex justify-start font-[google] font-normal   mb-[-60px] px-[15px] rounded-xl" +
+                        (mode.length > 0
+                          ? " items-start pt-[11px] text-[13px] text-[#00000061]"
+                          : " items-center pt-[0px] text-[16px] text-[#00000061]")
+                      }
+                      // style={{ transition: ".3s" }}
+                    >
+                      Payment Mode
+                    </div>
+                    <div
+                      className="w-full h-auto flex justify-start items-center z-50"
+                      onClick={() => {
+                        setCPaymentDropdown(!paymentDropdown);
+                        setCategoryDropdown(false);
+                      }}
+                    >
+                      <div
+                        className={
+                          "outline-none w-full h-[60px] rounded-xl bg-transparent border px-[15px] text-black font-[google] font-normal text-[16px] z-40 flex justify-start items-center  whitespace-nowrap overflow-hidden text-ellipsis line-clamp-1" +
+                          (mode == "NotFound" || mode.length == 0
+                            ? " pt-[0px]"
+                            : " pt-[18px]") +
+                          (mode == "NotFound"
+                            ? " border-[#d02d2d] "
+                            : " border-[#F5F6FA] ")
+                        }
+                        // placeholder="Price"
+                        // value={price}
+                      >
+                        {mode == "NotFound" ? <></> : <>{mode}</>}
+                      </div>
+                      <div className="w-[30px] h-[45px] flex justify-start items-center ml-[-30px]">
+                        {paymentDropdown ? (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="lucide lucide-chevron-up"
+                          >
+                            <path d="m18 15-6-6-6 6" />
+                          </svg>
+                        ) : (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="lucide lucide-chevron-down"
+                          >
+                            <path d="m6 9 6 6 6-6" />
+                          </svg>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* <div className="w-full flex justify-start items-center flex-wrap text-[#535353] choose"> */}
+                    {/* <span
+                            className={
+                              "cursor-pointer p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#acebff] flex justify-center items-center" +
+                              (mode == "Online UPI"
+                                ? " bg-[#acebff] text-[black]"
+                                : " text-[#535353]")
+                            }
+                            onClick={() => {
+                              setMode("Online UPI");
+                            }}
+                          >
+                            Online UPI
+                          </span>
+                          <span
+                            className={
+                              "cursor-pointer p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#acebff] flex justify-center items-center" +
+                              (mode == "Credit/Debit Card"
+                                ? " bg-[#acebff] text-[black]"
+                                : " text-[#535353]")
+                            }
+                            onClick={() => {
+                              setMode("Credit/Debit Card");
+                            }}
+                          >
+                            Credit/Debit Card
+                          </span>
+                          <span
+                            className={
+                              "cursor-pointer p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#acebff] flex justify-center items-center" +
+                              (mode == "Cash"
+                                ? " bg-[#acebff] text-[black]"
+                                : " text-[#535353]")
+                            }
+                            onClick={() => {
+                              setMode("Cash");
+                            }}
+                          >
+                            Cash
+                          </span> */}
+                    {/* </div> */}
                   </div>
                 </div>
-              </div>
-              <div className="w-full flex justify-end items-end font-[google] font-normal text-[15px] text-black h-[20px] mt-[20px]">
-                <div
-                  className="h-full mr-[20px] flex justify-center items-center cursor-pointer  "
-                  onClick={() => {
-                    setSplitModal(false);
-                    setLabel("");
-                    setPrice("");
-                    setCategory("");
-                    setMode("");
-                    setBill("");
-                  }}
-                >
-                  Cancel
+                <div className="w-full h-[0px] flex justify-between items-center">
+                  <div className="flex flex-col justify-start items-start  w-[calc((100%-10px)/2)] h-0 ">
+                    <div
+                      className={
+                        "w-[calc(100%-80px)] rounded-xl mt-[10px] h-[132px] font-[google] font-normal text-[16px] overflow-y-scroll fixed flex-col flex justify-start items-start   bg-[#F5F6FA] p-[15px] py-[9px]" +
+                        (categoryDropdown ? " flex" : " hidden")
+                      }
+                    >
+                      {/* <div className="w-full py-[6px] flex justify-start items-center">
+                            Select Category
+                          </div>
+                          <div className="w-full my-[6px] flex justify-start items-center border border-[#beb0f4]"></div> */}
+                      {categoryName.map((data, index) => {
+                        return (
+                          <div
+                            className="w-full min-h-[30px] my-[5px] text-[16px] flex justify-start items-center z-50"
+                            onClick={() => {
+                              setCategory(data);
+                              setCategoryDropdown(false);
+                            }}
+                          >
+                            <SmallSizeIcon Category={data} />
+                            <div className="ml-[15px]" key={index}>
+                              {data}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  <div className="flex flex-col justify-start items-start  w-[calc((100%-10px)/2)] h-0 ">
+                    <div
+                      className={
+                        "w-[calc(100%-80px)] rounded-xl mt-[10px] h-[132px] font-[google] font-normal text-[16px] overflow-y-scroll fixed flex-col flex justify-start items-start   bg-[#F5F6FA] p-[15px] py-[9px] left-[40px]" +
+                        (paymentDropdown ? " flex" : " hidden")
+                      }
+                    >
+                      {/* <div className="w-full py-[6px] flex justify-start items-center">
+                            Select Category
+                          </div>
+                          <div className="w-full my-[6px] flex justify-start items-center border border-[#beb0f4]"></div> */}
+                      {paymentName.map((data, index) => {
+                        return (
+                          <div
+                            className="w-full h-[30px] my-[5px] text-[16px] flex justify-start items-center z-50"
+                            onClick={() => {
+                              setMode(data);
+                              setCPaymentDropdown(false);
+                            }}
+                          >
+                            {/* <SmallSizeIcon Category={data} /> */}
+                            <div className="" key={index}>
+                              {data}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
                 </div>
-                <div
-                  className="h-full  flex justify-center items-center text-[#de8544] cursor-pointer "
-                  onClick={() => {
-                    // addToFirebase();
-                    mapOverAll();
-                    setSplitModal(false);
-                  }}
-                >
-                  Add
+                {/* <div className="flex flex-col w-full justify-center items-start mt-[15px] font-[google] font-normal text-black text-[15px]">
+                      <span className="text-[#000000]">
+                        Select Mode of Transaction{" "}
+                        <span className="text-[#ff6c00] h-auto pt-[3px]">
+                          *
+                        </span>
+                      </span>
+                      <div className="w-full flex justify-start items-center flex-wrap text-[#535353] choose mt-[10px]">
+                        <span
+                          className={
+                            "cursor-pointer p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#acebff] flex justify-center items-center" +
+                            (mode == "Online UPI"
+                              ? " bg-[#acebff] text-[black]"
+                              : " text-[#535353]")
+                          }
+                          onClick={() => {
+                            setMode("Online UPI");
+                          }}
+                        >
+                          Online UPI
+                        </span>
+                        <span
+                          className={
+                            "cursor-pointer p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#acebff] flex justify-center items-center" +
+                            (mode == "Credit/Debit Card"
+                              ? " bg-[#acebff] text-[black]"
+                              : " text-[#535353]")
+                          }
+                          onClick={() => {
+                            setMode("Credit/Debit Card");
+                          }}
+                        >
+                          Credit/Debit Card
+                        </span>
+                        <span
+                          className={
+                            "cursor-pointer p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#acebff] flex justify-center items-center" +
+                            (mode == "Cash"
+                              ? " bg-[#acebff] text-[black]"
+                              : " text-[#535353]")
+                          }
+                          onClick={() => {
+                            setMode("Cash");
+                          }}
+                        >
+                          Cash
+                        </span>
+                      </div>
+                    </div> */}
+                <div className="flex flex-col w-full justify-center items-start font-[google] font-normal text-black text-[15px]">
+                  <div
+                    className=" w-auto  rounded-md flex mb-[2px]  text-[#0000005d] justify-start items-center bg-transparent mt-[7px] text-[14px] font-[google] font-normal "
+                    style={{ transition: ".4s" }}
+                  >
+                    {/* Reciept / Bill */}
+                  </div>
+                  <div className="w-full flex justify-start items-center flex-wrap text-[#535353] choose ">
+                    <span
+                      className={
+                        "p-[10px] flex-grow mb-[5px] ml-[5px] bg-[#F5F6FA] rounded-xl w-[80px] h-[80px] border  flex justify-center items-center text-[#000000] text-[16px]" +
+                        (imageError
+                          ? " border-[#d02d2d] text-[#d02d2d]"
+                          : " border-[#F5F6FA] text-[#000000]")
+                      }
+                    >
+                      {/* <span className="ml-[10px]"> */}
+                      {imageError ? (
+                        <>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="1.7"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="lucide lucide-image"
+                          >
+                            <rect
+                              width="18"
+                              height="18"
+                              x="3"
+                              y="3"
+                              rx="2"
+                              ry="2"
+                            />
+                            <circle cx="9" cy="9" r="2" />
+                            <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
+                          </svg>
+                          <span className="ml-[10px]">Not a Valid Reciept</span>
+                        </>
+                      ) : (
+                        <>
+                          {" "}
+                          {bill.length == 0 ? (
+                            <>
+                              <IoMdCloudUpload className="text-[25px]" />
+                              <span className="ml-[10px] ">Upload Photo</span>
+                            </>
+                          ) : (
+                            <>
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1.7"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                class="lucide lucide-image"
+                              >
+                                <rect
+                                  width="18"
+                                  height="18"
+                                  x="3"
+                                  y="3"
+                                  rx="2"
+                                  ry="2"
+                                />
+                                <circle cx="9" cy="9" r="2" />
+                                <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
+                              </svg>
+                              <span className="ml-[10px]">Uploaded</span>
+                            </>
+                          )}
+                        </>
+                      )}
+                      {/* </span> */}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="w-full h-auto mt-[10px] flex justify-end items-end">
+                  <div
+                    className="w-auto h-auto rounded-2xl cursor-pointer px-[15px] py-[8px] text-[14px] bg-[#F4F5F7]"
+                    onClick={() => {
+                      setSplitModal(false);
+                      setLabel("");
+                      setPrice("");
+                      setCategory("");
+                      setMode("");
+                      setBill("");
+                      setSubSection("");
+                    }}
+                  >
+                    Cancel
+                  </div>
+                  {label?.length != 0 &&
+                  value?.length != 0 &&
+                  price?.length != 0 &&
+                  category?.length != 0 &&
+                  mode?.length != 0 &&
+                  label != "NotFound" &&
+                  price != "NotFound" &&
+                  value != "NotFound" &&
+                  category != "NotFound" &&
+                  mode != "NotFound" ? (
+                    <>
+                      <div
+                        className="w-auto h-auto rounded-2xl cursor-pointer px-[15px] py-[8px] text-[14px] bg-[#191A2C] ml-[10px] text-[white]"
+                        onClick={() => {
+                          // if (
+                          //   label?.length != 0 &&
+                          //   value?.length != 0 &&
+                          //   price?.length != 0 &&
+                          //   category?.length != 0 &&
+                          //   mode?.length != 0
+                          //   // bill?.length != 0
+                          // ) {
+                          setSubSection("");
+                          addToFirebase();
+                          setAddNewTransaction(false);
+                          // }
+                        }}
+                      >
+                        Update
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div
+                        className="w-auto h-auto rounded-2xl cursor-pointer px-[15px] py-[8px] text-[14px] bg-[#181f3223] ml-[10px] text-[#0000006c]"
+                        onClick={() => {
+                          // if (
+                          //   label?.length != 0 &&
+                          //   value?.length != 0 &&
+                          //   price?.length != 0 &&
+                          //   category?.length != 0 &&
+                          //   mode?.length != 0
+                          //   // bill?.length != 0
+                          // ) {
+                          //   addToFirebase();
+                          //   setAddNewTransaction(false);
+                          // }
+                        }}
+                      >
+                        Update
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
           </div>
-        </div>
+          {/* <div className="w-full h-[100svh] fixed z-30 bg-[#68686871] top-0 left-0 flex justify-center items-center backdrop-blur-md">
+            <div className="w-[320px] max-h-[400px] py-[27px] bg-[#ffffff] rounded-3xl flex flex-col justify-center items-start z-40">
+              <div className="w-full h-auto px-[30px] bg-transparent overflow-y-scroll flex flex-col justify-start items-start z-40">
+                <span className="w-full text-[25px] text-black font-[google] font-normal flex justify-start items-center ">
+                  Transaction{" "}
+                  <span className="text-[#de8544] ml-[10px]">Info</span>
+                </span>
+
+                <div className="flex flex-col w-full justify-between items-start mt-[20px]">
+                  <span className="text-[#000000] font-[google] font-normal text-[15px] mb-[10px]">
+                    About Transaction{" "}
+                    <span className="text-[#ff6c00] h-auto pt-[3px]">*</span>
+                  </span>
+                  <div
+                    className={
+                      " w-auto  rounded-md flex justify-start items-center bg-transparent ml-[5px] px-[5px]   font-[google] font-normal " +
+                      (label?.length === 0
+                        ? " h-[40px] mb-[-40px] z-30 border border-transparent text-[#8b8b8b] text-[15px]"
+                        : " h-[1px] mb-[-1px] z-50 border border-[#fff5ee] text-[#de8544] text-[14px]")
+                    }
+                    style={{ transition: ".4s" }}
+                  >
+                    Label
+                  </div>
+                  <input
+                    className="outline-none rounded-md w-full h-[40px] bg-transparent border border-[#ffd8be] px-[10px] text-black font-[google] font-normal text-[15px] z-40"
+                    // placeholder="Label"
+                    value={label}
+                    onChange={(e) => {
+                      setLabel(e.target.value);
+                    }}
+                  ></input>
+                </div>
+
+                <div className="flex w-full justify-between items-center mt-[10px]">
+                  <div className="flex flex-col justify-between items-start  w-[calc((100%-10px)/2)] h-[40px]">
+                    <div
+                      className={
+                        " w-auto  flex justify-start items-center bg-transparent ml-[5px] px-[5px]   font-[google] font-normal " +
+                        (value?.length === 0
+                          ? " h-[40px] mb-[-40px] z-30 border border-transparent text-[#8b8b8b] text-[15px]"
+                          : " h-[1px] mb-[-1px] z-50 border border-[#fff5ee] text-[#de8544] text-[14px]")
+                      }
+                      style={{ transition: ".4s" }}
+                    >
+                      Date
+                    </div>
+                    <DatePicker
+                      // inputClass="custom-input"
+                      style={{
+                        width: "320px",
+                      }}
+                      arrow={false}
+                      className="bg-[#212121] teal h-full min-w-[260px] flex justify-center items-center font-[google] font-normal  bg-transparent border-[1px] border-[#535353]"
+                      disableYearPicker
+                      disableMonthPicker
+                      weekDays={weekDays}
+                      months={months}
+                      minDate={new Date().setDate(0)}
+                      maxDate={new Date().setDate(preDate)}
+                      // render={<InputIcon />}
+                      buttons={false}
+                      value={value}
+                      onChange={setValue}
+                      format="DD/MM/YYYY"
+                      shadow={false}
+                      render={(value, openCalendar) => {
+                        return (
+                          <button
+                            className="border-[1px] border-[#ffd8be] flex justify-start items-center px-[10px] font-[google] text-[15px] w-[125px] h-[40px] rounded-md text-black z-40"
+                            onClick={openCalendar}
+                          >
+                            {value}
+                          </button>
+                        );
+                      }}
+
+                      // render={<InputIcon />}
+                    />
+                  </div>
+
+                  <div className="flex flex-col justify-between items-start  w-[calc((100%-10px)/2)] h-[40px] ">
+                    <div
+                      className={
+                        " w-auto  flex justify-start items-center rounded-md bg-transparent ml-[5px]    font-[google] font-normal " +
+                        (price?.length === 0
+                          ? " h-[40px] mb-[-40px] z-30 border border-transparent text-[#8b8b8b] text-[15px] ml-[20px] px-[19px]"
+                          : " h-[1px] mb-[-1px] z-50 border border-[#fff5ee] text-[#de8544] text-[14px] ml-[5px] px-[5px]")
+                      }
+                      style={{ transition: ".4s" }}
+                    >
+                      Amount
+                    </div>
+                    <div className="w-full h-[40px] flex justify-start items-center">
+                      <div className="w-[30px] h-[50px] flex justify-center items-center mr-[-30px] text-black ">
+                        <BiRupee className="text-[17px]" />
+                      </div>
+                      <input
+                        className="outline-none w-full h-[40px] rounded-md pl-[25px] bg-transparent border border-[#ffd8be] px-[10px] text-black font-[google] font-normal text-[14px] z-40"
+                        // placeholder="Price"
+                        value={price}
+                        onChange={(e) => {
+                          console.log(isNumeric(e.target.value));
+                          if (isNumeric(e.target.value) === true) {
+                            setPrice(e.target.value);
+                          }
+                        }}
+                      ></input>
+                    </div>
+                  </div>
+                </div> 
+                <div className="flex flex-col w-full justify-center items-start mt-[20px] font-[google] font-normal text-black text-[15px]">
+                  <span className="text-[#000000]">
+                    Select Category{" "}
+                    <span className="text-[#ff6c00] h-auto pt-[3px]">*</span>
+                  </span>
+                  <div className="w-full flex justify-start items-center flex-wrap text-[#535353] choose mt-[10px]">
+                    <span
+                      className={
+                        "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                        (category == "Shopping"
+                          ? " bg-[#ffddc5] text-[black]"
+                          : " text-[#535353]")
+                      }
+                      onClick={() => {
+                        setCategory("Shopping");
+                      }}
+                    >
+                      Shopping
+                    </span>
+                    <span
+                      className={
+                        "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                        (category == "Medical"
+                          ? " bg-[#ffddc5] text-[black]"
+                          : " text-[#535353]")
+                      }
+                      onClick={() => {
+                        setCategory("Medical");
+                      }}
+                    >
+                      Medical
+                    </span>
+                    <span
+                      className={
+                        "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                        (category == "Grocery"
+                          ? " bg-[#ffddc5] text-[black]"
+                          : " text-[#535353]")
+                      }
+                      onClick={() => {
+                        setCategory("Grocery");
+                      }}
+                    >
+                      Grocery
+                    </span>
+                    <span
+                      className={
+                        "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                        (category == "Travel"
+                          ? " bg-[#ffddc5] text-[black]"
+                          : " text-[#535353]")
+                      }
+                      onClick={() => {
+                        setCategory("Travel");
+                      }}
+                    >
+                      Travel
+                    </span>
+
+                    <span
+                      className={
+                        "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                        (category == "Entertainment"
+                          ? " bg-[#ffddc5] text-[black]"
+                          : " text-[#535353]")
+                      }
+                      onClick={() => {
+                        setCategory("Entertainment");
+                      }}
+                    >
+                      Entertainment
+                    </span>
+                    <span
+                      className={
+                        "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                        (category == "Food & Drinks"
+                          ? " bg-[#ffddc5] text-[black]"
+                          : " text-[#535353]")
+                      }
+                      onClick={() => {
+                        setCategory("Food & Drinks");
+                      }}
+                    >
+                      Food & Drinks
+                    </span>
+                    <span
+                      className={
+                        "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                        (category == "Other"
+                          ? " bg-[#ffddc5] text-[black]"
+                          : " text-[#535353]")
+                      }
+                      onClick={() => {
+                        setCategory("Other");
+                      }}
+                    >
+                      Other
+                    </span>
+                  </div>
+                </div>
+                <div className="flex flex-col w-full justify-center items-start mt-[15px] font-[google] font-normal text-black text-[15px]">
+                  <span className="text-[#000000]">
+                    Select Mode of Transaction{" "}
+                    <span className="text-[#ff6c00] h-auto pt-[3px]">*</span>
+                  </span>
+                  <div className="w-full flex justify-start items-center flex-wrap text-[#535353] choose mt-[10px]">
+                    <span
+                      className={
+                        "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                        (mode == "Online UPI"
+                          ? " bg-[#ffddc5] text-[black]"
+                          : " text-[#535353]")
+                      }
+                      onClick={() => {
+                        setMode("Online UPI");
+                      }}
+                    >
+                      Online UPI
+                    </span>
+                    <span
+                      className={
+                        "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                        (mode == "Offline Cash"
+                          ? " bg-[#ffddc5] text-[black]"
+                          : " text-[#535353]")
+                      }
+                      onClick={() => {
+                        setMode("Offline Cash");
+                      }}
+                    >
+                      Offline Cash
+                    </span>
+                  </div>
+                </div>
+                <div className="flex flex-col w-full justify-center items-start mt-[15px] font-[google] font-normal text-black text-[15px]">
+                  <span className="text-[#000000]">Upload Reciept / Bill</span>
+                  <div className="w-full flex justify-start items-center flex-wrap text-[#535353] choose mt-[10px]">
+                    <span className="p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md w-[80px] h-[80px] border border-[#ffd8be] bg-[#ffddc5] flex justify-center items-center text-[#535353]">
+                      <IoMdCloudUpload className="text-[25px]" />{" "}
+                      <span className="ml-[10px]">Upload Photo</span>
+                    </span>
+                  </div>
+                </div>
+                <div className="flex flex-col w-full justify-center items-start mt-[15px] font-[google] font-normal text-black text-[15px]">
+                  <span className="text-[#000000]">Add Members</span>
+                  
+                  <div className="w-full h-auto mt-[10px] flex justify-start items-center flex-wrap">
+                    {addedMember.map((data) => {
+                      return (
+                        <>
+                          <ProfileTwo data={data} />{" "}
+                        </>
+                      );
+                    })}
+                    <div
+                      className="w-[40px] h-[40px] mb-[10px] rounded-full bg-[#ffddc5] flex justify-center items-center "
+                      onClick={() => {
+                        setAddModal(true);
+                      }}
+                    >
+                      <FiPlus className="text-[#535353] text-[20px]" />
+                    </div>
+                  </div>
+                </div>
+                <div className="w-full flex justify-end items-end font-[google] font-normal text-[15px] text-black h-[20px] mt-[20px]">
+                  <div
+                    className="h-full mr-[20px] flex justify-center items-center cursor-pointer  "
+                    onClick={() => {
+                      setSplitModal(false);
+                      setLabel("");
+                      setPrice("");
+                      setCategory("");
+                      setMode("");
+                      setBill("");
+                    }}
+                  >
+                    Cancel
+                  </div>
+                  <div
+                    className="h-full  flex justify-center items-center text-[#de8544] cursor-pointer "
+                    onClick={() => {
+                      // addToFirebase();
+                      mapOverAll();
+                      setSplitModal(false);
+                    }}
+                  >
+                    Add
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div> */}
+        </>
       ) : (
         <></>
       )}
