@@ -578,7 +578,11 @@ const HomePage = () => {
       {/* <Tutorial /> */}
       <div className="w-full h-[calc(100svh-60px)] bg-[#ffffff] flex flex-col justify-start items-center ">
         {/* <TopNavbar /> */}
-        <QuickInfo month={month} year={year} />
+        <QuickInfo
+          month={month}
+          year={year}
+          data={tempTransactionHistoryOne[0]}
+        />
         {/* <div className="w-[calc(100%-40px)] border-[.7px] border-[#eff7ff]"></div> */}
         <span className="text-[#00000057] font-[google]  font-normal text-[14px] w-full mt-[20px] flex justify-between h-[30px] items-start px-[20px] ">
           <div className="flex justify-start items-center">

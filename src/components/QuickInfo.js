@@ -211,7 +211,11 @@ const QuickInfo = (props) => {
 
   return (
     <>
-      {showGraph ? <ExpenseBarGraph /> : <></>}
+      {showGraph ? (
+        <ExpenseBarGraph data={props?.data} setShowGraph={setShowGraph} />
+      ) : (
+        <></>
+      )}
       {budgetModal === true ? (
         <>
           <div

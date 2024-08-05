@@ -68,6 +68,20 @@ input::placeholder {
   /* font-weight: 400; */
 }
 
+.contribution-calendar .cell {
+  border: 1px solid #ccc; /* Example border */
+  margin: 2px; /* Adjust space between cells */
+}
+
+.contribution-calendar .cell.active {
+  background-color: #4caf50; /* Adjust as needed */
+}
+
+/* Hide month names */
+.contribution-calendar .month-name {
+  display: none;
+}
+
 .chartBg {
   background: rgb(245, 246, 250);
   background: linear-gradient(
