@@ -27,23 +27,23 @@ Automatic Detection of Transaction Details:** Automatically extract transaction 
 
 # Features
 
-**Automatic Detection of Transaction Detail :**Uses the Gemini API to extract transaction details from uploaded images.
+**Automatic Detection of Transaction Detail :** Uses the Gemini API to extract transaction details from uploaded images.
 Automatically adds extracted details to the transaction list.
 Split Transactions<br />
 
-**Easily split transactions with friends :**Keep track of shared expenses and settle balances.
+**Easily split transactions with friends :** Keep track of shared expenses and settle balances.
 Transaction History<br />
 
-**View all past transactions in a detailed and organized manner :**Search and filter transactions for quick access to specific records.
+**View all past transactions in a detailed and organized manner :** Search and filter transactions for quick access to specific records.
 Data Analytics<br />
 
-**Analyze spending patterns with visual data representations :**Gain insights into where and how you are spending your money.
+**Analyze spending patterns with visual data representations :** Gain insights into where and how you are spending your money.
 Monthly Reports<br />
 
-**Generate and download monthly expense reports :**View summarized data for easy analysis.
+**Generate and download monthly expense reports :** View summarized data for easy analysis.
 Reminders and Notes<br />
 
-**Set reminders for upcoming payments or important financial tasks :**Add notes to transactions for additional context.
+**Set reminders for upcoming payments or important financial tasks :** Add notes to transactions for additional context.
 Sub-Category Budgets<br />
 
 **Create budgets for specific sub-categories :** Monitor spending within each sub-category to stay on budget.
