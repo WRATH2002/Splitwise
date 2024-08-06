@@ -262,34 +262,92 @@ export const SavingsModal = (props) => {
         <>
           <div className="w-full h-[100svh] top-0 left-0 fixed bg-[#70708628] backdrop-blur-md flex justify-center items-end p-[20px] z-40 font-[google] font-normal">
             <div className="w-full h-auto min-h-[150px] flex flex-col justify-center items-start p-[30px] py-[25px] bg-[white] rounded-3xl drop-shadow-sm">
-              <span className="text-[22px] ">
-                Monthly Savings for {new Date().getFullYear()}
-              </span>
-              <span className="text-[14.5px] mt-[5px] text-[#000000a9] flex flex-col justify-start items-start w-full h-auto">
-                {props?.data?.map((data, index) => {
-                  return (
-                    <>
-                      <div
-                        key={index}
-                        className="w-full h-[30px] flex justify-between items-center"
-                      >
-                        <span>{monthNames[data?.Month - 1]}</span>
-                        <span>{data?.Savings}</span>
+              {props?.data?.length == 0 ? (
+                <>
+                  <span className="text-[22px]">No Transactions Done Yet</span>
+                  <span className="text-[14.5px] mt-[5px] text-[#000000a9] flex flex-col justify-start items-start w-full h-auto">
+                    Make some transactions to Track your Savings
+                  </span>
+                </>
+              ) : (
+                <>
+                  <span className="text-[22px] ">
+                    Monthly Savings for {new Date().getFullYear()}
+                  </span>
+                  <span className="text-[14.5px] mt-[5px] text-[#000000a9] flex flex-col justify-start items-start w-full h-auto">
+                    {props?.data?.map((data, index) => {
+                      return (
+                        <>
+                          <div
+                            key={index}
+                            className="w-full h-[30px] flex justify-between items-center"
+                          >
+                            <span>
+                              {monthNames[data?.Month - 1]} (x
+                              {data?.TransactionCount})
+                            </span>
+                            <span className="flex justify-end items-center">
+                              <div className="mr-[2px]">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="13"
+                                  height="13"
+                                  viewBox="0 0 24 24"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  stroke-width="1.7"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  class="lucide lucide-indian-rupee"
+                                >
+                                  <path d="M6 3h12" />
+                                  <path d="M6 8h12" />
+                                  <path d="m6 13 8.5 8" />
+                                  <path d="M6 13h3" />
+                                  <path d="M9 13c6.667 0 6.667-10 0-10" />
+                                </svg>
+                              </div>
+                              {formatAmountWithCommas(data?.Savings)}
+                            </span>
+                          </div>
+                        </>
+                      );
+                    })}
+                  </span>
+                  <div className="w-full h-0 border-[.8px] border-[#0000004d] border-dashed rounded-full my-[10px]"></div>
+                  <div className="w-full text-[14.5px] h-[30px] flex justify-between items-center">
+                    <span>Total Savings</span>
+                    <span className="flex justify-end items-center">
+                      <div className="mr-[2px]">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="13"
+                          height="13"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.7"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="lucide lucide-indian-rupee"
+                        >
+                          <path d="M6 3h12" />
+                          <path d="M6 8h12" />
+                          <path d="m6 13 8.5 8" />
+                          <path d="M6 13h3" />
+                          <path d="M9 13c6.667 0 6.667-10 0-10" />
+                        </svg>
                       </div>
-                    </>
-                  );
-                })}
-              </span>
-              <div className="w-full h-0 border-[.8px] border-[#0000004d] border-dashed rounded-full my-[10px]"></div>
-              <div className="w-full text-[14.5px] h-[30px] flex justify-between items-center">
-                <span>Total Savings</span>
-                <span>
-                  {props?.data?.reduce((acc, data) => {
-                    acc = acc + parseInt(data?.Savings);
-                    return acc;
-                  }, 0)}
-                </span>
-              </div>
+                      {formatAmountWithCommas(
+                        props?.data?.reduce((acc, data) => {
+                          acc = acc + parseInt(data?.Savings);
+                          return acc;
+                        }, 0)
+                      )}
+                    </span>
+                  </div>
+                </>
+              )}
 
               <div className="w-full h-auto flex justify-start items-center mt-[10px] mb-[10px] "></div>
               <div className="w-full h-auto mt-[10px] flex justify-end items-end">

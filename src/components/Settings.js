@@ -113,6 +113,7 @@ const Settings = (props) => {
   const [savingsLoading, setSavingsLoading] = useState(false);
   const [savingsModal, setSavingsModal] = useState(false);
   const [logoutModal, setLogoutModal] = useState(false);
+  const [startDate, setStartDate] = useState("");
 
   const userSignOut = () => {
     signOut(auth)
@@ -145,6 +146,7 @@ const Settings = (props) => {
       setBtn1(snapshot?.data()?.DueReminder);
       setBtn2(snapshot?.data()?.MonthlyReminder);
       setBtn3(snapshot?.data()?.NotePreviewBlur);
+      setStartDate(snapshot?.data()?.StartDate);
     });
   }
 
@@ -389,47 +391,134 @@ const Settings = (props) => {
     });
   }
 
-  function getTotalSavings() {
-    let sum = 0;
-    let startMonth = parseInt(
-      sortObjectsByDateAsc(transactionHistory)[0]?.Date?.split("/")[1]
-    );
-    let endMonth = parseInt(
-      sortObjectsByDateAsc(transactionHistory)[
-        sortObjectsByDateAsc(transactionHistory).length - 1
-      ]?.Date?.split("/")[1]
-    );
-    transactionHistory?.forEach((data) => {
-      if (data?.MoneyIsAdded == true) {
-        sum = sum - parseInt(data?.Amount);
-      } else {
-        sum = sum + parseInt(data?.Amount);
-      }
-    });
-    return formatAmountWithCommas(budget * (endMonth - startMonth + 1) - sum);
-  }
+  // function getTotalSavings() {
+  //   let sum = 0;
+  //   let monthCount = 0;
+  //   let monthIndex = 0;
+  //   let yearIndex = 0;
+  //   // let startMonth = parseInt(
+  //   //   sortObjectsByDateAsc(transactionHistory)[0]?.Date?.split("/")[1]
+  //   // );
+  //   // let endMonth = parseInt(
+  //   //   sortObjectsByDateAsc(transactionHistory)[
+  //   //     sortObjectsByDateAsc(transactionHistory).length - 1
+  //   //   ]?.Date?.split("/")[1]
+  //   // );
+  //   let currMonth = parseInt(new Date().getMonth()) + 1;
+  //   let currYear = parseInt(new Date().getFullYear());
+  //   sortObjectsByDateAsc(transactionHistory)?.forEach((data) => {
+  //     // if (parseInt(data?.Date?.split("/")[2]) == currYear) {
+  //     //   if (parseInt(data?.Date?.split("/")[1]) <= currMonth) {
+  //     // if(year)
+  //     if (parseInt(data?.Date?.split("/")[1]) == monthIndex) {
+  //     } else {
+  //       monthCount = monthCount + 1;
+  //       monthIndex = parseInt(data?.Date?.split("/")[1]);
+  //     }
+
+  //     if (data?.MoneyIsAdded == true) {
+  //       sum = sum - parseInt(data?.Amount);
+  //     } else {
+  //       sum = sum + parseInt(data?.Amount);
+  //     }
+  //     //   }
+  //     // }
+  //   });
+  //   console.log("savings");
+  //   console.log(sum);
+  //   console.log(budget * monthCount - sum);
+  //   console.log(monthCount);
+  //   return formatAmountWithCommas(budget * monthCount - sum);
+  // }
 
   function monthWiseSavings() {
     let savingsArray = [];
     let sum = 0;
-    let currMonth = parseInt(
-      sortObjectsByDateAsc(transactionHistory)[0]?.Date?.split("/")[1]
-    );
+    let TranCount = 0;
+    let currMonth = parseInt(new Date().getMonth()) + 1;
+    let currYear = parseInt(new Date().getFullYear());
+    let monthIndex = 0;
 
-    sortObjectsByDateAsc(transactionHistory)?.forEach((data) => {
-      if (parseInt(data?.Date?.split("/")[1]) == currMonth) {
+    if (transactionHistory.length != 0) {
+      if (
+        parseInt(
+          sortObjectsByDateAsc(transactionHistory)[0]?.Date?.split("/")[2]
+        ) < currYear
+      ) {
+        monthIndex = 1;
       } else {
-        savingsArray.push({ Month: currMonth, Savings: budget - sum });
-        sum = 0;
-        currMonth = parseInt(data?.Date?.split("/")[1]);
+        if (parseInt(startDate.split("/")[2]) == currYear) {
+          monthIndex = parseInt(startDate?.split("/")[1]);
+        } else {
+          monthIndex = 1;
+        }
       }
-      if (data?.MoneyIsAdded == true) {
-        sum = sum - parseInt(data?.Amount);
-      } else {
-        sum = sum + parseInt(data?.Amount);
+    }
+    console.log("month index");
+    console.log(monthIndex);
+
+    console.log("sortObjectsByDateAsc(transactionHistory)");
+    console.log(sortObjectsByDateAsc(transactionHistory));
+    sortObjectsByDateAsc(transactionHistory)?.forEach((data) => {
+      if (parseInt(data?.Date?.split("/")[2]) == currYear) {
+        if (parseInt(data?.Date?.split("/")[1]) == monthIndex) {
+          if (data?.MoneyIsAdded == true) {
+            sum = sum - parseInt(data?.Amount);
+            TranCount = TranCount + 1;
+          } else {
+            sum = sum + parseInt(data?.Amount);
+            TranCount = TranCount + 1;
+          }
+        } else if (parseInt(data?.Date?.split("/")[1]) > monthIndex) {
+          savingsArray.push({
+            Month: monthIndex,
+            Savings: parseInt(budget) - sum,
+            TransactionCount: TranCount,
+          });
+          sum = 0;
+          TranCount = 0;
+          if (parseInt(data?.Date?.split("/")[1]) == monthIndex + 1) {
+            monthIndex = monthIndex + 1;
+            if (data?.MoneyIsAdded == true) {
+              sum = sum - parseInt(data?.Amount);
+              TranCount = TranCount + 1;
+            } else {
+              sum = sum + parseInt(data?.Amount);
+              TranCount = TranCount + 1;
+            }
+          } else {
+            Array(parseInt(data?.Date?.split("/")[1]) - monthIndex - 1)
+              .fill("")
+              .map((data, index) => {
+                savingsArray.push({
+                  Month: monthIndex + index + 1,
+                  Savings: parseInt(budget),
+                  TransactionCount: TranCount,
+                });
+              });
+            monthIndex = parseInt(data?.Date?.split("/")[1]);
+            if (data?.MoneyIsAdded == true) {
+              sum = sum - parseInt(data?.Amount);
+              TranCount = TranCount + 1;
+            } else {
+              sum = sum + parseInt(data?.Amount);
+              TranCount = TranCount + 1;
+            }
+          }
+          // currMonth = parseInt(data?.Date?.split("/")[1]);
+        }
+        // if (data?.MoneyIsAdded == true) {
+        //   sum = sum - parseInt(data?.Amount);
+        // } else {
+        //   sum = sum + parseInt(data?.Amount);
+        // }
       }
     });
-    savingsArray.push({ Month: currMonth, Savings: budget - sum });
+    savingsArray.push({
+      Month: currMonth,
+      Savings: budget - sum,
+      TransactionCount: TranCount,
+    });
 
     console.log("Savings Array");
     console.log(savingsArray);
@@ -447,9 +536,9 @@ const Settings = (props) => {
   }, []);
 
   useEffect(() => {
-    if (transactionHistory.length != 0) {
-      setSavings(getTotalSavings());
-    }
+    // if (transactionHistory.length != 0) {
+    setSavings(getTotalSavings());
+    // }
   }, [transactionHistory]);
 
   function DueReminderShowFirebaseUpdate() {
@@ -488,6 +577,51 @@ const Settings = (props) => {
         NotePreviewBlur: true,
       });
     }
+  }
+
+  function calculateTotalMonths(startMonth, startYear, endMonth, endYear) {
+    const totalMonths =
+      (endYear - startYear) * 12 + (endMonth - startMonth + 1);
+
+    return totalMonths;
+  }
+
+  function getTotalSavings() {
+    console.log("INside total savings function");
+    let startMonth = 0;
+    let endMonth = 0;
+    let startYear = 0;
+    let endYear = 0;
+    let total = 0;
+
+    // if (transactionHistory.length != 0) {
+    startMonth = parseInt(startDate.split("/")[1]);
+    startYear = parseInt(startDate.split("/")[2]);
+    endMonth = parseInt(new Date().getMonth()) + 1;
+    endYear = parseInt(new Date().getFullYear());
+
+    transactionHistory?.forEach((data) => {
+      if (data?.MoneyIsAdded) {
+        total = total - parseInt(data?.Amount);
+      } else {
+        total = total + parseInt(data?.Amount);
+      }
+    });
+    // }
+
+    console.log(
+      "total Months : " +
+        calculateTotalMonths(startMonth, startYear, endMonth, endYear)
+    );
+
+    let totalSavings =
+      calculateTotalMonths(startMonth, startYear, endMonth, endYear) *
+        parseInt(budget) -
+      total;
+
+    console.log(totalSavings);
+
+    return totalSavings;
   }
 
   return (
@@ -859,6 +993,7 @@ const Settings = (props) => {
         income={income}
       />
       <SavingsModal
+        transactionHistory={transactionHistory}
         data={monthWiseSavings()}
         savingsModal={savingsModal}
         setSavingsModal={setSavingsModal}
@@ -1189,7 +1324,7 @@ const Settings = (props) => {
                       <path d="M6 13h3" />
                       <path d="M9 13c6.667 0 6.667-10 0-10" />
                     </svg>
-                    {savings}
+                    {formatAmountWithCommas(savings)}
                   </>
                 )}
               </div>
