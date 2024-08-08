@@ -1688,13 +1688,13 @@ const AiTripPlanner = () => {
                   {" "}
                   <div
                     className={
-                      "mt-[30px] min-h-[45px] rounded-lg px-[15px] flex justify-center items-center bg-gradient-to-l from-[#5082ED] to-[#D46679] text-[black]" +
+                      "mt-[30px] min-h-[45px] rounded-lg px-[15px] flex justify-center items-center  " +
                       (destination.length != 0 &&
                       crowd.length != 0 &&
                       duration.length != 0 &&
                       persons.length != 0 &&
                       budget.length != 0
-                        ? " bg-[#191A2C] text-white"
+                        ? " bg-gradient-to-l from-[#5082ED] to-[#D46679] text-white"
                         : " bg-[#191a2c4a] text-black")
                     }
                     onClick={() => {
