@@ -106,6 +106,7 @@ input::placeholder {
 
 ::-webkit-scrollbar {
   /* height: 3px; */
+  height: 0px;
   width: 2px;
 }
 

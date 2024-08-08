@@ -87,26 +87,35 @@ const Signup = (props) => {
   }
 
   function createUserCollection(user) {
-    db.collection("Expense").doc(user.uid).set({
-      Name: CamalCaseName(),
-      Email: email,
-      Phone: number,
-      // Info: "Hi folks! I am new to infinity.",
-      Photo: "nophoto",
-      TotalIncome: 0,
-      Budget: 0,
-      MonthlyExpense: 0,
-      CurrentExpenseMonth: getMonth(),
-      NormalTransaction: [],
-      SplitTransaction: [],
-      Reminders: [],
-      CategoryBudget: [],
-      MonthlyData: [],
-      Tutorial: true,
-      MonthlyReminder: false,
-      DueReminder: false,
-      NotePreviewBlur: false,
-    });
+    db.collection("Expense")
+      .doc(user.uid)
+      .set({
+        Name: CamalCaseName(),
+        Email: email,
+        Phone: number,
+        // Info: "Hi folks! I am new to infinity.",
+        Photo: "nophoto",
+        TotalIncome: 0,
+        Budget: 0,
+        MonthlyExpense: 0,
+        CurrentExpenseMonth: getMonth(),
+        NormalTransaction: [],
+        SplitTransaction: [],
+        Reminders: [],
+        CategoryBudget: [],
+        MonthlyData: [],
+        Tutorial: true,
+        MonthlyReminder: false,
+        DueReminder: false,
+        NotePreviewBlur: false,
+        StartDate:
+          new Date().getDate() +
+          "/" +
+          (parseInt(new Date().getMonth()) + 1) +
+          "/" +
+          new Date().getFullYear(),
+        TripPlan: [],
+      });
     console.log("done");
   }
   const signUp = (e) => {

@@ -18,6 +18,7 @@ import Settings from "./Settings";
 import TopNavbar from "./TopNavbar";
 import ReminderPage from "./ReminderPage";
 import Tutorial from "./Tutorial";
+import AiTripPlanner from "./AiTripPlanner";
 
 const AuthDetails = () => {
   const [authUser, setAuthUser] = useState(null);
@@ -80,7 +81,8 @@ const AuthDetails = () => {
               <HomePage />
             ) : segment === 2 ? (
               <>
-                <UsageGraph />
+                {/* <UsageGraph /> */}
+                <AiTripPlanner />
               </>
             ) : segment === 3 ? (
               <>
