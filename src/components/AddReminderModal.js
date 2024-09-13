@@ -14,7 +14,23 @@ import "react-multi-date-picker/styles/colors/green.css";
 import "react-multi-date-picker/styles/colors/teal.css";
 import Button from "react-multi-date-picker/components/button";
 import { IoMdCloudUpload } from "react-icons/io";
-
+import Calenderr from "./Calenderr";
+import { SmallSizeIcon } from "./NornmalSizeIcon";
+const categoryName = [
+  "Car Maintanance",
+  "Education",
+  "Electricity Bill",
+  "Entertainment",
+  "Food & Drinks",
+  "Grocery",
+  "Medical",
+  "Others",
+  "Pet Care",
+  "Petrol / Diesel",
+  "Shopping",
+  "Taxi Fare",
+  "Travel",
+];
 const options = {
   title: "Demo Title",
   autoHide: true,
@@ -80,6 +96,8 @@ const AddReminderModal = (props) => {
   const [preDate, setPreDate] = useState(0);
   const [mode, setMode] = useState("");
   const [bill, setBill] = useState("");
+  const [dateModal, setDateModal] = useState(false);
+  const [catMod, setCatMod] = useState(false);
 
   useEffect(() => {
     const currentDate = new Date();
@@ -121,10 +139,10 @@ const AddReminderModal = (props) => {
   }
 
   return (
-    <div className="w-full h-[100svh] fixed z-30 bg-[#70708628] top-0 left-0 flex justify-center items-center backdrop-blur-md p-[20px]">
-      <div className="w-full max-h-[400px] py-[27px] bg-[#ffffff] drop-shadow-sm rounded-3xl flex flex-col justify-center items-start z-40">
+    <div className="w-full h-[100svh] fixed z-30  top-0 left-0 flex flex-col font-[google] justify-end items-center bg-[#70708628] backdrop-blur-md p-[20px]">
+      <div className="w-full h-auto pt-[25px] pb-[30px] bg-[#ffffff] drop-shadow-sm rounded-3xl flex flex-col justify-center items-start z-30">
         <div className="w-full h-auto px-[30px] bg-transparent overflow-y-scroll flex flex-col justify-start items-start z-40">
-          <span className="w-full text-[22px] text-black font-[google] font-normal flex justify-start items-center ">
+          {/* <span className="w-full text-[22px] text-black font-[google] font-normal flex justify-start items-center ">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -143,6 +161,9 @@ const AddReminderModal = (props) => {
             </svg>
             &nbsp;&nbsp;Set New{" "}
             <span className="text-[#a397d2] ml-[10px]">Reminder</span>
+          </span> */}
+          <span className="text-[22px] w-full  mb-[15px] flex justify-between items-center">
+            Add New Reminder
           </span>
 
           <div className="flex flex-col w-full justify-between items-start mt-[5px]">
@@ -157,7 +178,7 @@ const AddReminderModal = (props) => {
               Label
             </div>
             <input
-              className="outline-none rounded-md w-full h-[45px] bg-transparent border border-[#efebff] px-[10px] text-black font-[google] font-normal text-[16px] z-40"
+              className="outline-none rounded-xl w-full h-[45px] bg-transparent border border-[#efefef] px-[15px] text-black font-[google] font-normal text-[16px] z-30"
               value={label}
               onChange={(e) => {
                 setLabel(e.target.value);
@@ -174,7 +195,7 @@ const AddReminderModal = (props) => {
               >
                 Due Date
               </div>
-              <DatePicker
+              {/* <DatePicker
                 // inputClass="custom-input"
                 style={{
                   width: "320px",
@@ -207,7 +228,41 @@ const AddReminderModal = (props) => {
                 }}
 
                 // render={<InputIcon />}
-              />
+              /> */}
+
+              <div
+                className=" w-full min-h-[45px] rounded-xl px-[15px] bg-transparent border border-[#efefef] flex justify-start items-center text-black font-[google] font-normal text-[16px] z-30 "
+                onClick={() => {
+                  setDateModal(!dateModal);
+                }}
+              >
+                {value}
+              </div>
+
+              {/* <div
+                className="border-[1px] border-[#efebff] bg-slate-300 flex justify-start items-center px-[10px] font-[google] text-[16px] min-w-full h-[45px] rounded-md text-black z-40"
+                onClick={() => {
+                  setDateModal(!dateModal);
+                }}
+              ></div> */}
+              <div
+                className="fixed w-[calc(100%-100px)]  h-auto"
+                style={{ zIndex: "100" }}
+              >
+                {dateModal ? (
+                  <>
+                    <Calenderr
+                      UIColor={props?.UIColor}
+                      UIIndex={props?.UIIndex}
+                      setDateModal={setDateModal}
+                      value={value}
+                      setValue={setValue}
+                    />
+                  </>
+                ) : (
+                  <></>
+                )}
+              </div>
             </div>
 
             <div className="flex flex-col justify-between items-start  w-[calc((100%-10px)/2)] h-[45px] ">
@@ -219,11 +274,11 @@ const AddReminderModal = (props) => {
               </div>
               {/* <BiRupee /> */}
               <div className="w-full h-[45px] flex justify-start items-center">
-                <div className="w-[30px] h-[50px] flex justify-center items-center mr-[-30px] text-black ">
+                <div className="w-[30px] h-[50px] flex justify-start pl-[15px] items-center mr-[-30px] text-black ">
                   <BiRupee className="text-[17px]" />
                 </div>
                 <input
-                  className="outline-none w-full h-[45px] rounded-md pl-[25px] bg-transparent border border-[#efebff] px-[10px] text-black font-[google] font-normal text-[16px] z-40"
+                  className="outline-none w-full h-[45px] rounded-xl pl-[35px] bg-transparent border border-[#efefef] px-[10px] text-black font-[google] font-normal text-[16px] z-40"
                   // placeholder="Price"
                   value={price}
                   onChange={(e) => {
@@ -237,48 +292,106 @@ const AddReminderModal = (props) => {
             </div>
           </div>
 
-          <div className="flex flex-col w-full justify-center items-start mt-[20px] font-[google] font-normal text-black text-[15px]">
+          <div className="flex flex-col w-full justify-end items-start mt-[20px] font-[google] font-normal text-black text-[15px]">
             <div
               className=" w-auto  rounded-md flex justify-start items-center bg-transparent text-[14px] mb-[5px] text-[#0000005d]  font-[google] font-normal "
               style={{ transition: ".4s" }}
             >
               Category
             </div>
+            {catMod ? (
+              <>
+                <div
+                  className="absolute min-w-[calc(100%-63px)] h-[190px] rounded-xl mb-[50px] flex flex-col justify-start items-start p-[15px] py-[9px] overflow-y-scroll"
+                  style={{
+                    backgroundColor: `${props?.UIColor}`,
+                    zIndex: "100",
+                  }}
+                >
+                  {categoryName?.map((data, index) => {
+                    return (
+                      <>
+                        <div
+                          className="p-[6px] flex justify-start items-center cursor-pointer w-full"
+                          key={index}
+                          onClick={() => {
+                            setCategory(data);
+                            setCatMod(false);
+                          }}
+                        >
+                          <SmallSizeIcon Category={data} />
+                          <div className="ml-[15px] text-[16px]" key={index}>
+                            {data}
+                          </div>
+                        </div>
+                      </>
+                    );
+                  })}
+                </div>
+              </>
+            ) : (
+              <>
+                <div
+                  className="absolute min-w-[calc(100%-63px)] h-[0px]  rounded-xl mb-[50px]"
+                  style={{
+                    backgroundColor: `${props?.UIColor}`,
+                    zIndex: "100",
+                  }}
+                ></div>
+              </>
+            )}
             <div className="w-full h-[45px] flex justify-start items-center">
               <div
-                className="outline-none w-full h-[45px] rounded-md pl-[25px] bg-transparent border border-[#efebff] px-[10px] text-black font-[google] font-normal text-[14px] z-40"
-                // placeholder="Price"
-                // value={price}
-                // onChange={(e) => {
-                //   console.log(isNumeric(e.target.value));
-                //   if (isNumeric(e.target.value) === true) {
-                //     setPrice(e.target.value);
-                //   }
-                // }}
+                className="outline-none w-full h-[45px] rounded-xl  bg-transparent border border-[#efefef] px-[15px] flex justify-start items-center text-black font-[google] font-normal text-[16px] z-40"
+                onClick={() => {
+                  setCatMod(!catMod);
+                }}
               >
                 {category}
               </div>
               <div className="w-[40px] h-[45px] flex justify-center items-center ml-[-40px]">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="lucide lucide-chevron-down"
-                >
-                  <path d="m6 9 6 6 6-6" />
-                </svg>
+                {!catMod ? (
+                  <>
+                    {" "}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="21"
+                      height="21"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="lucide lucide-chevron-down"
+                    >
+                      <path d="m6 9 6 6 6-6" />
+                    </svg>
+                  </>
+                ) : (
+                  <>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="21"
+                      height="21"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="lucide lucide-chevron-up"
+                    >
+                      <path d="m18 15-6-6-6 6" />
+                    </svg>
+                  </>
+                )}
               </div>
             </div>
-            <div className="w-full flex justify-start items-center flex-wrap text-[#535353] choose mt-[10px]">
+            {/* <div className="w-full flex justify-start items-center flex-wrap text-[#535353] choose mt-[10px]">
               <span
                 className={
-                  "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#efebff] flex justify-center items-center" +
+                  "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-xl h-[40px] border border-[#efefef] flex justify-center items-center" +
                   (category == "Shopping"
                     ? " bg-[#ffddc5] text-[black]"
                     : " text-[#535353]")
@@ -291,7 +404,7 @@ const AddReminderModal = (props) => {
               </span>
               <span
                 className={
-                  "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                  "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-xl h-[40px] border border-[#efefef] flex justify-center items-center" +
                   (category == "Medical"
                     ? " bg-[#ffddc5] text-[black]"
                     : " text-[#535353]")
@@ -304,7 +417,7 @@ const AddReminderModal = (props) => {
               </span>
               <span
                 className={
-                  "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                  "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-xl h-[40px] border border-[#efefef] flex justify-center items-center" +
                   (category == "Grocery"
                     ? " bg-[#ffddc5] text-[black]"
                     : " text-[#535353]")
@@ -317,7 +430,7 @@ const AddReminderModal = (props) => {
               </span>
               <span
                 className={
-                  "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                  "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-xl h-[40px] border border-[#efefef] flex justify-center items-center" +
                   (category == "Travel"
                     ? " bg-[#ffddc5] text-[black]"
                     : " text-[#535353]")
@@ -331,7 +444,7 @@ const AddReminderModal = (props) => {
 
               <span
                 className={
-                  "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                  "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-xl h-[40px] border border-[#efefef] flex justify-center items-center" +
                   (category == "Entertainment"
                     ? " bg-[#ffddc5] text-[black]"
                     : " text-[#535353]")
@@ -344,7 +457,7 @@ const AddReminderModal = (props) => {
               </span>
               <span
                 className={
-                  "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                  "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-xl h-[40px] border border-[#efefef] flex justify-center items-center" +
                   (category == "Food & Drinks"
                     ? " bg-[#ffddc5] text-[black]"
                     : " text-[#535353]")
@@ -357,7 +470,7 @@ const AddReminderModal = (props) => {
               </span>
               <span
                 className={
-                  "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-md h-[40px] border border-[#ffd8be] flex justify-center items-center" +
+                  "p-[10px] flex-grow mb-[5px] ml-[5px] rounded-xl h-[40px] border border-[#efefef] flex justify-center items-center" +
                   (category == "Other"
                     ? " bg-[#ffddc5] text-[black]"
                     : " text-[#535353]")
@@ -368,7 +481,7 @@ const AddReminderModal = (props) => {
               >
                 Other
               </span>
-            </div>
+            </div> */}
           </div>
           {/* <div className="flex flex-col w-full justify-center items-start mt-[15px] font-[google] font-normal text-black text-[15px]">
             <span className="text-[#000000]">
@@ -405,7 +518,41 @@ const AddReminderModal = (props) => {
             </div>
           </div> */}
 
-          <div className="w-full flex justify-end items-end font-[google] font-normal text-[15px] text-black h-[20px] mt-[20px]">
+          <div className="w-full h-auto mt-[20px] flex justify-end items-end">
+            <div
+              className={`w-auto h-auto rounded-2xl cursor-pointer px-[15px] py-[8px] text-[14px] bg-[${props?.UIColor}]`}
+              onClick={() => {
+                props?.data(false);
+                setLabel("");
+                setPrice("");
+                setCategory("");
+                setMode("");
+                setBill("");
+                props?.setReminderDate("");
+                props?.setReminderDate(
+                  new Date().getDate() +
+                    "/" +
+                    parseInt(parseInt(new Date().getMonth() + 1)) +
+                    "/" +
+                    new Date().getFullYear()
+                );
+              }}
+              style={{ backgroundColor: `${props?.UIColor} ` }}
+            >
+              Cancel
+            </div>
+            <div
+              className="w-auto h-auto rounded-2xl cursor-pointer px-[15px] py-[8px] text-[14px] bg-[#191A2C] ml-[10px] text-[white]"
+              onClick={() => {
+                addToFirebase();
+                props?.data(false);
+              }}
+            >
+              Add
+            </div>
+          </div>
+
+          {/* <div className="w-full flex justify-end items-end font-[google] font-normal text-[15px] text-black h-[20px] mt-[20px]">
             <div
               className="h-full mr-[20px] flex justify-center items-center cursor-pointer  "
               onClick={() => {
@@ -429,7 +576,7 @@ const AddReminderModal = (props) => {
             >
               Add
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

@@ -234,6 +234,23 @@ const AboutTransaction = (props) => {
 
   const clipPath = `path(borderRadius ${20}px)`;
 
+  // const handleDownload = (urlLink) => {
+  //   const link = document.createElement("a");
+  //   link.href = urlLink;
+  //   link.download = "receipt.jpg"; // This forces the download and sets the default filename
+  //   link.click();
+  // };
+
+  // const handleDownload = (url) => {
+  //   const fileName = "bill";
+  //   const aTag = document.createElement("a");
+  //   aTag.href = url;
+  //   aTag.setAttribute("download", fileName);
+  //   document.body.appendChild(aTag);
+  //   aTag.click();
+  //   aTag.remove();
+  // };
+
   return (
     <>
       {scanner && !showBill ? (
@@ -292,7 +309,10 @@ const AboutTransaction = (props) => {
         </div>
         <div className=" h-[30px] flex justify-start items-center mb-[20px]"></div>
         <div className="w-full h-[calc(100svh-50px)] flex flex-col justify-start items-start overflow-y-scroll overflow-x-hidden">
-          <div className="w-full h-auto rounded-2xl bg-[#F4F5F9] flex flex-col justify-start items-start p-[20px]">
+          <div
+            className="w-full h-auto rounded-2xl flex flex-col justify-start items-start p-[20px]"
+            style={{ backgroundColor: `${props?.UIColor}` }}
+          >
             <div className="w-full h-auto flex justify-between items-center">
               <div className="w-full h-auto flex flex-col justify-start items-start">
                 <span className="text-[25px] w-[90%] overflow-hidden text-ellipsis line-clamp-2 leading-7 ">
@@ -376,15 +396,21 @@ const AboutTransaction = (props) => {
               </div> */}
               <div className="w-full flex justify-start items-start h-auto">
                 <div className="w-[60%] h-auto flex flex-col justify-start items-start text-[14px]">
-                  <span className="mt-[5px] text-[#9a9a9a]">Date</span>
+                  <span className="mt-[5px] text-[14.5px] text-[#9a9a9a]">
+                    Date
+                  </span>
                   <span className="text-[#000000] mt-[-3px] text-[18px] mb-[10px]">
                     {props?.data?.Date}
                   </span>
-                  <span className="mt-[5px] text-[#9a9a9a]">Category</span>
+                  <span className="mt-[1px] text-[14.5px] text-[#9a9a9a]">
+                    Category
+                  </span>
                   <span className="text-[#000000] mt-[-3px] text-[18px] mb-[10px]">
                     {props?.data?.Category}
                   </span>
-                  <span className="mt-[5px] text-[#9a9a9a]">Payment Mode</span>
+                  <span className="mt-[1px] text-[14.5px] text-[#9a9a9a]">
+                    Payment Mode
+                  </span>
                   <span className="text-[#000000] mt-[-3px] text-[18px] mb-[10px]">
                     {props?.data?.Mode}
                   </span>
@@ -399,7 +425,7 @@ const AboutTransaction = (props) => {
 
                   {props?.data?.TransactionType === "Split" ? (
                     <>
-                      <span className="mt-[5px] text-[#9a9a9a]">
+                      <span className="mt-[1px] text-[14.5px] text-[#9a9a9a]">
                         Splitted By
                       </span>
                       <span className="text-[#000000] mt-[-3px] text-[18px] mb-[10px]">
@@ -443,29 +469,57 @@ const AboutTransaction = (props) => {
                   <QR
                     className="w-full aspect-square"
                     color="#000"
-                    backgroundColor="#ebebf5"
+                    backgroundColor={props?.UIColor}
                     rounding={100}
                     errorCorrectionLevel="L"
                   >
                     {props?.data?.BillUrl}
                   </QR>
+                  <a
+                    className="w-full py-[8px] mt-[10px] text-[15px] rounded-[10px] flex justify-center items-center bg-[#191A2C] text-white"
+                    // onClick={() => {
+                    //   handleDownload(props?.data?.BillUrl);
+                    // }}
+                    target="_blank"
+                    href={props?.data?.BillUrl}
+                  >
+                    <div className="mr-[10px]">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.9"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="lucide lucide-download"
+                      >
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="7 10 12 15 17 10" />
+                        <line x1="12" x2="12" y1="15" y2="3" />
+                      </svg>
+                    </div>{" "}
+                    Download
+                  </a>
                 </div>
               </div>
-              <div className="w-full h-auto mt-[20px] flex justify-evenly items-center py-[20px] rounded-2xl bg-[#181F32] text-[white]">
+              <div className="w-full h-auto mt-[20px] flex justify-evenly items-center py-[20px] rounded-2xl bg-[#ffffff] text-[#000000]">
                 <div className="flex flex-col justify-center items-center ">
                   <span className="text-[14px] text-[#a7a7a7]">Amount</span>
                   <span className="text-[20px] mt-[-4px]">
                     {formatAmountWithCommas(props?.data?.Amount)}
                   </span>
                 </div>
-                <div className="border border-[#454545] rounded-full h-[40px]"></div>
+                <div className="border border-[#f4f4f4] rounded-full h-[40px]"></div>
                 <div className="flex flex-col justify-center items-center ">
                   <span className="text-[14px] text-[#a7a7a7]">Date</span>
                   <span className="text-[20px] mt-[-4px]">
                     {props?.data?.Date}
                   </span>
                 </div>
-                <div className="border border-[#454545] rounded-full h-[40px]"></div>
+                <div className="border border-[#f4f4f4] rounded-full h-[40px]"></div>
                 <div className="flex flex-col justify-center items-center ">
                   <span className="text-[14px] text-[#a7a7a7]">Type</span>
                   <span className="text-[20px] mt-[-4px]">
@@ -492,7 +546,7 @@ const AboutTransaction = (props) => {
             </QR>
           </div> */}
 
-          <div className="w-full h-[70px] mt-[20px] rounded-2xl bg-[#181F32] text-[white] font-[google] font-normal text-[18px] flex justify-center items-center p-[20px]">
+          {/* <div className="w-full h-[70px] mt-[20px] rounded-2xl bg-[#181F32] text-[white] font-[google] font-normal text-[18px] flex justify-center items-center p-[20px]">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="21"
@@ -510,7 +564,7 @@ const AboutTransaction = (props) => {
               <line x1="12" x2="12" y1="15" y2="3" />
             </svg>{" "}
             &nbsp;&nbsp; Download Reciept
-          </div>
+          </div> */}
         </div>
       </div>
     </>

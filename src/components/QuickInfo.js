@@ -212,73 +212,26 @@ const QuickInfo = (props) => {
   return (
     <>
       {showGraph ? (
-        <ExpenseBarGraph data={props?.data} setShowGraph={setShowGraph} />
+        <ExpenseBarGraph
+          data={props?.data}
+          setShowGraph={setShowGraph}
+          UIColor={props?.UIColor}
+        />
       ) : (
         <></>
       )}
       {budgetModal === true ? (
         <>
-          <div
-            className="w-full h-[100svh]  flex flex-col justify-end items-center backdrop-blur-md bg-[#70708628] p-[20px] fixed top-0 left-0  z-40"
-            // onClick={() => {
-            //   // updateBudget();
-            //   setBudgetModal(false);
-            // }}
-          >
-            {/* <OutsideClickHandler
-              onOutsideClick={() => {
-                setIncomeModal(false);
-              }}
-            > */}
-            <div className="w-full flex flex-col justify-end items-start h-[40px]">
-              <div className="w-full h-auto flex justify-start items-end z-30">
-                <div className=" w-auto text-[22px] whitespace-nowrap font-[google] font-normal  p-[20px] py-[9px] h-[40px] bg-[#ffffff] flex  justify-start items-center rounded-t-[22px]">
-                  <span className="mt-[10px] flex justify-start items-center">
-                    {" "}
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="1.7"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="lucide lucide-hand-coins"
-                    >
-                      <path d="M11 15h2a2 2 0 1 0 0-4h-3c-.6 0-1.1.2-1.4.6L3 17" />
-                      <path d="m7 21 1.6-1.4c.3-.4.8-.6 1.4-.6h4c1.1 0 2.1-.4 2.8-1.2l4.6-4.4a2 2 0 0 0-2.75-2.91l-4.2 3.9" />
-                      <path d="m2 16 6 6" />
-                      <circle cx="16" cy="9" r="2.9" />
-                      <circle cx="6" cy="5" r="3" />
-                    </svg>
-                    &nbsp;&nbsp;Set New Budget
-                  </span>
-                </div>
-                <div className="h-[20px] aspect-square inRound"></div>
-                <div
-                  className="h-[35px]  aspect-square rounded-full cursor-pointer bg-[#efebff] ml-[-15px] mb-[5px] flex justify-center items-center text-[20px] "
-                  onClick={() => {
-                    setBudgetModal(false);
-                    setNewBudget("");
-                    setError("");
-                  }}
-                >
-                  <HiOutlinePlus className="rotate-45" />
-                </div>
-              </div>
-            </div>
-            <div className="min-w-[100%] z-50 h-auto bg-[#ffffff] drop-shadow-sm   text-black  rounded-b-3xl rounded-tr-3xl font-[google] font-normal text-[14px] flex flex-col justify-center items-start p-[20px]">
-              {/* <span className="w-full text-[22px] text-black font-[google] font-normal flex justify-start items-center ">
-                Set New Budget
-              </span> */}
-              <div className="flex w-full justify-start items-center">
-                <div className="w-[30px] h-full flex justify-center items-center mr-[-30px]">
-                  <BiRupee className="text-black" />
+          <div className="w-full h-[100svh]  flex flex-col justify-end items-center bg-[#70708628] backdrop-blur-md p-[20px] fixed top-0 left-0  z-40">
+            <div className="min-w-[100%] z-50 h-auto bg-[#ffffff] drop-shadow-sm   text-black rounded-3xl font-[google] font-normal flex flex-col justify-center items-start p-[30px]">
+              <span className="text-[22px] ">Update Budget</span>
+
+              <div className="flex w-full justify-start items-center mt-[15px]">
+                <div className="w-[40px] h-full flex justify-center items-center mr-[-40px]">
+                  <BiRupee className="text-black text-[18px]" />
                 </div>
                 <input
-                  className="outline-none w-full pl-[26px] rounded-md h-[40px] bg-transparent border border-[#beb0f4] px-[10px] text-black font-[google] font-normal text-[14px]"
+                  className="outline-none w-full pl-[36px] rounded-xl h-[45px] bg-transparent border border-[#efefef] px-[10px] text-black font-[google] font-normal text-[16px]"
                   placeholder="Enter Budget"
                   value={newBudget}
                   onChange={(e) => {
@@ -300,181 +253,6 @@ const QuickInfo = (props) => {
               ) : (
                 <></>
               )}
-              {/* <span
-                className={
-                  "text-[15px] mt-[10px] mb-[7px] flex justify-start items-center" +
-                  (parseFloat(newBudget) >= 0
-                    ? " text-black"
-                    : " text-[#a8a8a8]")
-                }
-              >
-                {parseFloat(newBudget) >= 0 ? (
-                  <>
-                    Enable Category Budget{" "}
-                    <div
-                      className={
-                        "w-[27px] h-[19px]  rounded-full flex justify-start items-center border  ml-[9px] cursor-pointer" +
-                        (categoryBudgetIndicator
-                          ? " pl-[9.8px] border-[#de8544]"
-                          : " pl-[1.5px] border-[#ffcaa5]")
-                      }
-                      onClick={() => {
-                        setCategoryBudgetIndicator(!categoryBudgetIndicator);
-                      }}
-                      style={{ transition: ".3s" }}
-                    >
-                      <div
-                        className={
-                          "w-[14px] h-[14px] rounded-full " +
-                          (categoryBudgetIndicator
-                            ? " bg-[#de8544]"
-                            : " bg-[#ffd8bd]")
-                        }
-                        style={{ transition: ".3s" }}
-                      ></div>
-                    </div>
-                  </>
-                ) : (
-                  <></>
-                )}
-              </span> */}
-              {/* <div
-                className={
-                  "w-full flex flex-col justify-start items-start  overflow-hidden" +
-                  (categoryBudgetIndicator && newBudget.length != 0
-                    ? " h-[322px] mt-[7px]"
-                    : " h-0 mt-[0px]")
-                }
-                style={{ transition: ".4s" }}
-              >
-                <div className="w-full h-[40px] flex justify-start items-center">
-                  <div className=" w-[145px] rounded-l-md h-[40px] flex justify-start items-center bg-transparent border border-r-0 border-[#ffd8be] px-[10px] text-[#de8544] font-[google] font-normal text-[14px] ">
-                    Shopping
-                  </div>
-                  <div className="w-[30px] mr-[-30px] h-full flex justify-start items-center ">
-                    <BiRupee className="text-[20px] mt-[-2px] text-[#000000]" />{" "}
-                  </div>
-                  <input
-                    className="outline-none w-[115px] rounded-r-md h-[40px] bg-transparent border border-l-0 border-[#ffd8be] px-[10px] text-black font-[google] font-normal text-[14px] pl-[25px]"
-                    placeholder="Amount"
-                    // onFocus={}
-                    value={shopping}
-                    onChange={(e) => {
-                      if (isNumeric(e.target.value) === true) {
-                        setShopping(e.target.value);
-                      }
-                    }}
-                  ></input>
-                </div>
-                <div className="w-full h-[40px] flex justify-start items-center mt-[7px]">
-                  <div className="w-[145px] rounded-l-md h-[40px] flex justify-start items-center bg-transparent border border-r-0 border-[#ffd8be] px-[10px] text-[#de8544] font-[google] font-normal text-[14px] ">
-                    Medical
-                  </div>
-                  <div className="w-[30px] mr-[-30px] h-full flex justify-start items-center ">
-                    <BiRupee className="text-[20px] mt-[-2px] text-[#000000]" />{" "}
-                  </div>
-                  <input
-                    className="outline-none w-[115px] rounded-r-md h-[40px] bg-transparent border border-l-0 border-[#ffd8be] px-[10px] text-black font-[google] font-normal text-[14px] pl-[25px]"
-                    placeholder="Amount"
-                    value={medical}
-                    onChange={(e) => {
-                      if (isNumeric(e.target.value) === true) {
-                        setMedical(e.target.value);
-                      }
-                    }}
-                  ></input>
-                </div>
-                <div className="w-full h-[40px] flex justify-start items-center mt-[7px]">
-                  <div className="w-[145px] rounded-l-md h-[40px] flex justify-start items-center bg-transparent border border-r-0 border-[#ffd8be] px-[10px] text-[#de8544] font-[google] font-normal text-[14px] ">
-                    Grocery
-                  </div>
-                  <div className="w-[30px] mr-[-30px] h-full flex justify-start items-center ">
-                    <BiRupee className="text-[20px] mt-[-2px] text-[#000000]" />{" "}
-                  </div>
-                  <input
-                    className="outline-none w-[115px] rounded-r-md h-[40px] bg-transparent border border-l-0 border-[#ffd8be] px-[10px] text-black font-[google] font-normal text-[14px] pl-[25px]"
-                    placeholder="Amount"
-                    value={grocery}
-                    onChange={(e) => {
-                      if (isNumeric(e.target.value) === true) {
-                        setGrocery(e.target.value);
-                      }
-                    }}
-                  ></input>
-                </div>
-                <div className="w-full h-[40px] flex justify-start items-center mt-[7px]">
-                  <div className="w-[145px] rounded-l-md h-[40px] flex justify-start items-center bg-transparent border border-r-0 border-[#ffd8be] px-[10px] text-[#de8544] font-[google] font-normal text-[14px] ">
-                    Travel
-                  </div>
-                  <div className="w-[30px] mr-[-30px] h-full flex justify-start items-center ">
-                    <BiRupee className="text-[20px] mt-[-2px] text-[#000000]" />{" "}
-                  </div>
-                  <input
-                    className="outline-none w-[115px] rounded-r-md h-[40px] bg-transparent border border-l-0 border-[#ffd8be] px-[10px] text-black font-[google] font-normal text-[14px] pl-[25px]"
-                    placeholder="Amount"
-                    value={travel}
-                    onChange={(e) => {
-                      if (isNumeric(e.target.value) === true) {
-                        setTravel(e.target.value);
-                      }
-                    }}
-                  ></input>
-                </div>
-                <div className="w-full h-[40px] flex justify-start items-center mt-[7px]">
-                  <div className="w-[145px] rounded-l-md h-[40px] flex justify-start items-center bg-transparent border border-r-0 border-[#ffd8be] px-[10px] text-[#de8544] font-[google] font-normal text-[14px] ">
-                    Entertainment
-                  </div>
-                  <div className="w-[30px] mr-[-30px] h-full flex justify-start items-center ">
-                    <BiRupee className="text-[20px] mt-[-2px] text-[#000000]" />{" "}
-                  </div>
-                  <input
-                    className="outline-none w-[115px] rounded-r-md h-[40px] bg-transparent border border-l-0 border-[#ffd8be] px-[10px] text-black font-[google] font-normal text-[14px] pl-[25px]"
-                    placeholder="Amount"
-                    value={entertainment}
-                    onChange={(e) => {
-                      if (isNumeric(e.target.value) === true) {
-                        setEntertainment(e.target.value);
-                      }
-                    }}
-                  ></input>
-                </div>
-                <div className="w-full h-[40px] flex justify-start items-center mt-[7px]">
-                  <div className="w-[145px] rounded-l-md h-[40px] flex justify-start items-center bg-transparent border border-r-0 border-[#ffd8be] px-[10px] text-[#de8544] font-[google] font-normal text-[14px] ">
-                    Food & Drinks
-                  </div>
-                  <div className="w-[30px] mr-[-30px] h-full flex justify-start items-center ">
-                    <BiRupee className="text-[20px] mt-[-2px] text-[#000000]" />{" "}
-                  </div>
-                  <input
-                    className="outline-none w-[115px] rounded-r-md h-[40px] bg-transparent border border-l-0 border-[#ffd8be] px-[10px] text-black font-[google] font-normal text-[14px] pl-[25px]"
-                    placeholder="Amount"
-                    value={food}
-                    onChange={(e) => {
-                      if (isNumeric(e.target.value) === true) {
-                        setFood(e.target.value);
-                      }
-                    }}
-                  ></input>
-                </div>
-                <div className="w-full h-[40px] flex justify-start items-center mt-[7px]">
-                  <div className="w-[145px] rounded-l-md h-[40px] flex justify-start items-center bg-transparent border border-r-0 border-[#ffd8be] px-[10px] text-[#de8544] font-[google] font-normal text-[14px] ">
-                    Other
-                  </div>
-                  <div className="w-[30px] mr-[-30px] h-full flex justify-start items-center ">
-                    <BiRupee className="text-[20px] mt-[-2px] text-[#000000]" />{" "}
-                  </div>
-                  <input
-                    className="outline-none w-[115px] rounded-r-md h-[40px] bg-transparent border border-l-0 border-[#ffd8be] px-[10px] text-black font-[google] font-normal text-[14px] pl-[25px]"
-                    placeholder="Amount"
-                    value={other}
-                    onChange={(e) => {
-                      if (isNumeric(e.target.value) === true) {
-                        setOther(e.target.value);
-                      }
-                    }}
-                  ></input>
-                </div>
-              </div> */}
 
               {subError.length > 0 ? (
                 <>
@@ -491,58 +269,44 @@ const QuickInfo = (props) => {
               ) : (
                 <></>
               )}
-              <div
-                className={
-                  "w-full flex justify-end items-end font-[google] font-normal text-[15px] text-black h-[20px] " +
-                  (parseFloat(newBudget) >= 0 ? " mt-[20px]" : " mt-[20px]")
-                }
-              >
+
+              <div className="w-full h-auto mt-[30px] flex justify-end items-end">
                 <div
-                  className="h-full mr-[25px] flex justify-center items-center  cursor-pointer "
+                  className={`w-auto h-auto rounded-2xl cursor-pointer px-[15px] py-[8px] text-[14px] bg-[${props?.UIColor}]`}
                   onClick={() => {
                     setBudgetModal(false);
                     setNewBudget("");
                     setError("");
                   }}
+                  style={{ backgroundColor: `${props?.UIColor} ` }}
                 >
-                  Cancel
+                  Close
                 </div>
                 {newBudget.length > 0 &&
                 parseInt(newBudget) <= parseInt(income) ? (
                   <>
                     <div
-                      className="h-full  flex justify-center items-center text-[#6bb7ff] cursor-pointer "
+                      className="w-auto h-auto rounded-2xl cursor-pointer px-[15px] py-[8px] text-[14px] bg-[#191A2C] ml-[10px] text-[white]"
                       onClick={() => {
                         updateBudget();
                         setBudgetModal(false);
                       }}
                     >
-                      Update
+                      Confirm
                     </div>
                   </>
                 ) : (
-                  <div
-                    className="h-full  flex justify-center items-center text-[#c2e1ff] cursor-pointer "
-                    onClick={() => {
-                      // updateBudget();
-                      // setBudgetModal(false);
-                    }}
-                  >
-                    Update
-                  </div>
+                  <>
+                    <div
+                      className="w-auto h-auto rounded-2xl cursor-pointer px-[15px] py-[8px] text-[14px] bg-[#191a2c1d] text-[#00000080] ml-[10px]  "
+                      onClick={() => {}}
+                    >
+                      Confirm
+                    </div>
+                  </>
                 )}
-                {/* <div
-                  className="h-full  flex justify-center items-center text-[#de8544] cursor-pointer "
-                  onClick={() => {
-                    updateBudget();
-                    setBudgetModal(false);
-                  }}
-                >
-                  Update
-                </div> */}
               </div>
             </div>
-            {/* </OutsideClickHandler> */}
           </div>
         </>
       ) : (
@@ -552,46 +316,21 @@ const QuickInfo = (props) => {
       {incomeModal === true ? (
         <>
           <div
-            className="w-full h-[100svh]  flex flex-col justify-end items-center backdrop-blur-sm bg-[#68777b7a] p-[20px] fixed top-0 left-0  z-40"
+            className="w-full h-[100svh]  flex flex-col justify-end items-center bg-[#70708628] backdrop-blur-md p-[20px] fixed top-0 left-0  z-40"
             style={{ zIndex: 70 }}
           >
-            {/* <OutsideClickHandler
-              onOutsideClick={() => {
-                setIncomeModal(false);
-              }}
-            > */}
             <div className="w-full h-auto flex flex-col justify-end items-start ">
-              <div className="w-full flex flex-col justify-end items-start h-[40px]">
-                <div className="w-full h-auto flex justify-start items-end z-30">
-                  <div className=" w-auto text-[22px] whitespace-nowrap font-[google] font-normal  p-[20px] py-[9px] h-[40px] bg-[#ffffff] flex  justify-start items-center rounded-t-[22px]">
-                    <span className="mt-[10px]">Set New Income</span>
-                  </div>
-                  <div className="h-[20px] aspect-square inRound"></div>
-                  <div
-                    className="h-[35px]  aspect-square rounded-full cursor-pointer bg-[#e4f2ff] ml-[-15px] mb-[5px] flex justify-center items-center text-[20px] "
-                    onClick={() => {
-                      setIncomeModal(false);
-                      setNewIncome("");
-                      setError("");
-                    }}
-                  >
-                    <HiOutlinePlus className="rotate-45" />
-                  </div>
-                </div>
-              </div>
               <div
-                className="min-w-[100%] z-50 h-auto bg-[#ffffff] drop-shadow-sm   text-black  rounded-b-3xl rounded-tr-3xl  font-[google] font-normal text-[14px] flex flex-col justify-center items-start p-[20px]"
+                className="min-w-[100%] z-50 h-auto bg-[#ffffff] drop-shadow-sm   text-black  rounded-3xl  font-[google] font-normal text-[14px] flex flex-col justify-center items-start p-[30px]"
                 style={{ zIndex: 100 }}
               >
-                {/* <span className="w-full text-[22px] text-black font-[google] font-normal flex justify-start items-center ">
-                Set New Income
-              </span> */}
-                <div className="flex w-full justify-start items-center ">
-                  <div className="flex justify-center items-center w-[30px] h-full mr-[-30px]">
-                    <BiRupee className="" />
+                <span className="text-[22px] ">Update Income</span>
+                <div className="flex w-full justify-start items-center mt-[15px] ">
+                  <div className="flex justify-center items-center w-[40px] h-full mr-[-40px]">
+                    <BiRupee className="text-[18px]" />
                   </div>
                   <input
-                    className="outline-none w-full h-[40px] bg-transparent pl-[25px] rounded-md border border-[#acebff] px-[10px] text-black font-[google] font-normal text-[14px]"
+                    className="outline-none w-full h-[45px] bg-transparent pl-[36px] rounded-xl  border border-[#efefef] px-[10px] text-black font-[google] font-normal text-[16px]"
                     placeholder="Enter Income"
                     value={newIncome}
                     onChange={(e) => {
@@ -601,17 +340,45 @@ const QuickInfo = (props) => {
                     }}
                   ></input>
                 </div>
-                {error.length > 0 ? (
-                  <>
-                    {/* <div className="flex w-full justify-between items-center mt-[6px] text-[#ff6c00] text-[13px]">
-                    * {error}
-                  </div> */}
-                  </>
-                ) : (
-                  <></>
-                )}
+                {error.length > 0 ? <></> : <></>}
 
-                <div className="w-full flex justify-end items-end font-[google] font-normal text-[15px] text-black h-[20px] mt-[20px]">
+                <div className="w-full h-auto mt-[30px] flex justify-end items-end">
+                  <div
+                    className={`w-auto h-auto rounded-2xl cursor-pointer px-[15px] py-[8px] text-[14px] bg-[${props?.UIColor}]`}
+                    onClick={() => {
+                      setIncomeModal(false);
+                      setNewIncome("");
+                      setError("");
+                    }}
+                    style={{ backgroundColor: `${props?.UIColor} ` }}
+                  >
+                    Close
+                  </div>
+                  {newIncome.length == 0 ? (
+                    <>
+                      <div
+                        className="w-auto h-auto rounded-2xl cursor-pointer px-[15px] py-[8px] text-[14px] bg-[#191a2c1d] text-[#00000080]  ml-[10px] "
+                        onClick={() => {}}
+                      >
+                        Confirm
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div
+                        className="w-auto h-auto rounded-2xl cursor-pointer px-[15px] py-[8px] text-[14px] bg-[#191A2C] ml-[10px] text-[white] "
+                        onClick={() => {
+                          updateIncome();
+                          setIncomeModal(false);
+                        }}
+                      >
+                        Confirm
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                {/* <div className="w-full flex justify-end items-end font-[google] font-normal text-[15px] text-black h-[20px] mt-[20px]">
                   <div
                     className="h-full mr-[20px] flex justify-center items-center cursor-pointer  "
                     onClick={() => {
@@ -642,7 +409,7 @@ const QuickInfo = (props) => {
                       Update
                     </div>
                   )}
-                </div>
+                </div> */}
               </div>
             </div>
             {/* </OutsideClickHandler> */}
@@ -651,10 +418,10 @@ const QuickInfo = (props) => {
       ) : (
         <></>
       )}
-      <div className="w-full  h-[140px] flex justify-between items-start font-[google] font-normal bg-[#191A2C] pt-[30px] px-[20px]">
+      <div className="w-full  h-[140px] flex justify-between items-start font-[google] font-normal bg-[#ffffff] text-[#000000] pt-[30px] px-[20px]">
         <div className="w-[calc(100%/2)] flex flex-col justify-center items-start ">
-          <span className=" flex justify-center items-center text-[14px] text-[#aeaeae]">
-            <span className="text-[#ffffff] flex justify-start items-center ml-[-3px] font-normal tracking-wide">
+          <span className=" flex justify-center items-center text-[14px] text-[#000000]">
+            <span className=" flex justify-start items-center ml-[-3px] font-normal tracking-wide">
               {/* <IoCalendarSharp className="text-[12px] mr-[8px]" /> */}
               <svg
                 // className="mr-[6px] "
@@ -663,7 +430,7 @@ const QuickInfo = (props) => {
                 height="18"
                 viewBox="0 0 24 24"
                 fill="none"
-                stroke="#ffffff"
+                stroke="currentColor"
                 stroke-width="1.7"
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -679,10 +446,10 @@ const QuickInfo = (props) => {
             </span>{" "}
             &nbsp;&nbsp;Total Expense
           </span>
-          <span className=" font-[google] font-normal text-[25px] text-[#ffffff] flex justify-start items-center">
+          <span className=" font-[google] font-normal text-[25px]  flex justify-start items-center">
             {parseFloat(monthlyExpense) <= budget ? (
               <>
-                <span className=" flex justify-start items-center text-[#ffffff]">
+                <span className=" flex justify-start items-center ">
                   <BiRupee className="ml-[-6px]" />{" "}
                   {monthlyExpense.length != 0 ? (
                     <>{formatAmountWithCommas(monthlyExpense)}</>
@@ -699,7 +466,7 @@ const QuickInfo = (props) => {
               </>
             ) : (
               <>
-                <span className=" flex justify-start items-center text-[#ffffff]">
+                <span className=" flex justify-start items-center ">
                   <BiRupee className="ml-[-6px]" />{" "}
                   {monthlyExpense.length != 0 ? (
                     <>{formatAmountWithCommas(monthlyExpense)}</>
@@ -716,11 +483,11 @@ const QuickInfo = (props) => {
               </>
             )}
           </span>
-          <span className="font-[google]  text-[13px] text-[#ffffff]   flex justify-start items-center mt-[5px]">
+          <span className="font-[google]  text-[13px]    flex justify-start items-center mt-[5px]">
             <Line
               percent={percent}
               strokeWidth={6}
-              trailColor="#ffffff"
+              trailColor="#f4f4f4"
               trailWidth={2}
               strokeColor={"" + (percent < 75 ? " #00bb00" : " #e61d0f")}
               className="h-[4px]"
@@ -737,7 +504,7 @@ const QuickInfo = (props) => {
                 <>
                   <BiRupee className="ml-[-3px] text-[14px] " />{" "}
                   {formatAmountWithCommas(budget)}{" "}
-                  <span className="text-[#ffffff] ml-[6px] font-normal">
+                  <span className=" ml-[6px] font-normal">
                     {/* [ Budget ]{" "} */}
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -764,14 +531,14 @@ const QuickInfo = (props) => {
           </span>
         </div>
         <div className="w-[calc(100%/2)] flex flex-col justify-center items-end font-[google] font-normal">
-          <span className=" flex justify-center items-center text-[13px] text-[#828282] opacity-0 ">
+          <span className=" flex justify-center items-center text-[13px] text-[#000000] opacity-0 ">
             Lifetime Savings{" "}
-            <span className="text-white flex justify-end items-center ml-[6px]">
+            <span className=" flex justify-end items-center ml-[6px]">
               <BiRupee className=" " />
               {formatAmountWithCommas(income)}
             </span>
           </span>
-          <span className=" font-[google] font-normal text-[25px] text-[#ffffff] flex justify-start items-center">
+          <span className=" font-[google] font-normal text-[25px]  flex justify-start items-center">
             <span className="opacity-0">{transactionHistory.length}</span>
             {/* <RiDonutChartFill className="mr-[9px]" />{" "} */}
             {/* <PiGraph /> */}
@@ -826,13 +593,13 @@ const QuickInfo = (props) => {
             </span>
           ) : (
             <span
-              className="font-[google] font-normal text-[13px] text-[#828282] flex justify-end items-center cursor-pointer mt-[5px]"
+              className="font-[google] font-normal text-[13px] text-[#000000] flex justify-end items-center cursor-pointer mt-[5px]"
               onClick={() => {
                 setIncomeModal(true);
               }}
             >
               {/* Curr. Income{" "} */}
-              <span className="text-[#ffffff] flex justify-end items-center ml-[6px]">
+              <span className=" flex justify-end items-center ml-[6px]">
                 <svg
                   className="mr-[6px]"
                   xmlns="http://www.w3.org/2000/svg"

@@ -19,6 +19,7 @@ import TopNavbar from "./TopNavbar";
 import ReminderPage from "./ReminderPage";
 import Tutorial from "./Tutorial";
 import AiTripPlanner from "./AiTripPlanner";
+import Test from "./Test";
 
 const AuthDetails = () => {
   const [authUser, setAuthUser] = useState(null);
@@ -106,6 +107,7 @@ const AuthDetails = () => {
         <>
           <div className="w-full h-[100%] flex flex-col justify-center items-center ">
             <LandingPage />
+            {/* <Test /> */}
           </div>
           {/* <BottomNavbar segment={segment} setSegment={setSegment} /> */}
         </>

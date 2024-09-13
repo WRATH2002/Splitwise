@@ -25,7 +25,11 @@ const UpdateModal = (props) => {
   const [error, setError] = useState(false);
   const [subError, setSubError] = useState(false);
   const [data, setData] = useState("");
-
+  const [pass, setPass] = useState("");
+  const [active, setActive] = useState(false);
+  const [toggle, setToggle] = useState(false);
+  const [PINRequired, setPINRequired] = useState(false);
+  const [PINCode, setPINCode] = useState(false);
   function isNumeric(str) {
     if (typeof str !== "string") return false;
     if (str === "") return true;
@@ -38,6 +42,13 @@ const UpdateModal = (props) => {
       Name: data,
     });
     setData("");
+    setActive(false);
+    setPass("");
+    if (props?.PINRequired) {
+      setToggle(false);
+    } else {
+      setToggle(true);
+    }
   }
   function updateBudget() {
     const user = firebase.auth().currentUser;
@@ -45,6 +56,13 @@ const UpdateModal = (props) => {
       Budget: data,
     });
     setData("");
+    setActive(false);
+    setPass("");
+    if (props?.PINRequired) {
+      setToggle(false);
+    } else {
+      setToggle(true);
+    }
   }
   function updateIncome() {
     const user = firebase.auth().currentUser;
@@ -52,7 +70,50 @@ const UpdateModal = (props) => {
       TotalIncome: data,
     });
     setData("");
+    setActive(false);
+    setPass("");
+    if (props?.PINRequired) {
+      setToggle(false);
+    } else {
+      setToggle(true);
+    }
   }
+
+  function fetchTheme() {
+    const user = firebase.auth().currentUser;
+    const userRef = db.collection("Expense").doc(user?.uid);
+    onSnapshot(userRef, (snapshot) => {
+      setPINRequired(snapshot?.data()?.PINRequired);
+      setPINCode(snapshot?.data()?.PIN);
+    });
+  }
+
+  useEffect(() => {
+    fetchTheme();
+  }, []);
+
+  useEffect(() => {
+    if (props?.PINRequired) {
+      if (pass.length == 4) {
+        if (pass == props?.PINCode) {
+          setToggle(true);
+        } else {
+          setToggle(false);
+          setActive(true);
+        }
+      }
+    }
+  }, [pass]);
+
+  useEffect(() => {
+    console.log("props?.PINRequired");
+    console.log(props?.PINRequired);
+    if (props?.PINRequired == false) {
+      setToggle(true);
+    } else {
+      setToggle(false);
+    }
+  }, [props?.PINRequired]);
 
   return (
     <>
@@ -124,57 +185,151 @@ const UpdateModal = (props) => {
                     )}
                   </span>
 
-                  <div className="w-full h-auto flex justify-start items-center mt-[10px] mb-[10px] ">
-                    <input
-                      className={
-                        "w-full h-[45px] rounded-xl  px-[15px] flex justify-start items-center text-[16px] outline-none" +
-                        (subError
-                          ? " border border-[#e61d0f] bg-[#e61d0f17]"
-                          : " bg-[#F4F5F7] border-none")
-                      }
-                      placeholder={
-                        props?.topic === "Name"
-                          ? "Enter Name"
-                          : props?.topic === "Budget"
-                          ? "Enter Budget"
-                          : props?.topic === "Income"
-                          ? "Enter Income"
-                          : ""
-                      }
-                      value={data}
-                      onChange={(e) => {
-                        if (
-                          props?.topic === "Budget" ||
-                          props?.topic === "Income"
-                        ) {
-                          if (isNumeric(e.target.value) === true) {
-                            if (props?.topic === "Budget") {
-                              if (
-                                Number(e.target.value) < parseInt(props?.income)
-                              ) {
-                                setSubError(false);
-                                setData(e.target.value);
-                              } else {
-                                setSubError(true);
+                  {/* ----------------------------------------------------- */}
+                  {toggle == false ? (
+                    <>
+                      <div className="w-full flex justify-center items-center my-[20px] h-auto text-[18px] mb-[-70px] z-50 ">
+                        <input
+                          className="bg-transparent text-transparent caret-transparent outline-none border-none h-[50px] rounded-2xl w-[200px] px-[15px]"
+                          value={pass}
+                          onChange={(e) => {
+                            // console.log(e.target.value);
+                            // console.log(e);
+                            if (
+                              e.nativeEvent.inputType == "deleteContentBackward"
+                            ) {
+                              setPass(e.target.value);
+                            } else if (pass.length < 4) {
+                              setPass(e.target.value);
+                            }
+                            setActive(false);
+                          }}
+                        ></input>
+                      </div>
+                      <div className="w-full flex justify-center items-center my-[20px] h-auto text-[20px]">
+                        {" "}
+                        <div
+                          className="mx-[5px] h-[50px] rounded-2xl w-[40px] px-[15px] flex justify-center items-center"
+                          style={{
+                            backgroundColor: `${props?.UIColor} `,
+                            border: active
+                              ? " 2px solid #bc0000"
+                              : pass.length == 0
+                              ? `2px solid ${props?.UIIndex}`
+                              : "2px solid transparent",
+                          }}
+                        >
+                          {pass[0]}
+                        </div>
+                        <div
+                          className="mx-[5px] h-[50px] rounded-2xl w-[40px] px-[15px] flex justify-center items-center"
+                          style={{
+                            backgroundColor: `${props?.UIColor} `,
+                            border: active
+                              ? " 2px solid #bc0000"
+                              : pass.length == 1
+                              ? `2px solid ${props?.UIIndex}`
+                              : "2px solid transparent",
+                          }}
+                        >
+                          {pass[1]}
+                        </div>
+                        <div
+                          className="mx-[5px] h-[50px] rounded-2xl w-[40px] px-[15px] flex justify-center items-center"
+                          style={{
+                            backgroundColor: `${props?.UIColor} `,
+                            border: active
+                              ? " 2px solid #bc0000"
+                              : pass.length == 2
+                              ? `2px solid ${props?.UIIndex}`
+                              : "2px solid transparent",
+                          }}
+                        >
+                          {pass[2]}
+                        </div>
+                        <div
+                          className="mx-[5px] h-[50px] rounded-2xl w-[40px] px-[15px] flex justify-center items-center"
+                          style={{
+                            backgroundColor: `${props?.UIColor} `,
+                            border: active
+                              ? " 2px solid #bc0000"
+                              : pass.length == 3
+                              ? `2px solid ${props?.UIIndex}`
+                              : "2px solid transparent",
+                          }}
+                        >
+                          {pass[3]}
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="w-full h-auto flex justify-start items-center mt-[20px] mb-[20px] ">
+                        <input
+                          className={
+                            "w-full h-[50px] rounded-xl  px-[15px] flex justify-start items-center text-[16px] outline-none" +
+                            (subError
+                              ? " border border-[#e61d0f] bg-[#e61d0f17]"
+                              : ` bg-[${props?.UIColor}] border-none`)
+                          }
+                          style={{ backgroundColor: `${props?.UIColor} ` }}
+                          placeholder={
+                            props?.topic === "Name"
+                              ? "Enter Name"
+                              : props?.topic === "Budget"
+                              ? "Enter Budget"
+                              : props?.topic === "Income"
+                              ? "Enter Income"
+                              : ""
+                          }
+                          value={data}
+                          onChange={(e) => {
+                            if (
+                              props?.topic === "Budget" ||
+                              props?.topic === "Income"
+                            ) {
+                              if (isNumeric(e.target.value) === true) {
+                                if (props?.topic === "Budget") {
+                                  if (
+                                    Number(e.target.value) <
+                                    parseInt(props?.income)
+                                  ) {
+                                    setSubError(false);
+                                    setData(e.target.value);
+                                  } else {
+                                    setSubError(true);
+                                  }
+                                } else {
+                                  setData(e.target.value);
+                                }
                               }
                             } else {
                               setData(e.target.value);
                             }
-                          }
-                        } else {
-                          setData(e.target.value);
-                        }
-                      }}
-                    ></input>
-                  </div>
+                          }}
+                        ></input>
+                      </div>
+                    </>
+                  )}
+
+                  {/* ----------------------------------------------------- */}
+
                   <div className="w-full h-auto mt-[10px] flex justify-end items-end">
                     <div
-                      className="w-auto h-auto rounded-2xl cursor-pointer px-[15px] py-[8px] text-[14px] bg-[#F4F5F7]"
+                      className={`w-auto h-auto rounded-2xl cursor-pointer px-[15px] py-[8px] z bg-[${props?.UIColor}]`}
+                      style={{ backgroundColor: `${props?.UIColor} ` }}
                       onClick={() => {
                         props?.setModal(false);
                         props?.setTopic("");
                         setData("");
                         setSubError(false);
+                        setActive(false);
+                        setPass("");
+                        if (props?.PINRequired) {
+                          setToggle(false);
+                        } else {
+                          setToggle(true);
+                        }
                       }}
                     >
                       Close
@@ -198,7 +353,7 @@ const UpdateModal = (props) => {
                               setSubError(false);
                             }, 1200);
                           }
-                        } else {
+                        } else if (data.length > 0) {
                           setSubLoading(true);
 
                           setTimeout(() => {
@@ -209,6 +364,7 @@ const UpdateModal = (props) => {
                             } else if (props?.topic == "Income") {
                               updateIncome();
                             }
+
                             setSubLoading(false);
                             props?.setModal(false);
                             props?.setTopic("");
@@ -389,10 +545,11 @@ export const LogoutModal = (props) => {
 
               <div className="w-full h-auto mt-[10px] flex justify-end items-end">
                 <div
-                  className="w-auto h-auto rounded-2xl cursor-pointer px-[15px] py-[8px] text-[14px] bg-[#F4F5F7]"
+                  className={`w-auto h-auto rounded-2xl cursor-pointer px-[15px] py-[8px] text-[14px] bg-[${props?.UIColor}]`}
                   onClick={() => {
                     props?.setLogoutModal(false);
                   }}
+                  style={{ backgroundColor: `${props?.UIColor} ` }}
                 >
                   Close
                 </div>
@@ -412,6 +569,139 @@ export const LogoutModal = (props) => {
       ) : (
         <></>
       )}
+    </>
+  );
+};
+
+export const SetPIN = (props) => {
+  const [pass, setPass] = useState("");
+  const [active, setActive] = useState(false);
+  function updatePIN() {
+    const user = firebase.auth().currentUser;
+    if (props?.PINRequired) {
+      if (pass == props?.PINCode) {
+        db.collection("Expense").doc(user.uid).update({
+          PINRequired: false,
+          PIN: "",
+        });
+        props?.setBtn5(false);
+      } else {
+        setActive(true);
+      }
+    } else {
+      db.collection("Expense").doc(user.uid).update({
+        PINRequired: true,
+        PIN: pass,
+      });
+      props?.setBtn5(false);
+    }
+    // setData("");
+  }
+  return (
+    <>
+      <div className="w-full h-[100svh] top-0 left-0 fixed bg-[#70708628] backdrop-blur-md flex justify-center items-end p-[20px] z-40 font-[google] font-normal">
+        <div className="w-full h-auto min-h-[150px] flex flex-col justify-center items-start p-[30px] py-[25px] bg-[white] rounded-3xl drop-shadow-sm">
+          <span className="text-[22px] ">
+            {props?.PINRequired ? <>Remove PIN</> : <>Set PIN</>}{" "}
+          </span>
+          <span className="text-[14.5px] mt-[5px] text-[#000000a9] flex flex-col justify-start items-start w-full h-auto">
+            This PIN will be required to do any updates.
+          </span>
+          <div className="w-full flex justify-center items-center my-[20px] h-auto text-[18px] mb-[-70px] z-50 ">
+            <input
+              className="bg-transparent text-transparent caret-transparent outline-none border-none h-[50px] rounded-2xl w-[200px] px-[15px]"
+              value={pass}
+              onChange={(e) => {
+                // console.log(e.target.value);
+                // console.log(e);
+                if (e.nativeEvent.inputType == "deleteContentBackward") {
+                  setPass(e.target.value);
+                } else if (pass.length < 4) {
+                  setPass(e.target.value);
+                }
+                setActive(false);
+              }}
+            ></input>
+          </div>
+          <div className="w-full flex justify-center items-center my-[20px] h-auto text-[20px]">
+            {" "}
+            <div
+              className="mx-[5px] h-[50px] rounded-2xl w-[40px] px-[15px] flex justify-center items-center"
+              style={{
+                backgroundColor: `${props?.UIColor} `,
+                border: active
+                  ? " 2px solid #bc0000"
+                  : pass.length == 0
+                  ? `2px solid ${props?.UIIndex}`
+                  : "2px solid transparent",
+              }}
+            >
+              {pass[0]}
+            </div>
+            <div
+              className="mx-[5px] h-[50px] rounded-2xl w-[40px] px-[15px] flex justify-center items-center"
+              style={{
+                backgroundColor: `${props?.UIColor} `,
+                border: active
+                  ? " 2px solid #bc0000"
+                  : pass.length == 1
+                  ? `2px solid ${props?.UIIndex}`
+                  : "2px solid transparent",
+              }}
+            >
+              {pass[1]}
+            </div>
+            <div
+              className="mx-[5px] h-[50px] rounded-2xl w-[40px] px-[15px] flex justify-center items-center"
+              style={{
+                backgroundColor: `${props?.UIColor} `,
+                border: active
+                  ? " 2px solid #bc0000"
+                  : pass.length == 2
+                  ? `2px solid ${props?.UIIndex}`
+                  : "2px solid transparent",
+              }}
+            >
+              {pass[2]}
+            </div>
+            <div
+              className="mx-[5px] h-[50px] rounded-2xl w-[40px] px-[15px] flex justify-center items-center"
+              style={{
+                backgroundColor: `${props?.UIColor} `,
+                border: active
+                  ? " 2px solid #bc0000"
+                  : pass.length == 3
+                  ? `2px solid ${props?.UIIndex}`
+                  : "2px solid transparent",
+              }}
+            >
+              {pass[3]}
+            </div>
+          </div>
+
+          <div className="w-full h-auto mt-[10px] flex justify-end items-end">
+            <div
+              className={`w-auto h-auto rounded-2xl cursor-pointer px-[15px] py-[8px] text-[14px] bg-[${props?.UIColor}]`}
+              onClick={() => {
+                props?.setBtn5(false);
+              }}
+              style={{ backgroundColor: `${props?.UIColor} ` }}
+            >
+              Close
+            </div>
+            <div
+              className="w-auto h-auto rounded-2xl cursor-pointer px-[15px] py-[8px] text-[14px] bg-[#191A2C] ml-[10px] text-[white]"
+              onClick={() => {
+                if (pass.length == 4) {
+                  updatePIN();
+                }
+              }}
+            >
+              Update
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   );
 };

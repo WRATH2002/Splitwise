@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { BiRupee } from "react-icons/bi";
 import { FaCheckCircle, FaReceipt, FaShopify } from "react-icons/fa";
-import { FiArrowLeft } from "react-icons/fi";
+import { FiArrowDownLeft, FiArrowLeft, FiArrowUpRight } from "react-icons/fi";
 import { GiPartyPopper } from "react-icons/gi";
 import { HiMiniBell } from "react-icons/hi2";
 import { IoFastFood, IoGitNetworkOutline } from "react-icons/io5";
@@ -428,52 +428,19 @@ export const MoreAboutTransaction = (props) => {
               of the bill?
             </span>
 
-            {/* <span className="w-full text-[14px] text-[#434343b5] font-[google] font-normal flex justify-start items-center mt-[10px]">
-              <span className="mr-[5px] text-[#000000]">Label :</span>{" "}
-              {props?.data?.Lable}
-            </span>
-            <span className="w-full text-[14px] text-[#434343b5] font-[google] font-normal flex justify-start items-center ">
-              <span className="mr-[5px] text-[#000000]">Expense :</span>{" "}
-              <BiRupee /> {formatAmountWithCommas(props?.data?.Amount)}
-            </span>
-            <span className="w-full text-[14px] text-[#434343b5] font-[google] font-normal flex justify-start items-center ">
-              <span className="mr-[5px] text-[#000000]">To Pay :</span>{" "}
-              <BiRupee />{" "}
-              {formatAmountWithCommas(
-                (
-                  parseFloat(props?.data?.Amount) /
-                  parseInt(props?.data?.MemberCount)
-                ).toFixed(2)
-              )}
-            </span> */}
-            <span
-              className="w-full text-[14px] text-[#000000] font-[google] font-normal flex justify-start items-center whitespace-pre-wrap   cursor-pointer mt-[10px]"
-              onClick={() => {
-                // setInclude(!include);
-              }}
-            >
-              <div
-                className="w-full flex flex-col justify-start items-start"
-                // onClick={() => {
-                //   setInclude(!include);
-                //   // setNewIncome("");
-                //   // setError("");
-                // }}
-              >
+            <span className="w-full text-[14px] text-[#000000] font-[google] font-normal flex justify-start items-center whitespace-pre-wrap   cursor-pointer mt-[10px]">
+              <div className="w-full flex flex-col justify-start items-start">
                 <span className="font-[google] font-normal mb-[10px] mt-[10px]">
                   Select a Payment Mode
                 </span>
                 <div className="flex flex-col justify-end items-start  w-full h-0 ">
                   <div
                     className={
-                      "w-[calc(100%-100px)] rounded-xl mt-[5px] h-[150px] mb-[5px] font-[google] font-normal text-[16px] overflow-y-scroll fixed flex-col flex justify-start items-start  border border-[#ebe6ff] bg-[#ece9f5] p-[15px] py-[9px] left-[50px]" +
+                      "w-[calc(100%-100px)] rounded-xl mt-[5px] h-[130px] mb-[5px] font-[google] font-normal text-[14px] overflow-y-scroll fixed flex-col flex justify-start items-start p-[15px] py-[9px] left-[50px]" +
                       (categoryDropdown ? " flex" : " hidden")
                     }
+                    style={{ backgroundColor: `${props?.UIColor}` }}
                   >
-                    {/* <div className="w-full py-[6px] flex justify-start items-center">
-                            Select Category
-                          </div>
-                          <div className="w-full my-[6px] flex justify-start items-center border border-[#beb0f4]"></div> */}
                     {paymentName.map((data, index) => {
                       return (
                         <div
@@ -483,7 +450,6 @@ export const MoreAboutTransaction = (props) => {
                             setCategoryDropdown(false);
                           }}
                         >
-                          {/* <SmallSizeIcon Category={data} /> */}
                           <div className="" key={index}>
                             {data}
                           </div>
@@ -501,14 +467,15 @@ export const MoreAboutTransaction = (props) => {
                   >
                     <div
                       className={
-                        "outline-none w-full h-[45px] rounded-xl bg-transparent border border-[#beb0f4]  px-[10px] text-black font-[google] font-normal text-[16px] z-40 flex justify-start items-center"
+                        "outline-none w-full h-[45px] rounded-xl   px-[10px] text-black font-[google] font-normal text-[16px] z-30 flex justify-start items-center"
                       }
+                      style={{ backgroundColor: `${props?.UIColor}` }}
                       // placeholder="Price"
                       // value={price}
                     >
                       {mode}
                     </div>
-                    <div className="w-[30px] h-[45px] flex justify-start items-center ml-[-30px]">
+                    <div className="w-[30px] h-[45px] flex justify-start items-center ml-[-30px] z-40">
                       {categoryDropdown ? (
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -582,44 +549,39 @@ export const MoreAboutTransaction = (props) => {
                     Cash
                   </span> */}
                 </div>
-              </div>
-            </span>
-
-            <div className="w-full flex justify-center items-end font-[google] font-normal text-[15px] text-black mt-[20px]">
-              <div
-                className="flex justify-center mr-[15px]  px-[15px] py-[10px] rounded-3xl bg-[#efefef] text-[black] items-center cursor-pointer  "
-                onClick={() => {
-                  setConfirmModal(false);
-                  setMode("");
-                  // setInclude(false);
-                  // setNewIncome("");
-                  // setError("");
-                }}
-              >
-                Cancel
-              </div>
-              {mode.length == 0 ? (
-                <>
-                  <div className=" flex justify-center  px-[15px] py-[10px] rounded-3xl bg-[#e8e3fd] items-center text-[#0000006c]  ">
-                    Confirm
-                  </div>
-                </>
-              ) : (
-                <>
+                <div className="w-full h-auto mt-[20px] flex justify-end items-end">
                   <div
-                    className="flex justify-center  px-[15px] py-[10px] rounded-3xl bg-[#beb0f4] text-[black] items-center cursor-pointer  "
+                    className={`w-auto h-auto rounded-2xl cursor-pointer px-[15px] py-[8px] text-[14px]   `}
+                    style={{ backgroundColor: `${props?.UIColor}` }}
                     onClick={() => {
-                      // updateIncome();
-                      // deleteReminder();
                       setConfirmModal(false);
-                      addToTransaction();
+                      setMode("");
                     }}
                   >
-                    Confirm
+                    Cancel
                   </div>
-                </>
-              )}
-            </div>
+                  {mode.length == 0 ? (
+                    <>
+                      <div className="w-auto h-auto rounded-2xl cursor-pointer px-[15px] py-[8px] text-[14px] bg-[#d5d5d5] ml-[10px] opacity-30 text-[#000000]">
+                        Confirm
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div
+                        className="w-auto h-auto rounded-2xl cursor-pointer px-[15px] py-[8px] text-[14px] bg-[#191A2C] ml-[10px] text-[white]"
+                        onClick={() => {
+                          setConfirmModal(false);
+                          addToTransaction();
+                        }}
+                      >
+                        Confirm
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+            </span>
           </div>
         </div>
       ) : (
@@ -662,12 +624,14 @@ export const MoreAboutTransaction = (props) => {
                     </>
                   )}
                 </span>
+
                 <div className="w-full flex justify-end items-center mt-[14px] ">
                   {isPaid ? (
                     <></>
                   ) : (
                     <div
-                      className="mr-[25px] cursor-pointer"
+                      className={`w-auto h-auto rounded-2xl cursor-pointer px-[15px] py-[8px] text-[14px]   `}
+                      style={{ backgroundColor: `${props?.UIColor}` }}
                       onClick={() => {
                         setNotificationModal(false);
                       }}
@@ -676,7 +640,7 @@ export const MoreAboutTransaction = (props) => {
                     </div>
                   )}
                   <div
-                    className=" cursor-pointer text-[#6bb7ff]"
+                    className="w-auto h-auto rounded-2xl cursor-pointer px-[15px] py-[8px] text-[14px] bg-[#191A2C] ml-[10px] text-[white]"
                     onClick={() => {
                       if (isPaid === true) {
                         setNotificationModal(false);
@@ -686,7 +650,7 @@ export const MoreAboutTransaction = (props) => {
                       // setNotificationModal(true);
                     }}
                   >
-                    Ok
+                    Confirm
                   </div>
                 </div>
               </div>
@@ -710,7 +674,10 @@ export const MoreAboutTransaction = (props) => {
           {/* <LuArrowLeft className="text-[24px] h-[30px] flex justify-start items-center" />{" "} */}
         </div>
         <div className="w-full h-[calc(100svh-50px)] flex flex-col justify-start items-start overflow-y-scroll overflow-x-hidden">
-          <div className="w-full h-auto rounded-2xl bg-[#ebebf5] flex flex-col justify-start items-start p-[20px]">
+          <div
+            className="w-full h-auto rounded-2xl flex flex-col justify-start items-start p-[20px]"
+            style={{ backgroundColor: `${props?.UIColor}` }}
+          >
             <div className="w-full h-auto flex justify-between items-center">
               <div className="w-full h-auto flex flex-col justify-start items-start">
                 <span className="text-[25px] w-[90%] overflow-hidden text-ellipsis line-clamp-1 ">
@@ -807,7 +774,7 @@ export const MoreAboutTransaction = (props) => {
                   <QR
                     className="w-full aspect-square"
                     color="#000"
-                    backgroundColor="#ebebf5"
+                    backgroundColor={`${props?.UIColor}`}
                     rounding={100}
                     errorCorrectionLevel="L"
                   >
@@ -901,7 +868,10 @@ export const MoreAboutTransaction = (props) => {
             </div>
           </div>
           {/* {props?.owner ? ( */}
-          <div className="w-full h-auto rounded-2xl bg-[#ebebf5] flex flex-col justify-start items-start p-[20px] mt-[20px]">
+          <div
+            className="w-full h-auto rounded-2xl flex flex-col justify-start items-start p-[20px] mt-[20px]"
+            style={{ backgroundColor: `${props?.UIColor}` }}
+          >
             <div className="w-full h-auto flex justify-between items-center">
               <div className="w-full h-auto flex flex-col justify-start items-start">
                 <span className="text-[25px] w-[90%] overflow-hidden text-ellipsis line-clamp-1 ">
@@ -985,14 +955,17 @@ export const MoreAboutTransaction = (props) => {
                   </div>
                   {props?.data?.Paid ? (
                     <>
-                      <div className="flex justify-center items-center px-[10px] py-[5px] rounded-xl text-white bg-[#00bb00] ">
+                      <div
+                        className="flex justify-center items-center px-[10px] py-[5px] rounded-xl text-white  "
+                        style={{ backgroundColor: `${props?.UIIndex}` }}
+                      >
                         Paid
                       </div>
                     </>
                   ) : (
                     <>
                       <div
-                        className="flex justify-center items-center px-[10px] py-[5px] rounded-xl bg-[white] cursor-pointer"
+                        className="flex justify-center items-center px-[10px] py-[5px] rounded-xl bg-[#191A2C] text-white cursor-pointer"
                         onClick={() => {
                           setConfirmModal(true);
                         }}
@@ -1159,6 +1132,8 @@ const SplitTransaction = (props) => {
           setShowMore={setShowMore}
           data={props?.data}
           owner={checkOwner(props?.data?.Owner)}
+          UIColor={props?.UIColor}
+          UIIndex={props?.UIIndex}
         />
       ) : (
         <></>
@@ -1167,8 +1142,8 @@ const SplitTransaction = (props) => {
       <div
         key={props?.index}
         className={
-          "independentTran  w-[calc(100%-40px)] min-h-[64px]  my-[3px] rounded-2xl px-[20px] font-[google] font-normal text-[15px] text-white  justify-center items-center  cursor-pointer " +
-          (props?.isLast ? " border-none" : " border-none") +
+          "independentTran  w-[calc(100%-40px)] min-h-[60px] bg-white  font-[google] font-normal text-[15px] text-white  justify-center items-center  cursor-pointer " +
+          (props?.index == 0 ? " border-none" : " border-t border-[#f9f9f9]") +
           (parseFloat(props?.data?.Amount) -
             (
               parseFloat(props?.data?.Amount) /
@@ -1228,7 +1203,7 @@ const SplitTransaction = (props) => {
       >
         <div
           className={
-            "w-[30px] flex justify-start items-center text-[22px] " +
+            "w-[30px] flex justify-center items-center text-[22px] " +
             (props?.data?.Paid === false
               ? " text-[#e61d0f]"
               : " text-[#00bb00]")
@@ -1246,20 +1221,20 @@ const SplitTransaction = (props) => {
                 <>
                   <div
                     className={
-                      "w-[25px] h-[25px] rounded-full flex justify-center items-center" +
+                      "w-[20px] h-[20px] rounded-full flex justify-center items-center" +
                       (props?.selectedTran?.filter((data) => {
                         if (data == props.data) {
                           return data;
                         }
                       }).length > 0
                         ? " bg-[#191A2C] text-white"
-                        : " bg-[white] text-white")
+                        : " bg-[#f5f5f5] text-[#f5f5f5]")
                     }
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
+                      width="14"
+                      height="14"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
@@ -1276,7 +1251,7 @@ const SplitTransaction = (props) => {
                 <>
                   <div
                     className={
-                      "w-[25px] h-[25px] rounded-full flex justify-center items-center bg-[#ffffff] text-[#e61d0f] text-[15px] font-bold"
+                      "w-[20px] h-[20px] rounded-full flex justify-center items-center bg-[#f5f5f5] text-[#e61d0f] text-[15px] font-bold"
                     }
                   >
                     {/* <svg
@@ -1414,15 +1389,29 @@ const SplitTransaction = (props) => {
                       (splitRemaining.length + 1) ===
                   0
                     ? " text-[#000000]"
-                    : " text-[#00bb00]")
+                    : " text-[#000000]")
                 }
               >
-                {/* {formatAmountWithCommas(
-                  (
-                    parseFloat(props?.data?.Amount) -
-                    parseFloat(props?.data?.Amount) / props?.data?.MemberCount
-                  ).toFixed(2)
-                )}{" "} */}
+                <div className="mr-[3px]">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-indian-rupee"
+                  >
+                    <path d="M6 3h12" />
+                    <path d="M6 8h12" />
+                    <path d="m6 13 8.5 8" />
+                    <path d="M6 13h3" />
+                    <path d="M9 13c6.667 0 6.667-10 0-10" />
+                  </svg>
+                </div>
                 {formatAmountWithCommas(
                   parseFloat(props?.data?.Amount) -
                     (
@@ -1431,7 +1420,34 @@ const SplitTransaction = (props) => {
                     ).toFixed(2) *
                       (splitRemaining.length + 1)
                 )}{" "}
-                /-
+                {parseFloat(props?.data?.Amount) -
+                  (
+                    parseFloat(props?.data?.Amount) /
+                    parseInt(props?.data?.MemberCount)
+                  ).toFixed(2) *
+                    (splitRemaining.length + 1) ===
+                  0 || props?.data?.Paid === true ? (
+                  <div className="w-[13px] h-[13px] rounded-full flex justify-center items-center bg-[#00bb00] text-[white] ml-[5px]">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="8"
+                      height="8"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="4"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="lucide lucide-check"
+                    >
+                      <path d="M20 6 9 17l-5-5" />
+                    </svg>
+                  </div>
+                ) : (
+                  <>
+                    <FiArrowDownLeft className="text-[#00bb00] ml-[2px] text-[18px] mr-[-3px]" />
+                  </>
+                )}
               </div>
             </>
           ) : (
@@ -1441,15 +1457,62 @@ const SplitTransaction = (props) => {
                   "text-[16px] w-full flex justify-end items-center whitespace-nowrap" +
                   (props?.data?.Paid === true
                     ? " text-[#000000]"
-                    : " text-[#e61d0f]")
+                    : " text-[#000000]")
                 }
               >
+                <div className="mr-[3px]">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-indian-rupee"
+                  >
+                    <path d="M6 3h12" />
+                    <path d="M6 8h12" />
+                    <path d="m6 13 8.5 8" />
+                    <path d="M6 13h3" />
+                    <path d="M9 13c6.667 0 6.667-10 0-10" />
+                  </svg>
+                </div>
                 {formatAmountWithCommas(
                   (
                     parseFloat(props?.data?.Amount) / props?.data?.MemberCount
                   ).toFixed(2)
                 )}{" "}
-                /-
+                {parseFloat(props?.data?.Amount) -
+                  (
+                    parseFloat(props?.data?.Amount) /
+                    parseInt(props?.data?.MemberCount)
+                  ).toFixed(2) *
+                    (splitRemaining.length + 1) ===
+                  0 || props?.data?.Paid === true ? (
+                  <div className="w-[13px] h-[13px] rounded-full flex justify-center items-center bg-[#00bb00] text-[white] ml-[5px]">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="8"
+                      height="8"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="4"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="lucide lucide-check"
+                    >
+                      <path d="M20 6 9 17l-5-5" />
+                    </svg>
+                  </div>
+                ) : (
+                  <>
+                    <FiArrowUpRight className="text-[#e61d0f] ml-[2px] text-[19px] mr-[-3px]" />
+                  </>
+                )}
               </div>
             </>
           )}
@@ -1468,32 +1531,6 @@ const SplitTransaction = (props) => {
             }
           >
             {formatDate(props?.data?.Date)}{" "}
-            {parseFloat(props?.data?.Amount) -
-              (
-                parseFloat(props?.data?.Amount) /
-                parseInt(props?.data?.MemberCount)
-              ).toFixed(2) *
-                (splitRemaining.length + 1) ===
-              0 || props?.data?.Paid === true ? (
-              <div className="w-[15px] h-[15px] rounded-full flex justify-center items-center bg-[#00bb00] text-[white] ml-[5px]">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="10"
-                  height="10"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="3.7"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="lucide lucide-check"
-                >
-                  <path d="M20 6 9 17l-5-5" />
-                </svg>
-              </div>
-            ) : (
-              <></>
-            )}
           </div>
         </div>
       </div>

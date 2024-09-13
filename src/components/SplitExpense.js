@@ -14,7 +14,7 @@ import "react-multi-date-picker/styles/colors/green.css";
 import "react-multi-date-picker/styles/colors/teal.css";
 import Button from "react-multi-date-picker/components/button";
 import { IoMdCloudUpload } from "react-icons/io";
-import { MdOutlineAddCircleOutline } from "react-icons/md";
+import { MdKeyboardArrowDown, MdOutlineAddCircleOutline } from "react-icons/md";
 import { BsPersonFill } from "react-icons/bs";
 import { auth } from "../firebase";
 import { db } from "../firebase";
@@ -158,6 +158,8 @@ const SplitExpense = () => {
   const [subSection, setSubSection] = useState("");
   const [imageError, setImageError] = useState(false);
   const [addNewTransaction, setAddNewTransaction] = useState(false);
+  const [UIColor, setUIColor] = useState("");
+  const [UIIndex, setUIIndex] = useState("");
 
   useEffect(() => {
     // const user = firebase.auth().currentUser;
@@ -177,6 +179,8 @@ const SplitExpense = () => {
       // setMonth(snapshot?.data()?.Photo);
       setSplitTransaction(snapshot?.data()?.SplitTransaction);
       setNormalTransaction(snapshot?.data()?.NormalTransaction);
+      setUIColor(snapshot?.data()?.Theme);
+      setUIIndex(snapshot?.data()?.SecondaryTheme);
     });
   }
 
@@ -1650,10 +1654,12 @@ const SplitExpense = () => {
         count={amountToGet()?.count}
         willPay={formatAmountWithCommas(getAmountToPay()?.amount)}
         payCount={getAmountToPay()?.count}
+        UIColor={UIColor}
+        UIIndex={UIIndex}
       />
       <div className="h-[calc(100%-140px)] w-full bg-[#ffffff] flex justify-start items-center flex-col  text-white pb-[20px] border-none overflow-y-scroll">
         {/* <div className="w-[calc(100%-40px)] border-[.7px] border-[#eff7ff]"></div> */}
-        <span className="text-[#828282] font-[google] font-normal text-[14px] w-full mt-[20px] flex justify-between h-[30px] items-start px-[20px] ">
+        {/* <span className="text-[#828282] font-[google] font-normal text-[14px] w-full mt-[20px] flex justify-between h-[30px] items-start px-[20px] ">
           <div className="flex justify-start items-center">
             Split Transaction History,{" "}
             <span className=" ml-[4px]">
@@ -1667,6 +1673,47 @@ const SplitExpense = () => {
             }}
           >
             <FaFilter />
+          </div>
+        </span> */}
+        <span className="text-[#00000057] font-[google]  font-normal text-[14px] w-full  flex justify-between h-[50px] items-center px-[20px] ">
+          <div className="flex justify-start items-center">
+            {/* Transaction History,{" "} */}
+            <span
+              className={`ml-[0px] text-[14px] text-[black] cursor-pointer flex justify-start items-center px-[11px]  h-full rounded-xl  py-[7px] pl-[11px] bg-[${UIColor}]`}
+              style={{ backgroundColor: `${UIColor}` }}
+              onClick={() => {
+                // setChooseMonth(true);
+              }}
+            >
+              Split History
+              {/* <MdKeyboardArrowDown className="text-[21px]" /> */}
+            </span>
+          </div>
+
+          <div
+            className="w-[30px] h-full flex justify-end items-center text-black text-[14px] -rotate-90"
+            onClick={() => {
+              // setShowFilterModal(!showFilterModal);
+            }}
+          >
+            {/* <FaFilter /> */}
+            <svg
+              className=""
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-bar-chart-2"
+            >
+              <line x1="18" x2="18" y1="20" y2="10" />
+              <line x1="12" x2="12" y1="20" y2="4" />
+              <line x1="6" x2="6" y1="20" y2="14" />
+            </svg>
           </div>
         </span>
 
@@ -1682,6 +1729,8 @@ const SplitExpense = () => {
                   edit={edit}
                   setSelectedTran={setSelectedTran}
                   selectedTran={selectedTran}
+                  UIColor={UIColor}
+                  UIIndex={UIIndex}
                 />
               </>
             );

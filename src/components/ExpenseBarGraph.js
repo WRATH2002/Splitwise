@@ -663,7 +663,10 @@ const ExpenseBarGraph = (props) => {
       {/* <GraphInfo total={getTotalSavings()} count={monthCount()} /> */}
 
       <div className="w-full h-[200px] flex justify-between items-center px-[20px] mt-[20px] font-[google] font-normal">
-        <div className="w-[90px] h-full rounded-2xl bg-[#F5F6FA] flex flex-col justify-start items-start p-[20px]">
+        <div
+          className={`w-[90px] h-full rounded-2xl bg-[${props?.UIColor}] flex flex-col justify-start items-start p-[20px]`}
+          style={{ backgroundColor: `${props?.UIColor}` }}
+        >
           <l-squircle
             size="50"
             stroke="3"
@@ -720,7 +723,10 @@ const ExpenseBarGraph = (props) => {
         </div>
 
         <div className="h-full w-[calc(100%-100px)] ml-[10px] flex flex-col justify-start items-start">
-          <div className="w-full h-[calc((100%-10px)/2)] bg-[#F5F6FA] rounded-2xl p-[20px] flex flex-col justify-start items-start">
+          <div
+            className={`w-full h-[calc((100%-10px)/2)] bg-[${props?.UIColor}] rounded-2xl p-[20px] flex flex-col justify-start items-start`}
+            style={{ backgroundColor: `${props?.UIColor}` }}
+          >
             {/* <span className="w-[50px] h-[50px] rounded-full bg-[#191a2c84] flex justify-center items-center text-white"> */}
             {/* <span className="w-[45px] h-[45px] rounded-full bg-[#191A2C] flex justify-center items-center text-white">
               <svg
@@ -818,7 +824,10 @@ const ExpenseBarGraph = (props) => {
               </span>
             </span>
           </div>
-          <div className="w-full h-[calc((100%-10px)/2)] mt-[10px] bg-[#F5F6FA] rounded-2xl flex flex-col justify-start items-start p-[20px]">
+          <div
+            className={`w-full h-[calc((100%-10px)/2)] mt-[10px] bg-[${props?.UIColor}] rounded-2xl flex flex-col justify-start items-start p-[20px]`}
+            style={{ backgroundColor: `${props?.UIColor}` }}
+          >
             {/* <span className="w-[50px] h-[50px] rounded-full bg-[#191a2c84] flex justify-center items-center text-white"> */}
             {/* <span className="w-[45px] h-[45px] rounded-full bg-[#191A2C] flex justify-center items-center text-white">
               <svg
@@ -925,7 +934,10 @@ const ExpenseBarGraph = (props) => {
           </div>
         </div>
       </div>
-      <div className="w-[calc(100%-40px)] h-[207px] rounded-2xl bg-[#F5F6FA] ml-[20px] mr-[20px] mt-[10px] p-[20px] font-[google] font-normal">
+      <div
+        className={`w-[calc(100%-40px)] h-[207px] rounded-2xl bg-[${props?.UIColor}] ml-[20px] mr-[20px] mt-[10px] p-[20px] font-[google] font-normal`}
+        style={{ backgroundColor: `${props?.UIColor}` }}
+      >
         {drop ? (
           <>
             <div className="fixed left-[40px] mt-[40px] bg-[#191A2C] text-white text-[12.5px] min-w-[100px] h-[129px] overflow-y-scroll rounded-xl z-40 w-auto p-[12px] py-[9px] flex flex-col justify-start items-start">
@@ -1094,7 +1106,10 @@ const ExpenseBarGraph = (props) => {
       <div className="w-full p-[20px] py-[10px] pb-[20px] h-auto flex flex-col justify-start items-start font-[google] font-normal">
         <div className="w-full h-[190px] flex justify-between items-start">
           <div className="w-[calc((100%-10px)/2)] h-full flex flex-col justify-start items-start">
-            <div className="w-full h-[90px] rounded-2xl bg-[#F5F6FA] flex flex-col justify-center items-start p-[20px]">
+            <div
+              className={`w-full h-[90px] rounded-2xl  flex flex-col bg-[${props?.UIColor}] justify-center items-start p-[20px]`}
+              style={{ backgroundColor: `${props?.UIColor}` }}
+            >
               <span className="w-full text-[14px] text-[#00000085] ">
                 Normal Trns. (x{normalC})
               </span>
@@ -1121,7 +1136,10 @@ const ExpenseBarGraph = (props) => {
                 {formatAmountWithCommas(normalT)}
               </span>
             </div>
-            <div className="w-full h-[90px] rounded-2xl bg-[#F5F6FA] mt-[10px] flex flex-col justify-center items-start p-[20px]">
+            <div
+              className={`w-full h-[90px] rounded-2xl  mt-[10px] bg-[${props?.UIColor}] flex flex-col justify-center items-start p-[20px]`}
+              style={{ backgroundColor: `${props?.UIColor}` }}
+            >
               <span className="w-full text-[14px] text-[#00000085] ">
                 Split Trns. (x{splitC})
               </span>
@@ -1149,8 +1167,14 @@ const ExpenseBarGraph = (props) => {
               </span>
             </div>
           </div>
-          <div className="w-[calc((100%-10px)/2)] rounded-2xl bg-[#F5F6FA] h-[190px] p-[20px]">
-            <div className="w-full h-full flex justify-center items-center bg-[#F5F6FA] ">
+          <div
+            className={`w-[calc((100%-10px)/2)] rounded-2xl  h-[190px] bg-[${props?.UIColor}] p-[20px]`}
+            style={{ backgroundColor: `${props?.UIColor}` }}
+          >
+            <div
+              className={`w-full h-full flex justify-center items-center bg-[${props?.UIColor}] `}
+              style={{ backgroundColor: `${props?.UIColor}` }}
+            >
               {categoryData.length == 0 ? (
                 <span className="text-[20px]">No Data</span>
               ) : (
@@ -1180,7 +1204,10 @@ const ExpenseBarGraph = (props) => {
           </div>
         </div>
         <div className="w-full h-[160px] mt-[10px] flex justify-start items-start">
-          <div className="w-[calc(100%-120px)] h-full bg-[#F5F6FA] rounded-2xl p-[20px] flex justify-center items-center">
+          <div
+            className={`w-[calc(100%-120px)] h-full bg-[${props?.UIColor}] rounded-2xl p-[20px] flex justify-center items-center`}
+            style={{ backgroundColor: `${props?.UIColor}` }}
+          >
             <div className="w-auto h-[20px] flex justify-center items-center -rotate-90 ml-[-13px]">
               {monthNames[parseInt(new Date().getMonth())]}
             </div>
@@ -1222,7 +1249,10 @@ const ExpenseBarGraph = (props) => {
             {/* <div className="w-[18px] h-[18px] rounded-md bg-[white] m-[3px]"></div>
             <div className="w-[18px] h-[18px] rounded-md bg-[white] m-[3px]"></div> */}
           </div>
-          <div className="h-full bg-[#F5F6FA] rounded-2xl w-[110px] ml-[10px] p-[20px]">
+          <div
+            className={`h-full bg-[${props?.UIColor}] rounded-2xl w-[110px] ml-[10px] p-[20px]`}
+            style={{ backgroundColor: `${props?.UIColor}` }}
+          >
             <div className=" h-full rounded-2xl flex justify-start items-center bg-[#ffffff00] w-full">
               <div className="w-full h-full flex justify-center items-center flex-col">
                 <div className="w-full h-full flex flex-col justify-center items-center">

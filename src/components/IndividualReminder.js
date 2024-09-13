@@ -162,103 +162,61 @@ const IndividualReminder = (props) => {
       {aprroveModal ? (
         <>
           <div
-            className="w-full h-[100svh]  flex flex-col justify-end items-center backdrop-blur-sm bg-[#68777b7a] p-[20px] fixed top-0 left-0  z-40"
+            className="w-full h-[100svh]  flex flex-col justify-end items-center bg-[#70708628] backdrop-blur-md p-[20px] fixed top-0 left-0  z-40"
             style={{ zIndex: 70 }}
-            // onClick={() => {
-            //   setNotificationModal(false);
-            // }}
           >
             <OutsideClickHandler
               onOutsideClick={() => {
                 setApproveModal(false);
               }}
             >
-              <div className="w-full flex flex-col justify-end items-start h-[40px]">
-                <div className="w-full h-auto flex justify-start items-end z-30">
-                  <div className=" w-auto text-[22px] whitespace-nowrap font-[google] font-normal   h-[40px] bg-[#ffffff] flex  justify-start items-end rounded-t-[22px] px-[20px]">
-                    <span className="mt-[10px]">Dismiss Reminder</span>
-                  </div>
-                  <div className="h-[20px] aspect-square inRound"></div>
-                  <div
-                    className="h-[35px]  aspect-square rounded-full cursor-pointer bg-[#e4f2ff] ml-[-15px] mb-[5px] flex justify-center items-center text-[20px] "
-                    onClick={() => {
-                      setApproveModal(false);
-                    }}
-                  >
-                    <HiOutlinePlus className="rotate-45" />
-                  </div>
-                </div>
-              </div>
               <div
-                className="w-full z-50 h-auto bg-[#ffffff] drop-shadow-sm   text-black  rounded-b-3xl rounded-tr-3xl font-[google] font-normal text-[14px] flex flex-col justify-center items-start p-[20px]"
+                className="w-full z-50 h-auto bg-[#ffffff] drop-shadow-sm   text-black  rounded-3xl font-[google] font-normal text-[14px] flex flex-col justify-center items-start p-[20px]"
                 style={{ zIndex: 100 }}
-                onClick={() => {
-                  // setNotificationModal(true);
-                }}
               >
-                {/* <span className="w-full text-[22px] text-black font-[google] font-normal flex justify-start items-center ">
-                  Confirm{" "}
-                  <span className="text-[#000000] ml-[5px]">Transaction</span>
-                </span> */}
+                <span className="text-[22px]  mb-[10px]">Dismiss Reminder</span>
 
-                <span className="w-full text-[14px] text-[#434343b5] font-[google] font-normal flex justify-center items-start whitespace-pre-wrap  ">
-                  Have you done this transaction already. If you dismiss this
-                  reminder, you will not be notified later. Do you really want
-                  to dismiss this reminder ?
+                <span className="w-full text-[14.5px] text-[#000000a9] mt-[5px] font-[google] font-normal flex justify-center items-start whitespace-pre-wrap  ">
+                  Have you already completed this transaction? If you dismiss
+                  this reminder, you will not receive any further notifications.
+                  Are you sure you want to proceed with dismissing it?
                 </span>
-
-                <span className="w-full text-[14px] text-[#000000] font-[google] font-normal flex justify-start items-center mt-[10px]">
-                  {/* <span className="text-[22px] mr-[6px]">◍</span>{" "} */}
-                  <span className="mr-[5px] text-[#000000]">Label :</span>{" "}
-                  {props?.data?.Lable}
-                </span>
-                <span className="w-full text-[14px] text-[#000000] font-[google] mt-[0px] font-normal flex justify-start items-center ">
-                  {/* <span className="text-[22px] mr-[6px]">◍</span>{" "} */}
-                  <span className="mr-[5px] text-[#000000]">Amount :</span>{" "}
-                  <BiRupee /> {formatAmountWithCommas(props?.data?.Amount)}
-                </span>
-
                 <span
-                  className="w-full text-[14px] text-[#000000] font-[google] font-normal flex justify-start items-center whitespace-pre-wrap   cursor-pointer mt-[10px]"
+                  className="w-full text-[14.5px] text-[#000000a9] font-[google] font-normal flex justify-start items-center whitespace-pre-wrap   cursor-pointer mt-[10px]"
                   onClick={() => {
                     setInclude(!include);
-                    // setNewIncome("");
-                    // setError("");
                   }}
                 >
                   <div
-                    className={
-                      "w-[18px] h-[18px] rounded-md border-[1.5px] border-[#6bb7ff] mr-[6px]  flex justify-center items-center" +
-                      (include ? " bg-[#6bb7ff]" : " bg-transparent")
-                    }
-                    // onClick={() => {
-                    //   setInclude(!include);
-                    //   // setNewIncome("");
-                    //   // setError("");
-                    // }}
+                    className="w-[18px] h-[18px] rounded-md  mr-[6px]  flex justify-center items-center"
+                    style={{
+                      border: `1.5px solid ${props?.UIIndex}`,
+                      backgroundColor: include ? `${props?.UIIndex}` : " white",
+                    }}
                   >
-                    {" "}
-                    <HiCheck className="text-[#fff5ee]" />
+                    <HiCheck
+                      className={
+                        "" + (include ? " text-[#ffffff]" : " text-[#ffffff]")
+                      }
+                    />
                   </div>
                   <span>Include this transaction in Budget</span>
                 </span>
 
-                <div className="w-full flex justify-end items-end font-[google] font-normal text-[15px] text-black h-[20px] mt-[20px]">
+                <div className="w-full h-auto mt-[20px] flex justify-end items-end">
                   <div
-                    className="h-full mr-[25px] flex justify-center items-center cursor-pointer  "
+                    className={`w-auto h-auto rounded-2xl cursor-pointer px-[15px] py-[8px] text-[14px] bg-[${props?.UIColor}]`}
                     onClick={() => {
                       setApproveModal(false);
                       setInclude(false);
-                      // setNewIncome("");
-                      // setError("");
                     }}
+                    style={{ backgroundColor: `${props?.UIColor} ` }}
                   >
-                    Cancel
+                    Close
                   </div>
                   <div
-                    className="h-full  flex justify-center items-center text-[#3aa0ff] cursor-pointer "
+                    className="w-auto h-auto rounded-2xl cursor-pointer px-[15px] py-[8px] text-[14px] bg-[#191A2C] ml-[10px] text-[white]"
                     onClick={() => {
-                      // updateIncome();
                       deleteReminder();
                       setApproveModal(false);
                     }}
@@ -276,13 +234,13 @@ const IndividualReminder = (props) => {
 
       <div
         className={
-          "w-full min-h-[90px] mb-[5px]  rounded-2xl flex font-[google] justify-center items-center font-normal " +
-          (getRemainingTime(props?.data?.Date).includes("due")
-            ? " bg-[#181F32]"
-            : " bg-[#181F32]")
+          "w-full min-h-[90px] mb-[5px]  rounded-2xl flex font-[google] justify-center items-center font-normal "
         }
       >
-        <div className="w-[60px] h-full flex flex-col justify-center items-center">
+        <div
+          className="w-[60px] h-full flex flex-col justify-center items-center rounded-l-2xl"
+          style={{ backgroundColor: `#191A2C` }}
+        >
           <div className="text-[12px] text-[#ffffff]">
             {monthName(props?.data?.Date)}
           </div>
@@ -294,9 +252,12 @@ const IndividualReminder = (props) => {
           className={
             "w-[calc(100%-160px)] h-full flex flex-col justify-center items-start px-[10px] " +
             (getRemainingTime(props?.data?.Date).includes("due")
-              ? " bg-[#F4F5F7] text-[#4a4a4a]"
-              : " bg-[#F4F5F7] text-[#6a6a6a]")
+              ? " text-[#4a4a4a]"
+              : " text-[#6a6a6a]")
           }
+          style={{
+            backgroundColor: `${props?.UIColor}`,
+          }}
         >
           <div className="text-[14px] leading-[19px]  line-clamp-2 w-full overflow-hidden text-black text-ellipsis">
             {props?.data?.Lable}
@@ -310,20 +271,21 @@ const IndividualReminder = (props) => {
           className={
             "w-[100px] h-full flex flex-col justify-center items-end rounded-r-2xl pr-[15px]" +
             (getRemainingTime(props?.data?.Date).includes("due")
-              ? " bg-[#F4F5F7] text-[#e61d0f]"
-              : " bg-[#F4F5F7] text-[#000000]")
+              ? " text-[#e61d0f]"
+              : " text-[#000000]")
           }
+          style={{
+            backgroundColor: `${props?.UIColor}`,
+          }}
         >
           <div className="text-[13px] ">
             {getRemainingTime(props?.data?.Date)}
           </div>
           <div
             className={
-              "text-[#ffffff] w-[30px] h-[30px] mt-[5px] rounded-full text-[18px] flex justify-center items-center cursor-pointer" +
-              (getRemainingTime(props?.data?.Date).includes("due")
-                ? " bg-[#181F32] "
-                : " bg-[#181F32] ")
+              "text-[#ffffff] w-[30px] h-[30px] mt-[5px] rounded-full text-[18px] flex justify-center items-center cursor-pointer"
             }
+            style={{ backgroundColor: `#191A2C` }}
             onClick={() => {
               setApproveModal(true);
             }}

@@ -22,7 +22,7 @@ import { arrayUnion, onSnapshot } from "firebase/firestore";
 import { TbLogout } from "react-icons/tb";
 // import { BadgeIndianRupee } from "lucide-react";
 import { mirage } from "ldrs";
-import UpdateModal, { LogoutModal, SavingsModal } from "./UpdateModal";
+import UpdateModal, { LogoutModal, SavingsModal, SetPIN } from "./UpdateModal";
 import { ring } from "ldrs";
 
 ring.register();
@@ -92,6 +92,7 @@ const Settings = (props) => {
   const [btn2, setBtn2] = useState(false);
   const [btn3, setBtn3] = useState(false);
   const [btn4, setBtn4] = useState(false);
+  const [btn5, setBtn5] = useState(false);
   const [savings, setSavings] = useState("");
 
   const [income, setIncome] = useState("");
@@ -113,7 +114,19 @@ const Settings = (props) => {
   const [savingsLoading, setSavingsLoading] = useState(false);
   const [savingsModal, setSavingsModal] = useState(false);
   const [logoutModal, setLogoutModal] = useState(false);
+  const [dpChangeModal, setDpChangeModal] = useState(false);
+  const [image, setImage] = useState();
+  const [themeModal, setThemeModal] = useState(false);
+  const [UIColor, setUIColor] = useState("");
+  const [UIIndex, setUIIndex] = useState("");
   const [startDate, setStartDate] = useState("");
+
+  const [themeColorIndex, setThemeColorIndex] = useState("");
+  const [indexColor, setIndexColor] = useState(0);
+
+  const [PINModal, setPINModal] = useState(false);
+  const [PINRequired, setPINRequired] = useState(false);
+  const [PINCode, setPINCode] = useState(false);
 
   const userSignOut = () => {
     signOut(auth)
@@ -149,6 +162,22 @@ const Settings = (props) => {
       setStartDate(snapshot?.data()?.StartDate);
     });
   }
+
+  function fetchTheme() {
+    const user = firebase.auth().currentUser;
+    const userRef = db.collection("Expense").doc(user?.uid);
+    onSnapshot(userRef, (snapshot) => {
+      setUIColor(snapshot?.data()?.Theme);
+      setUIIndex(snapshot?.data()?.SecondaryTheme);
+      setThemeColorIndex(snapshot?.data()?.Theme);
+      setPINRequired(snapshot?.data()?.PINRequired);
+      setPINCode(snapshot?.data()?.PIN);
+    });
+  }
+
+  useEffect(() => {
+    fetchTheme();
+  }, []);
 
   function formatAmountWithCommas(amountStr) {
     // Convert the string to a number
@@ -624,6 +653,44 @@ const Settings = (props) => {
     return totalSavings;
   }
 
+  const themeColor = [
+    "#f6f6f6",
+    "#fef5ff",
+    "#ebebf5",
+    "#f6f6ff",
+    "#eefffe",
+    "#efffee",
+    "#fff9f0",
+  ];
+  const colorBorder = [
+    "#ebebf5",
+    "#818181",
+    "#d589dd",
+    "#9595e6",
+    "#6ec0bb",
+    "#b7dab5",
+    "#d9a558",
+  ];
+
+  const themeColorSecondary = [
+    "#484848",
+    "#a767ae",
+    "#4141a2",
+    "#6666a3",
+    "#407976",
+    "#4d8449",
+    "#a5742b",
+  ];
+
+  function updateThemeToFirebase() {
+    const user = firebase.auth().currentUser;
+
+    const userRef = db.collection("Expense").doc(user?.uid).update({
+      Theme: themeColorIndex,
+      SecondaryTheme: indexColor,
+    });
+  }
+
   return (
     <>
       {pop ? (
@@ -678,6 +745,101 @@ const Settings = (props) => {
         <></>
       )}
 
+      {themeModal ? (
+        <>
+          <div className="w-full h-[100svh] top-0 left-0 fixed bg-[#70708628] backdrop-blur-md flex flex-col justify-end items-center p-[20px] z-50 font-[google] font-normal">
+            <div className="w-full h-auto flex flex-col justify-center items-start p-[30px] py-[25px]  bg-[#ffffff] rounded-3xl drop-shadow-sm ">
+              <span className="text-[22px] ">Choose Theme</span>
+              <span className="text-[14.5px] mt-[5px] text-[#000000a9]">
+                This theme will be applied to the whole UI.
+              </span>
+              <div className="w-auto flex justify-start items-center mt-[10px]  rounded-xl">
+                {themeColor?.map((data, index) => {
+                  return (
+                    <>
+                      <div
+                        className={
+                          "min-w-[40px] aspect-square mr-[3px] border-[2px]  rounded-full p-[3px] flex justify-center items-center" +
+                          (themeColorIndex == data
+                            ? " border-transparent"
+                            : " border-transparent")
+                        }
+                        key={index}
+                        onClick={() => {
+                          setThemeColorIndex(data);
+                          setIndexColor(themeColorSecondary[index]);
+                        }}
+                      >
+                        <div
+                          className={`w-full h-full bg-[${data}] rounded-full border-[3px] flex justify-center items-center p-[3px]  `}
+                          style={{
+                            backgroundColor: `${data}`,
+                            border: `2px solid ${themeColorSecondary[index]}`,
+                          }}
+                        >
+                          {themeColorIndex == data ? (
+                            <div
+                              className="w-full h-full rounded-full   "
+                              style={{
+                                backgroundColor: `${themeColorSecondary[index]}`,
+                              }}
+                            ></div>
+                          ) : (
+                            <></>
+                          )}
+                        </div>
+                      </div>
+                    </>
+                  );
+                })}
+              </div>
+
+              <div className="my-[20px] w-full h-[150px]  flex flex-col justify-center items-center">
+                <div className=" w-[170px] h-full border-[1.5px] border-[#efefef] flex flex-col justify-start items-start rounded-t-3xl border-b-[0px] p-[20px] py-[9px] pb-[0px]">
+                  <div className="w-full h-[20px] flex justify-center items-center mb-[10px] ">
+                    <div className="w-[50px] h-full rounded-full bg-[#efefef] "></div>
+                  </div>
+                  <div
+                    className={`w-[60px] h-[20px] mt-[10px] rounded-md bg-[${themeColorIndex}]`}
+                    style={{ backgroundColor: `${themeColorIndex} ` }}
+                  ></div>
+                  <div
+                    className={`w-full mt-[10px] h-[70px] rounded-md bg-[${themeColorIndex}]`}
+                    style={{ backgroundColor: `${themeColorIndex}` }}
+                  ></div>
+                </div>
+              </div>
+              <div className="w-full h-[40px] mb-[20px] mt-[-60px] z-10 bg-gradient-to-t from-[#ffffff] to-transparent  flex flex-col justify-center items-center"></div>
+
+              <div className="w-full h-auto mt-[-10px] flex justify-end items-end">
+                <div
+                  className={`w-auto h-auto rounded-2xl cursor-pointer px-[15px] py-[8px] text-[14px] bg-[${themeColorIndex}]`}
+                  style={{ backgroundColor: `${themeColorIndex} ` }}
+                  onClick={() => {
+                    setThemeModal(false);
+                    setThemeColorIndex(UIColor);
+                    setIndexColor(UIIndex);
+                  }}
+                >
+                  Cancel
+                </div>
+                <div
+                  className="w-auto h-auto rounded-2xl cursor-pointer px-[15px] py-[8px] text-[14px] bg-[#191A2C] ml-[10px] text-[white]"
+                  onClick={() => {
+                    updateThemeToFirebase();
+                    setThemeModal(false);
+                  }}
+                >
+                  Done
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      ) : (
+        <></>
+      )}
+
       {permission ? (
         <>
           <div
@@ -687,18 +849,7 @@ const Settings = (props) => {
               // setChooseMonth(false);
             }}
           >
-            {/* <OutsideClickHandler
-              onOutsideClick={() => {
-                setShowFilterModal(false);
-              }}
-            > */}
             <>
-              {/* <div
-                className="w-full h-[calc(100svh-155px)]"
-                onClick={() => {
-                  setPermission(false);
-                }}
-              ></div> */}
               <div
                 className="w-full aspect-square bg-[#fff5ee] fixed  text-black  rounded-[20px] font-[google] font-normal text-[14px] flex-col flex  justify-start items-center h-[100svh] overflow-y-scroll pt-[20px]"
                 style={{ zIndex: 100 }}
@@ -865,7 +1016,10 @@ const Settings = (props) => {
                   {monthDrop ? (
                     <>
                       <div className="mt-[10px] h-0 w-full flex justify-center items-end overflow-visible mb-[5px] text-[16px]">
-                        <div className="w-full h-[90px] bg-[#F4F5F7] rounded-xl p-[15px] overflow-y-scroll py-[12px]">
+                        <div
+                          className={`w-full h-[90px] bg-[${UIColor}] rounded-xl p-[15px] overflow-y-scroll py-[12px]  `}
+                          style={{ backgroundColor: `${UIColor}` }}
+                        >
                           {monthNames?.map((data, index) => {
                             return (
                               <div
@@ -889,7 +1043,8 @@ const Settings = (props) => {
                   )}
                   <div className="w-full h-auto flex justify-start items-center mb-[10px] ">
                     <div
-                      className="w-full h-[45px] rounded-xl bg-[#F4F5F7] px-[15px] flex justify-start items-center text-[16px]"
+                      className={`w-full h-[45px] rounded-xl bg-[${UIColor}] px-[15px] flex justify-start items-center text-[16px]  `}
+                      style={{ backgroundColor: `${UIColor}` }}
                       onClick={() => {
                         setMonthDrop(!monthDrop);
                       }}
@@ -941,7 +1096,8 @@ const Settings = (props) => {
                   </div>
                   <div className="w-full h-auto mt-[10px] flex justify-end items-end">
                     <div
-                      className="w-auto h-auto rounded-2xl cursor-pointer px-[15px] py-[8px] text-[14px] bg-[#F4F5F7]"
+                      className={`w-auto h-auto rounded-2xl cursor-pointer px-[15px] py-[8px] text-[14px] bg-[${UIColor}]  `}
+                      style={{ backgroundColor: `${UIColor}` }}
                       onClick={() => {
                         setReportModal(false);
                         setMonth(0);
@@ -985,140 +1141,150 @@ const Settings = (props) => {
       ) : (
         <></>
       )}
+
+      {dpChangeModal ? (
+        <>
+          <div className="w-full h-[100svh] top-0 left-0 fixed bg-[#70708628] backdrop-blur-md flex flex-col justify-end items-center p-[20px] z-50 font-[google] font-normal">
+            {/* <div className="w-full h-[190px]  bi flex justify-center mb-[-190px] rounded-3xl items-center p-[2px] blur-sm">
+              <div className="w-full h-full bg-white rounded-[22px] "></div>
+            </div> */}
+
+            <div className="w-full min-h-[190px] flex flex-col justify-center items-start p-[30px] py-[25px]  bg-[#ffffff] rounded-3xl drop-shadow-sm ">
+              <span className="text-[22px] ">Change Profile Photo</span>
+              <div className="w-full h-auto mt-[10px] flex justify-between items-center mb-[10px]">
+                <div
+                  className={`w-[80px] h-[80px] rounded-full bg-[${UIColor}] flex justify-center items-center`}
+                  style={{ backgroundColor: `${UIColor}` }}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="60"
+                    height="60"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#000"
+                    stroke-width="1"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-user"
+                  >
+                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                  </svg>
+                </div>
+                <div
+                  className={`w-[calc(100%-95px)] h-[80px] rounded-3xl bg-[${UIColor}] ml-[15px] flex justify-center items-center
+                `}
+                  style={{ backgroundColor: `${UIColor}` }}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="21"
+                    height="21"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-image-up"
+                  >
+                    <path d="M10.3 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10l-3.1-3.1a2 2 0 0 0-2.814.014L6 21" />
+                    <path d="m14 19.5 3-3 3 3" />
+                    <path d="M17 22v-5.5" />
+                    <circle cx="9" cy="9" r="2" />
+                  </svg>{" "}
+                  <span className="ml-[10px]">Upload Image</span>
+                </div>
+              </div>
+
+              <div className="w-full h-auto mt-[10px] flex justify-end items-end">
+                <div
+                  className="w-auto h-auto rounded-2xl cursor-pointer px-[15px] py-[8px] text-[14px] bg-[#191A2C] ml-[10px] text-[white]"
+                  onClick={() => {
+                    // setErrorModal(false);
+                    setDpChangeModal(false);
+                  }}
+                >
+                  Cancel
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      ) : (
+        <></>
+      )}
+
       <UpdateModal
         modal={modal}
         setModal={setModal}
         topic={topic}
         setTopic={setTopic}
         income={income}
+        UIColor={UIColor}
+        PINRequired={PINRequired}
+        PINCode={PINCode}
+        UIIndex={UIIndex}
       />
       <SavingsModal
         transactionHistory={transactionHistory}
         data={monthWiseSavings()}
         savingsModal={savingsModal}
         setSavingsModal={setSavingsModal}
+        UIColor={UIColor}
       />
       <LogoutModal logoutModal={logoutModal} setLogoutModal={setLogoutModal} />
+      {btn5 ? (
+        <SetPIN
+          // logoutModal={logoutModal}
+          // setLogoutModal={setLogoutModal}
+          PINRequired={PINRequired}
+          PINCode={PINCode}
+          UIIndex={UIIndex}
+          setBtn5={setBtn5}
+          UIColor={UIColor}
+        />
+      ) : (
+        <></>
+      )}
 
-      {/* <div className="w-full h-[100svh] top-0 left-0 fixed bg-[#70708628] backdrop-blur-md flex justify-center items-center p-[20px] z-50 font-[google] font-normal">
-        <div className="w-full flex flex-col justify-center items-start p-[30px] bg-[white] rounded-3xl drop-shadow-sm">
-          <div className="text-[22px]">Update Budget</div>
-          <div className="text-[14px] text-[#00000057]">
-            Your budget will be updated with the new amount, and transactions
-            will be processed accordingly.
-          </div>
-          <div className="w-[35px] h-[45px] flex justify-center items-center mb-[-45px] mt-[20px]">
+      <div className="w-full h-full bg-[#ffffff]  text-black font-[google] font-normal flex flex-col justify-start items-start ">
+        <div className="w-full h-[140px]  flex flex-col bg-[#ffffff] p-[20px] pb-[0px] justify-center items-center">
+          <div
+            className={`w-[65px] h-[65px] rounded-full bg-[${UIColor}] flex justify-center items-center  `}
+            style={{ backgroundColor: `${UIColor}` }}
+            onClick={() => {
+              // setErrorModal(false);
+              setDpChangeModal(true);
+            }}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
+              width="40"
+              height="40"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="currentColor"
-              stroke-width="2"
+              stroke="#000"
+              stroke-width="1.7"
               stroke-linecap="round"
               stroke-linejoin="round"
-              class="lucide lucide-indian-rupee"
+              class="lucide lucide-user"
             >
-              <path d="M6 3h12" />
-              <path d="M6 8h12" />
-              <path d="m6 13 8.5 8" />
-              <path d="M6 13h3" />
-              <path d="M9 13c6.667 0 6.667-10 0-10" />
+              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
             </svg>
           </div>
-          <input
-            className="outline-none rounded-xl w-full h-[45px] bg-transparent border pl-[35px] px-[10px] text-black font-[google] font-normal  border-[#beb0f4] text-[16px]"
-            placeholder="Enter New Budget"
-            value={price}
-            onChange={(e) => {
-              console.log(isNumeric(e.target.value));
-              if (isNumeric(e.target.value) === true) {
-                setPrice(e.target.value);
-              }
-            }}
-          ></input>
-          <div className="w-full flex mt-[25px] justify-center items-end font-[google] font-normal text-[16px] text-black ">
-            <div
-              className=" mr-[15px] px-[15px] py-[10px] rounded-3xl bg-[#efefef] text-[black] flex justify-center items-center cursor-pointer  "
-              onClick={() => {
-                // setAddNewTransaction(false);
-                // setLabel("");
-                // setPrice("");
-                // setCategory("");
-                // setMode("");
-                // setBill("");
-                // setSubSection("");
-              }}
-            >
-              Cancel
-            </div>
-            {price?.length != 0 ? (
-              <>
-                <div
-                  className=" flex justify-center  px-[15px] py-[10px] rounded-3xl bg-[#beb0f4] text-[black] items-center cursor-pointer "
-                  onClick={() => {
-                    // setSubSection("");
-                    // addToFirebase();
-                    // setAddNewTransaction(false);
-                  }}
-                >
-                  Update
-                </div>
-              </>
-            ) : (
-              <>
-                <div className=" flex justify-center  px-[15px] py-[10px] rounded-3xl bg-[#e8e3fd] items-center text-[#0000006c]  ">
-                  Update
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-      </div> */}
-      <div className="w-full h-full bg-[#ffffff]  text-black font-[google] font-normal flex flex-col justify-start items-start ">
-        <div className="w-full h-[140px]  flex flex-col bg-[#191A2C] p-[20px] justify-center items-center">
-          {/* <div className="w-[90px] aspect-square rounded-full object-cover bg-[#F5F6FA] text-black flex justify-center items-center text-[37px]">
-            {name.charAt(0)?.toUpperCase()}
-            {name.split(" ")[1]?.charAt(0)?.toUpperCase()}
-          </div> */}
-          {/* <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="40"
-            height="40"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#fff"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="lucide lucide-bolt"
-          >
-            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
-            <circle cx="12" cy="12" r="4" />
-          </svg> */}
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="40"
-            height="40"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#fff"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="lucide lucide-user"
-          >
-            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-            <circle cx="12" cy="7" r="4" />
-          </svg>
-          <div className="text-[25px] mt-[10px] text-white ">{name}</div>
-          <div className="text-[17px] text-[#a7a7a7] mt-[-4px]">{email}</div>
+          <div className="text-[25px] mt-[7px] text-[black] ">{name}</div>
+          {/* <div className="text-[17px] text-[#565656] mt-[-4px]">{email}</div> */}
         </div>
         {/* <div className="w-full border-[.7px] border-[#f2f2f7] my-[20px]"></div> */}
         <div className="w-full h-[calc(100%-140px)] flex flex-col justify-start items-start overflow-y-scroll px-[20px]">
           <span className="mt-[15px] ">General</span>
-          <div className="w-full flex flex-col justify-start items-start px-[20px] bg-[#F5F6FA] py-[10px]  p-[20px] rounded-2xl mt-[5px]">
+          <div
+            className={`w-full flex flex-col justify-start items-start px-[20px] bg-[${UIColor}] py-[10px]  p-[20px] rounded-2xl mt-[5px]`}
+            style={{ backgroundColor: `${UIColor}` }}
+          >
             <div
               className="w-full h-[40px] flex justify-between items-center"
               onClick={() => {
@@ -1258,9 +1424,59 @@ const Settings = (props) => {
                 </svg>
               </div>
             </div>
+            <div
+              className="w-full h-[40px] flex justify-between items-center"
+              onClick={() => {
+                setThemeModal(true);
+              }}
+            >
+              {" "}
+              <div className="flex justify-start items-center">
+                <div className="w-[24px] h-full flex justify-start items-center mr-[9px]">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="21"
+                    height="21"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-palette"
+                  >
+                    <circle cx="13.5" cy="6.5" r=".5" fill="currentColor" />
+                    <circle cx="17.5" cy="10.5" r=".5" fill="currentColor" />
+                    <circle cx="8.5" cy="7.5" r=".5" fill="currentColor" />
+                    <circle cx="6.5" cy="12.5" r=".5" fill="currentColor" />
+                    <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z" />
+                  </svg>
+                </div>
+                Change Theme
+              </div>
+              <div className="flex justify-end items-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="21"
+                  height="21"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.7"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-chevron-right"
+                >
+                  <path d="m9 18 6-6-6-6" />
+                </svg>
+              </div>
+            </div>
           </div>
           <span className="mt-[14px] ">About Transaction</span>
-          <div className="w-full flex flex-col justify-start items-start px-[20px] bg-[#F5F6FA] py-[10px]  p-[20px] rounded-2xl mt-[5px]">
+          <div
+            className={`w-full flex flex-col justify-start items-start px-[20px] bg-[${UIColor}] py-[10px]  p-[20px] rounded-2xl mt-[5px]`}
+            style={{ backgroundColor: `${UIColor}` }}
+          >
             {/* <div className="w-full h-[40px] flex justify-start items-center">
               <div className="w-[24px] h-full flex justify-start items-center mr-[9px]"></div>
             </div> */}
@@ -1441,7 +1657,94 @@ const Settings = (props) => {
           </div>
 
           <span className="mt-[14px] ">Features</span>
-          <div className="w-full flex flex-col justify-start items-start px-[20px] bg-[#F5F6FA] py-[10px]  p-[20px] rounded-2xl mt-[5px]">
+          <div
+            className={`w-full flex flex-col justify-start items-start px-[20px] bg-[${UIColor}] py-[10px]  p-[20px] rounded-2xl mt-[5px]`}
+            style={{ backgroundColor: `${UIColor}` }}
+          >
+            <div
+              className={
+                "w-full  flex flex-col justify-start items-start" +
+                (feature == 5 ? " h-auto" : " h-[40px]")
+              }
+              onClick={() => {
+                setFeature(5);
+              }}
+            >
+              <div className="w-full h-[40px] flex justify-between items-center">
+                <div className="w-auto h-[40px] flex justify-start items-center">
+                  <div className="w-[24px] h-full flex justify-start items-center mr-[9px]">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="21"
+                      height="21"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.7"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="lucide lucide-fingerprint"
+                    >
+                      <path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4" />
+                      <path d="M14 13.12c0 2.38 0 6.38-1 8.88" />
+                      <path d="M17.29 21.02c.12-.6.43-2.3.5-3.02" />
+                      <path d="M2 12a10 10 0 0 1 18-6" />
+                      <path d="M2 16h.01" />
+                      <path d="M21.8 16c.2-2 .131-5.354 0-6" />
+                      <path d="M5 19.5C5.5 18 6 15 6 12a6 6 0 0 1 .34-2" />
+                      <path d="M8.65 22c.21-.66.45-1.32.57-2" />
+                      <path d="M9 6.8a6 6 0 0 1 9 5.2v2" />
+                    </svg>
+                  </div>
+                  Security
+                </div>
+                <div className="w-auto h-full flex justify-end items-center">
+                  {feature == 5 ? (
+                    <>
+                      <Down />
+                    </>
+                  ) : (
+                    <>
+                      <Up />
+                    </>
+                  )}
+                </div>
+              </div>
+              <div
+                className={
+                  "w-full flex justify-between items-start overflow-hidden" +
+                  (feature == 5 ? " h-auto " : " h-0")
+                }
+              >
+                <div className="w-[calc(100%-82px)] h-auto flex justify-start items-start text-[14px] text-[#6f6f6f] ml-[33px]">
+                  If this option is enabled, a PIN will be required to make any
+                  updates.
+                </div>
+                <div
+                  className={
+                    "w-[33px] h-[22px] rounded-full  flex justify-start items-center px-[2px]" +
+                    (PINRequired ? " bg-[white]" : " bg-white")
+                  }
+                  style={{ transition: ".3s", border: `1px solid ${UIIndex}` }}
+                  onClick={() => {
+                    setBtn5(!btn5);
+                    setPINModal(true);
+                    // DueReminderShowFirebaseUpdate();
+                  }}
+                >
+                  <div
+                    className={
+                      "w-[16px] aspect-square rounded-full " +
+                      (PINRequired ? ` ml-[11px]` : " ml-0")
+                    }
+                    style={{
+                      transition: ".3s",
+                      backgroundColor: PINRequired ? `${UIIndex} ` : " #ebebf5",
+                    }}
+                  ></div>
+                </div>
+              </div>
+            </div>
             <div
               className={
                 "w-full  flex flex-col justify-start items-start" +
@@ -1504,9 +1807,9 @@ const Settings = (props) => {
                 <div
                   className={
                     "w-[33px] h-[22px] rounded-full  flex justify-start items-center px-[2px]" +
-                    (btn1 ? " bg-[#00bb0034]" : " bg-white")
+                    (btn1 ? " bg-[white]" : " bg-white")
                   }
-                  style={{ transition: ".3s" }}
+                  style={{ transition: ".3s", border: `1px solid ${UIIndex}` }}
                   onClick={() => {
                     // setBtn1(!btn1);
                     DueReminderShowFirebaseUpdate();
@@ -1514,10 +1817,13 @@ const Settings = (props) => {
                 >
                   <div
                     className={
-                      "w-[18px] aspect-square rounded-full " +
-                      (btn1 ? " ml-[11px] bg-[#00bb00]" : " ml-0 bg-[#ebebf5]")
+                      "w-[16px] aspect-square rounded-full " +
+                      (btn1 ? ` ml-[11px]` : " ml-0")
                     }
-                    style={{ transition: ".3s" }}
+                    style={{
+                      transition: ".3s",
+                      backgroundColor: btn1 ? `${UIIndex} ` : " #ebebf5",
+                    }}
                   ></div>
                 </div>
               </div>
@@ -1578,9 +1884,9 @@ const Settings = (props) => {
                 <div
                   className={
                     "w-[33px] h-[22px] rounded-full  flex justify-start items-center px-[2px]" +
-                    (btn2 ? " bg-[#00bb0034]" : " bg-white")
+                    (btn2 ? " bg-[#ffffff34]" : " bg-white")
                   }
-                  style={{ transition: ".3s" }}
+                  style={{ transition: ".3s", border: `1px solid ${UIIndex}` }}
                   onClick={() => {
                     // setBtn2(!btn2);
                     MonthlyReminderFirebaseUpdate();
@@ -1588,10 +1894,13 @@ const Settings = (props) => {
                 >
                   <div
                     className={
-                      "w-[18px] aspect-square rounded-full " +
-                      (btn2 ? " ml-[11px] bg-[#00bb00]" : " ml-0 bg-[#ebebf5]")
+                      "w-[16px] aspect-square rounded-full " +
+                      (btn2 ? " ml-[11px] " : " ml-0 ")
                     }
-                    style={{ transition: ".3s" }}
+                    style={{
+                      transition: ".3s",
+                      backgroundColor: btn2 ? `${UIIndex} ` : " #ebebf5",
+                    }}
                   ></div>
                 </div>
               </div>
@@ -1657,9 +1966,9 @@ const Settings = (props) => {
                 <div
                   className={
                     "w-[33px] h-[22px] rounded-full  flex justify-start items-center px-[2px]" +
-                    (btn3 ? " bg-[#00bb0034]" : " bg-white")
+                    (btn3 ? " bg-[#ffffff34]" : " bg-white")
                   }
-                  style={{ transition: ".3s" }}
+                  style={{ transition: ".3s", border: `1px solid ${UIIndex}` }}
                   onClick={() => {
                     // setBtn2(!btn2);
                     NotePreviewBlurFirebaseUpdate();
@@ -1667,10 +1976,13 @@ const Settings = (props) => {
                 >
                   <div
                     className={
-                      "w-[18px] aspect-square rounded-full " +
-                      (btn3 ? " ml-[11px] bg-[#00bb00]" : " ml-0 bg-[#ebebf5]")
+                      "w-[16px] aspect-square rounded-full " +
+                      (btn3 ? " ml-[11px]" : " ml-0 ")
                     }
-                    style={{ transition: ".3s" }}
+                    style={{
+                      transition: ".3s",
+                      backgroundColor: btn3 ? `${UIIndex} ` : " #ebebf5",
+                    }}
                   ></div>
                 </div>
               </div>
@@ -1704,7 +2016,10 @@ const Settings = (props) => {
           </div>
 
           <span className="mt-[14px] ">Others</span>
-          <div className="w-full flex flex-col justify-start items-start px-[20px] bg-[#F5F6FA] py-[10px]  p-[20px] rounded-2xl mt-[5px]">
+          <div
+            className={`w-full flex flex-col justify-start items-start px-[20px] bg-[${UIColor}] py-[10px]  p-[20px] rounded-2xl mt-[5px]`}
+            style={{ backgroundColor: `${UIColor}` }}
+          >
             <div
               className="w-full h-[40px] flex justify-start items-center"
               onClick={() => {
@@ -1741,6 +2056,7 @@ const Settings = (props) => {
             <div
               className="w-full h-[40px] flex justify-start items-center text-[#e61d0f]"
               onClick={() => {
+                console.log("clicked");
                 setLogoutModal(true);
                 // userSignOut();
               }}

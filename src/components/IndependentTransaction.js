@@ -123,6 +123,7 @@ const IndependentTransaction = (props) => {
       {showTransaction ? (
         <AboutTransaction
           data={props?.data}
+          UIColor={props?.UIColor}
           // name={props?.name}
           // category={props?.category}
           // amount={props?.amount}
@@ -136,9 +137,15 @@ const IndependentTransaction = (props) => {
       )}
       <div
         className={
-          "independentTran  w-[calc(100%-40px)] min-h-[64px] bg-[#F5F6FA] my-[3px] rounded-2xl px-[20px] font-[google] font-normal text-[15px] text-white flex justify-center items-center  cursor-pointer " +
-          (props?.isLast ? " border-none" : " border-none")
+          "independentTran  w-[calc(100%-40px)] min-h-[60px] bg-[#ffffff]   px-[0px]  font-[google] font-normal text-[15px] text-white flex justify-center items-center  cursor-pointer " +
+          (props?.index == 0 ? " border-none" : " border-t border-[#f9f9f9]")
         }
+        // style={{
+        //   border:
+        //     props?.index == 0
+        //       ? " 0px solid black"
+        //       : ` 1px solid ${props?.UIColor}`,
+        // }}
         onClick={() => {
           setShowTransaction(true);
         }}
@@ -206,8 +213,8 @@ const IndependentTransaction = (props) => {
             className={
               " flex justify-end items-center whitespace-nowrap text-[16px]" +
               (props?.data?.MoneyIsAdded
-                ? " text-[#00bb00]"
-                : " text-[#e61d0f]")
+                ? " text-[#000000]"
+                : " text-[#000000]")
             }
           >
             <BiRupee />

@@ -33,11 +33,11 @@ const QuickSplitInfo = (props) => {
     setMonth(currMonth);
   }
   return (
-    <div className="w-[calc(100%)] h-[140px] flex justify-between items-center font-[google] font-normal px-[20px] bg-[#191A2C]  p-[20px] ">
+    <div className="w-[calc(100%)] h-[140px] flex justify-between items-center font-[google] font-normal px-[20px] bg-[#ffffff]  p-[20px] ">
       <div className="w-[calc(100%/2)] flex flex-col justify-center items-start ">
         <span className=" flex justify-center items-center text-[14px] text-[#00bb00] ">
           {/* <IoCalendarSharp className="text-[12px] mr-[8px]" /> */}
-          <span className="text-[#00bb00]">Total Owed</span>{" "}
+          <span className="text-[#000000]">Total Owed</span>{" "}
           <svg
             className="text-[#00bb00]"
             xmlns="http://www.w3.org/2000/svg"
@@ -45,7 +45,7 @@ const QuickSplitInfo = (props) => {
             height="18"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="currentColor"
+            stroke="#00bb00"
             stroke-width="1.7"
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -56,13 +56,16 @@ const QuickSplitInfo = (props) => {
           </svg>
         </span>
         <span className=" font-[google] font-normal text-[25px] text-[#000000] flex justify-start items-center">
-          <span className=" flex justify-start items-center text-[#ffffff]">
+          <span className=" flex justify-start items-center text-[#000000]">
             <BiRupee className="ml-[-4px] " /> {props?.willGet}{" "}
             {/* <LuCornerDownRight className="text-[25px]" /> */}
           </span>
         </span>
         <span className="font-[google]  text-[14px] text-[#000000]   flex justify-start items-center ">
-          <div className="py-[2px] px-[7px] rounded-xl bg-[#F4F5F7] text-[#000000] flex justify-center items-center">
+          <div
+            className="py-[2px] px-[7px] rounded-xl text-[#000000] flex justify-center items-center"
+            style={{ backgroundColor: `${props?.UIColor}` }}
+          >
             x {props?.count}
           </div>
           {/* <span
@@ -77,7 +80,7 @@ const QuickSplitInfo = (props) => {
         </span>
       </div>
       <div className="w-[calc(100%/2)] flex flex-col justify-center items-end font-[google] font-normal">
-        <span className=" flex justify-center items-center text-[14px] text-[#e61d0f] ">
+        <span className=" flex justify-center items-center text-[14px] text-[#000000] ">
           <svg
             className="text-[#e61d0f]"
             xmlns="http://www.w3.org/2000/svg"
@@ -85,7 +88,7 @@ const QuickSplitInfo = (props) => {
             height="18"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="currentColor"
+            stroke="#e61d0f"
             stroke-width="1.7"
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -97,13 +100,16 @@ const QuickSplitInfo = (props) => {
           Total Due
         </span>
         <span className=" font-[google] font-normal text-[25px] text-[#000000] flex justify-start items-center">
-          <span className=" flex justify-start items-center text-[#ffffff]">
+          <span className=" flex justify-start items-center text-[#000000]">
             <BiRupee className="ml-[-3px] " /> {props?.willPay}{" "}
             {/* <LuCornerDownLeft className="text-[25px]" /> */}
           </span>
         </span>
         <span className="font-[google]  text-[13px] text-[#000000]   flex justify-start items-center ">
-          <div className="py-[2px] px-[7px] rounded-xl bg-[#F4F5F7] text-[#000000] flex justify-center items-center">
+          <div
+            className="py-[2px] px-[7px] rounded-xl text-[#000000] flex justify-center items-center"
+            style={{ backgroundColor: `${props?.UIColor}` }}
+          >
             x {props?.payCount}
           </div>
         </span>

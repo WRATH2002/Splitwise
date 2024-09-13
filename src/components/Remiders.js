@@ -131,7 +131,10 @@ const RemiderCard = (props) => {
 
     setInclude(false);
   }
-
+  useEffect(() => {
+    console.log("ReminderCard Component");
+    console.log(props?.UIIndex);
+  }, [props?.UIIndex]);
   return (
     <>
       {/* {aprroveModal ? (
@@ -217,18 +220,15 @@ const RemiderCard = (props) => {
       {aprroveModal ? (
         <>
           <div
-            className="w-full h-[100svh]  flex flex-col justify-end items-center backdrop-blur-sm bg-[#68777b7a] p-[20px] fixed top-0 left-0  z-40"
+            className="w-full h-[100svh]  flex flex-col justify-end items-center  bg-[#70708628] backdrop-blur-md p-[20px] fixed top-0 left-0  z-40"
             style={{ zIndex: 70 }}
-            // onClick={() => {
-            //   setNotificationModal(false);
-            // }}
           >
             <OutsideClickHandler
               onOutsideClick={() => {
                 setApproveModal(false);
               }}
             >
-              <div className="w-full flex flex-col justify-end items-start h-[40px]">
+              {/* <div className="w-full flex flex-col justify-end items-start h-[40px]">
                 <div className="w-full h-auto flex justify-start items-end z-30">
                   <div className=" w-auto text-[22px] whitespace-nowrap font-[google] font-normal  p-[20px] py-[9px] h-[40px] bg-[#ffffff] flex  justify-start items-center rounded-t-[22px]">
                     <span className="mt-[10px]">Dismiss Reminder</span>
@@ -243,62 +243,81 @@ const RemiderCard = (props) => {
                     <HiOutlinePlus className="rotate-45" />
                   </div>
                 </div>
-              </div>
+              </div> */}
               <div
-                className="w-full z-50 h-auto bg-[#ffffff] drop-shadow-sm   text-black  rounded-b-3xl rounded-tr-3xl font-[google] font-normal text-[14px] flex flex-col justify-center items-start p-[20px]"
+                className="w-full z-50 h-auto bg-[#ffffff] drop-shadow-sm   text-black  rounded-3xl rounded-tr-3xl font-[google] font-normal text-[14px] flex flex-col justify-center items-start p-[30px]"
                 style={{ zIndex: 100 }}
                 onClick={() => {
                   // setNotificationModal(true);
                 }}
               >
-                {/* <span className="w-full text-[22px] text-black font-[google] font-normal flex justify-start items-center ">
-                  Confirm{" "}
-                  <span className="text-[#000000] ml-[5px]">Transaction</span>
-                </span> */}
+                <span className="text-[22px] ">Dismiss Reminder</span>
 
-                <span className="w-full text-[14px] text-[#434343b5] font-[google] font-normal flex justify-center items-start whitespace-pre-wrap  ">
-                  Have you done this transaction already. If you dismiss this
-                  reminder, you will not be notified later. Do you really want
-                  to dismiss this reminder ?
+                <span className="w-full text-[14.5px] text-[#000000a9] mt-[5px] font-[google] font-normal flex justify-center items-start whitespace-pre-wrap  ">
+                  Have you already completed this transaction? If you dismiss
+                  this reminder, you will not receive any further notifications.
+                  Are you sure you want to proceed with dismissing it?
                 </span>
 
-                <span className="w-full text-[14px] text-[#000000] font-[google] font-normal flex justify-start items-center mt-[10px]">
-                  {/* <span className="text-[22px] mr-[6px]">◍</span>{" "} */}
+                {/* <span className="w-full text-[14px] text-[#000000] font-[google] font-normal flex justify-start items-center mt-[10px]">
+                 
                   <span className="mr-[5px] text-[#000000]">Label :</span>{" "}
                   {props?.data?.Lable}
                 </span>
                 <span className="w-full text-[14px] text-[#000000] font-[google] mt-[0px] font-normal flex justify-start items-center ">
-                  {/* <span className="text-[22px] mr-[6px]">◍</span>{" "} */}
+               
                   <span className="mr-[5px] text-[#000000]">Amount :</span>{" "}
                   <BiRupee /> {formatAmountWithCommas(props?.data?.Amount)}
-                </span>
+                </span> */}
 
                 <span
-                  className="w-full text-[14px] text-[#000000] font-[google] font-normal flex justify-start items-center whitespace-pre-wrap   cursor-pointer mt-[10px]"
+                  className="w-full text-[14.5px] text-[#000000a9] font-[google] font-normal flex justify-start items-center whitespace-pre-wrap   cursor-pointer mt-[10px]"
                   onClick={() => {
                     setInclude(!include);
-                    // setNewIncome("");
-                    // setError("");
                   }}
                 >
                   <div
-                    className={
-                      "w-[18px] h-[18px] rounded-md border-[1.5px] border-[#6bb7ff] mr-[6px]  flex justify-center items-center" +
-                      (include ? " bg-[#6bb7ff]" : " bg-transparent")
-                    }
-                    // onClick={() => {
-                    //   setInclude(!include);
-                    //   // setNewIncome("");
-                    //   // setError("");
-                    // }}
+                    className="w-[18px] h-[18px] rounded-md  mr-[6px]  flex justify-center items-center"
+                    style={{
+                      border: `1.5px solid ${props?.UIIndex}`,
+                      backgroundColor: include ? `${props?.UIIndex}` : " white",
+                    }}
                   >
-                    {" "}
-                    <HiCheck className="text-[#fff5ee]" />
+                    <HiCheck
+                      className={
+                        "" + (include ? " text-[#ffffff]" : " text-[#ffffff]")
+                      }
+                    />
                   </div>
                   <span>Include this transaction in Budget</span>
                 </span>
 
-                <div className="w-full flex justify-end items-end font-[google] font-normal text-[15px] text-black h-[20px] mt-[20px]">
+                <div className="w-full h-auto mt-[20px] flex justify-end items-end">
+                  <div
+                    className={`w-auto h-auto rounded-2xl cursor-pointer px-[15px] py-[8px] text-[14px] bg-[${props?.UIColor}]`}
+                    onClick={() => {
+                      setApproveModal(false);
+                      setInclude(false);
+                      // setNewIncome("");
+                      // setError("");
+                    }}
+                    style={{ backgroundColor: `${props?.UIColor} ` }}
+                  >
+                    Close
+                  </div>
+                  <div
+                    className="w-auto h-auto rounded-2xl cursor-pointer px-[15px] py-[8px] text-[14px] bg-[#191A2C] ml-[10px] text-[white]"
+                    onClick={() => {
+                      // updateIncome();
+                      deleteReminder();
+                      setApproveModal(false);
+                    }}
+                  >
+                    Confirm
+                  </div>
+                </div>
+
+                {/* <div className="w-full flex justify-end items-end font-[google] font-normal text-[15px] text-black h-[20px] mt-[20px]">
                   <div
                     className="h-full mr-[25px] flex justify-center items-center cursor-pointer  "
                     onClick={() => {
@@ -320,7 +339,7 @@ const RemiderCard = (props) => {
                   >
                     Confirm
                   </div>
-                </div>
+                </div> */}
               </div>
             </OutsideClickHandler>
           </div>
@@ -330,14 +349,12 @@ const RemiderCard = (props) => {
       )}
       {/* <div className="h-[130px] w-full overflow-x-scroll flex justify-start items-center py-[15px] bg-slate-200"> */}
       <div
-        className={
-          "min-w-[280px] h-full  rounded-2xl flex font-[google] justify-center items-center font-normal ml-[10px]" +
-          (getRemainingTime(props?.data?.Date).includes("due")
-            ? " bg-[#181F32]"
-            : " bg-[#181F32]")
-        }
+        className={`min-w-[280px] h-full  rounded-2xl flex font-[google] justify-center items-center font-normal ml-[10px] bg-[${props?.UIIndex}] text-[black]`}
       >
-        <div className="w-[50px] h-full flex flex-col justify-center items-center">
+        <div
+          className="w-[50px] h-full flex flex-col justify-center items-center rounded-l-2xl"
+          style={{ backgroundColor: `#191A2C` }}
+        >
           <div className="text-[12px] text-[#ffffff]">
             {monthsShort[props?.data?.Date?.split("/")[1] - 1]}
           </div>
@@ -349,9 +366,10 @@ const RemiderCard = (props) => {
           className={
             "w-[140px] h-full  flex flex-col justify-center items-start px-[10px] " +
             (getRemainingTime(props?.data?.Date).includes("due")
-              ? " bg-[#F5F6FA] text-[#4a4a4a]"
-              : " bg-[#F5F6FA] text-[#6a6a6a]")
+              ? ` bg-[${props?.UIColor}] text-[#4a4a4a]`
+              : ` bg-[${props?.UIColor}] text-[#6a6a6a]`)
           }
+          style={{ backgroundColor: `${props?.UIColor}` }}
         >
           <div className="text-[14px] leading-[19px] text-[#000000] line-clamp-2 w-full overflow-hidden text-ellipsis">
             {props?.data?.Lable}
@@ -365,20 +383,17 @@ const RemiderCard = (props) => {
           className={
             "w-[90px] h-full flex flex-col justify-center items-end pr-[10px] rounded-r-2xl" +
             (getRemainingTime(props?.data?.Date).includes("due")
-              ? " bg-[#F5F6FA] text-[#e61d0f]"
-              : " bg-[#F5F6FA] text-[#000000]")
+              ? ` bg-[${props?.UIColor}] text-[#e61d0f]`
+              : ` bg-[${props?.UIColor}] text-[#000000]`)
           }
+          style={{ backgroundColor: `${props?.UIColor}` }}
         >
           <div className="text-[13px] whitespace-nowrap ">
             {getRemainingTime(props?.data?.Date)}
           </div>
           <div
-            className={
-              "text-[white] w-[30px] h-[30px]  mt-[5px] rounded-full text-[20px] flex justify-center items-center cursor-pointer" +
-              (getRemainingTime(props?.data?.Date).includes("due")
-                ? " bg-[#181F32] "
-                : " bg-[#181F32] ")
-            }
+            className={`text-[white] w-[30px] h-[30px]  mt-[5px] rounded-full text-[20px] flex justify-center items-center cursor-pointer bg-[${props?.UIIndex}]`}
+            style={{ backgroundColor: `#191A2C` }}
             onClick={() => {
               setApproveModal(true);
             }}
@@ -460,14 +475,23 @@ const Remiders = (props) => {
   //   return newData;
   // }
 
+  useEffect(() => {
+    console.log("Reminder Component");
+    console.log(props?.UIIndex);
+  }, [props?.UIIndex]);
   return (
     <>
       {/* <div className="w-full h-[130px] "> */}
-      <div className="w-full h-[110px] flex overflow-x-scroll items-center pt-[10px]  px-[10px] pr-[20px]">
+      <div className="w-full h-[110px] flex overflow-x-scroll items-center pt-[10px] px-[10px] pr-[20px]">
         {props?.data?.map((data, index) => {
           return (
             <>
-              <RemiderCard data={data} index={index} />
+              <RemiderCard
+                data={data}
+                index={index}
+                UIColor={props?.UIColor}
+                UIIndex={props?.UIIndex}
+              />
             </>
           );
         })}

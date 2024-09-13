@@ -7,6 +7,7 @@ import BottomNavbar from "./components/BottomNavbar";
 import SplitExpense from "./components/SplitExpense";
 import UsageGraph from "./components/UsageGraph";
 import AuthDetails from "./components/AuthDetails";
+import Calender from "./components/Calenderr";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
       </div>
       <BottomNavbar segment={segment} setSegment={setSegment} /> */}
       <AuthDetails />
+      {/* <Calender /> */}
     </div>
   );
 }

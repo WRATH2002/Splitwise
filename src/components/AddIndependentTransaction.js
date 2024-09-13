@@ -46,6 +46,12 @@ import loadImage from "blueimp-load-image";
 import { jelly } from "ldrs";
 import { squircle } from "ldrs";
 import { SmallSizeIcon } from "./NornmalSizeIcon";
+import { mirage } from "ldrs";
+
+mirage.register();
+
+// Default values shown
+
 squircle.register();
 jelly.register();
 
@@ -122,7 +128,7 @@ const categoryName = [
 
 const paymentName = ["Online UPI", "Credit/Debit Card", "Cash"];
 
-const AddIndependentTransaction = () => {
+const AddIndependentTransaction = (props) => {
   const [addNewTransaction, setAddNewTransaction] = useState(false);
   const [subSection, setSubSection] = useState("");
   const [label, setLabel] = useState("");
@@ -461,18 +467,19 @@ only return data containing 6 fields if no data is found then only one field`;
                           {/* <img src={phot} className="w-[25px] mr-[8px]"></img> */}
                           {/* <FcImageFile className="text-[24px] mr-[8px]" /> */}
                           <div
-                            className="px-[15px] py-[9px] rounded-2xl bg-[#181F32] text-[#ffffff] flex justify-center items-center"
+                            className="px-[15px] py-[9px] rounded-xl  text-[#000000] flex justify-center items-center"
                             onClick={() => {
                               setSubSection("manual");
                             }}
+                            style={{ background: `${props?.UIColor}` }}
                           >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               width="24"
                               height="24"
                               viewBox="0 0 24 24"
-                              fill="white"
-                              stroke="#ffffff"
+                              fill="#000000"
+                              stroke="#000000"
                               stroke-width="2"
                               stroke-linecap="round"
                               stroke-linejoin="round"
@@ -491,12 +498,13 @@ only return data containing 6 fields if no data is found then only one field`;
                           </div>
 
                           <div
-                            className="px-[15px] py-[9px] rounded-2xl bg-[#181F32] text-[#ffffff] flex justify-center items-center"
+                            className="px-[15px] py-[9px] rounded-xl  text-[#000000] flex justify-center items-center"
+                            style={{ background: `${props?.UIColor}` }}
                             onClick={() => {
                               setSubSection("image");
                             }}
                           >
-                            <FaCloudUploadAlt className="text-[25px] text-[#ffffff] mr-[8px]" />
+                            <FaCloudUploadAlt className="text-[25px] text-[#000000] mr-[8px]" />
                             Upload Image
                           </div>
                         </div>
@@ -544,11 +552,16 @@ only return data containing 6 fields if no data is found then only one field`;
                       <div className="w-full h-full flex flex-col justify-center items-center">
                         {/* <span class="loader"></span> */}
 
-                        <l-jelly
+                        {/* <l-jelly
                           size="40"
                           speed="0.9"
                           color="#191A2C"
-                        ></l-jelly>
+                        ></l-jelly> */}
+                        <l-mirage
+                          size="60"
+                          speed="2.5"
+                          color="#191A2C"
+                        ></l-mirage>
                         <span className="text-[17px] mt-[7px]">
                           {subLoading ? (
                             <>Extracting Data</>
@@ -631,15 +644,15 @@ only return data containing 6 fields if no data is found then only one field`;
                           {/* <FcImageFile className="text-[24px] mr-[8px]" /> */}
                           <div className="w-full h-full flex justify-center items-center">
                             <l-squircle
-                              size="48"
-                              stroke="5"
+                              size="45"
+                              stroke="4"
                               stroke-length="0.15"
-                              bg-opacity="0.1"
+                              bg-opacity="0.05"
                               speed="0.9"
                               color="#191A2C"
                             ></l-squircle>
                           </div>
-                          <div className="w-full h-full mt-[-140px] flex justify-center items-center">
+                          <div className="w-full h-full mt-[-123px] flex justify-center items-center">
                             {image == undefined ? (
                               <>
                                 <CgMathPlus className="text-[28px] text-[#181F32]" />{" "}
@@ -676,7 +689,43 @@ only return data containing 6 fields if no data is found then only one field`;
                   </span> */}
                       {/* <h1>OCR.space Image to Text</h1> */}
                       {/* <input /> */}
-                      <div className="flex justify-end items-end w-full h-[30px]  text-[15px]">
+                      <div className="w-full h-auto mt-[10px] flex justify-end items-end">
+                        <div
+                          className={`w-auto h-auto rounded-2xl cursor-pointer px-[15px] py-[8px] text-[14px] bg-[${props?.UIColor}]`}
+                          onClick={() => {
+                            setImage();
+                            setTextArray([]);
+                            setSubSection("");
+                            setAddNewTransaction(false);
+                          }}
+                          style={{ backgroundColor: `${props?.UIColor} ` }}
+                        >
+                          Close
+                        </div>
+                        <button
+                          className={
+                            "w-auto h-auto rounded-2xl cursor-pointer px-[15px] py-[8px] text-[14px]  ml-[10px] " +
+                            (image
+                              ? " bg-[#191A2C] text-[white]"
+                              : " bg-[#191a2c1d] text-[#00000080]")
+                          }
+                          onClick={() => {
+                            if (image) {
+                              uploadImage();
+                              setLoading(true);
+                              setTimeout(() => {
+                                setSubLoading(true);
+                              }, 1500);
+                              run();
+                            } else {
+                            }
+                          }}
+                          disabled={loading || !image}
+                        >
+                          Continue
+                        </button>
+                      </div>
+                      {/* <div className="flex justify-end items-end w-full h-[30px]  text-[15px]">
                         <button
                           className="w-auto h-auto rounded-2xl whitespace-nowrap"
                           onClick={() => {
@@ -707,18 +756,18 @@ only return data containing 6 fields if no data is found then only one field`;
                         >
                           Continue
                         </button>
-                      </div>
+                      </div> */}
                     </>
                   ) : (
                     <>
                       <div className="w-full h-full flex flex-col justify-center items-center">
                         {/* <span class="loader"></span> */}
 
-                        <l-jelly
-                          size="40"
-                          speed="0.9"
-                          color="#5f5f99"
-                        ></l-jelly>
+                        <l-mirage
+                          size="60"
+                          speed="2.5"
+                          color="#191A2C"
+                        ></l-mirage>
                         <span className="text-[17px] mt-[7px]">
                           {subLoading ? (
                             <>Extracting Data</>
@@ -819,7 +868,7 @@ only return data containing 6 fields if no data is found then only one field`;
                       >
                         {/* Label */}
                       </div>
-                      <div
+                      {/* <div
                         className={
                           "w-full h-[60px] bg-[#F5F6FA] flex justify-start font-[google] font-normal    mb-[-60px] px-[15px] rounded-xl" +
                           (label.length > 0
@@ -828,16 +877,19 @@ only return data containing 6 fields if no data is found then only one field`;
                         }
                       >
                         Label
-                      </div>
+                      </div> */}
+                      <span className="text-[#00000061]  text-[15px] font-[google] mb-[5px] ">
+                        Label
+                      </span>
                       <input
                         className={
-                          "outline-none rounded-xl w-full h-[60px] bg-transparent border  px-[15px]  text-black font-[google] font-normal text-[16px] z-40" +
+                          "outline-none rounded-xl w-full h-[45px] bg-transparent border  px-[15px]  text-black font-[google] font-normal text-[16px] z-40" +
                           (label == "NotFound" || label.length == 0
                             ? " pt-[0px]"
-                            : " pt-[18px]") +
+                            : " pt-[0px]") +
                           (label == "NotFound"
                             ? " border-[#d02d2d] "
-                            : " border-[#F5F6FA] ")
+                            : " border-[#efefef] ")
                         }
                         // placeholder="Label"
                         value={label == "NotFound" ? "" : label}
@@ -848,7 +900,7 @@ only return data containing 6 fields if no data is found then only one field`;
                     </div>
                     {/* <div className="flex w-full justify-between h-[50px] items-center mt-[10px]"></div> */}
 
-                    <div className="flex w-full justify-between items-center mt-[5px]">
+                    <div className="flex w-full justify-between items-center mt-[0px]">
                       <div className="flex flex-col justify-between items-start  w-[calc((100%-10px)/2)]">
                         <div
                           className=" w-full  rounded-md flex text-[#0000005d] mb-[2px] justify-start items-center bg-transparent text-[14px] font-[google] font-normal "
@@ -856,7 +908,7 @@ only return data containing 6 fields if no data is found then only one field`;
                         >
                           {/* Date */}
                         </div>
-                        <div
+                        {/* <div
                           className={
                             "w-full h-[60px] bg-[#F5F6FA] flex justify-start font-[google] font-normal    mb-[-60px] px-[15px] rounded-xl" +
                             (value.length > 0
@@ -865,14 +917,17 @@ only return data containing 6 fields if no data is found then only one field`;
                           }
                         >
                           Date
-                        </div>
+                        </div> */}
+                        <span className="text-[#00000061]  text-[15px] font-[google] mb-[5px] mt-[5px]">
+                          Date
+                        </span>
                         <DatePicker
                           // inputClass="custom-input"
                           // style={{
                           //   width: "320px",
                           // }}
                           arrow={false}
-                          className="bg-[#212121] teal h-full w-full flex justify-center mt-[10px] rounded-xl items-center font-[google] font-normal  bg-transparent border-[1px] border-[#535353] text-[14px]"
+                          className="bg-[#212121] teal h-full w-full flex justify-center  rounded-xl items-center font-[google] font-normal  bg-transparent  text-[14px]"
                           disableYearPicker
                           disableMonthPicker
                           weekDays={weekDays}
@@ -889,13 +944,13 @@ only return data containing 6 fields if no data is found then only one field`;
                             return (
                               <button
                                 className={
-                                  "border-[1px]  flex justify-start items-center bg-transparent px-[15px] font-[google] text-[16px] w-full h-[60px] rounded-xl text-black z-40" +
+                                  "flex justify-start items-center bg-transparent px-[15px] font-[google] text-[16px] w-full h-[45px] rounded-xl text-black z-40 border " +
                                   (value == "NotFound" || value.length == 0
                                     ? " pt-[0px]"
-                                    : " pt-[18px]") +
+                                    : " pt-[0px]") +
                                   (value == "NotFound"
                                     ? " border-[#d02d2d] "
-                                    : " border-[#F5F6FA] ")
+                                    : " border-[#efefef] ")
                                 }
                                 onClick={openCalendar}
                               >
@@ -911,12 +966,12 @@ only return data containing 6 fields if no data is found then only one field`;
 
                       <div className="flex flex-col justify-between items-start  w-[calc((100%-10px)/2)] ">
                         <div
-                          className=" w-auto  rounded-md flex text-[#0000005d] mb-[2px] justify-start items-center bg-transparent text-[14px] font-[google] font-normal "
+                          className=" w-auto  rounded-md flex text-[#0000005d] mb-[0px] justify-start items-center bg-transparent text-[14px] font-[google] font-normal "
                           style={{ transition: ".4s" }}
                         >
                           {/* Amount */}
                         </div>
-                        <div
+                        {/* <div
                           className={
                             "w-full h-[60px] bg-[#F5F6FA] flex justify-start font-[google] font-normal   mb-[-60px] px-[15px] rounded-xl" +
                             (price.length > 0
@@ -926,15 +981,18 @@ only return data containing 6 fields if no data is found then only one field`;
                           // style={{ transition: ".3s" }}
                         >
                           Amount
-                        </div>
+                        </div> */}
+                        <span className="text-[#00000061]  text-[15px] font-[google] mb-[5px] mt-[7px] ">
+                          Amount
+                        </span>
                         {/* <BiRupee /> */}
-                        <div className="w-full h-[60px] flex justify-start items-center">
+                        <div className="w-full h-[45px] flex justify-start items-center ">
                           <div
                             className={
-                              "w-[30px] h-[50px] flex justify-end  items-center mr-[-30px] text-black z-50" +
+                              "w-[30px] h-[45px] flex justify-end  items-center mr-[-30px] text-black z-50" +
                               (price == "NotFound" || price.length == 0
                                 ? " pt-[0px]"
-                                : " pt-[18px]")
+                                : " pt-[0px]")
                             }
                           >
                             <BiRupee className="text-[17px]" />
@@ -944,10 +1002,10 @@ only return data containing 6 fields if no data is found then only one field`;
                               "outline-none w-full h-[45px] rounded-xl pl-[35px] bg-transparent border px-[20px] text-black font-[google] font-normal text-[16px] z-40" +
                               (price == "NotFound" || price.length == 0
                                 ? " pt-[0px]"
-                                : " pt-[18px]") +
+                                : " pt-[0px]") +
                               (price == "NotFound"
                                 ? " border-[#d02d2d] "
-                                : " border-[#F5F6FA] ")
+                                : " border-[#efefef] ")
                             }
                             // placeholder="Amount"
                             value={price == "NotFound" ? "" : price}
@@ -1459,15 +1517,15 @@ only return data containing 6 fields if no data is found then only one field`;
         <></>
       )}
       <div
-        className="w-[calc(100%-40px)] h-[65px]  px-[20px] font-[google] font-normal text-[15px] bg-[#181F32] rounded-2xl text-[#ffffff] cursor-pointer flex justify-start items-center"
+        className="w-[40px] h-[40px] fixed bottom-[70px] right-[20px]  font-[google] font-normal text-[15px]  rounded-2xl text-[#ffffff] cursor-pointer flex justify-end items-center"
         onClick={() => {
           setAddNewTransaction(true);
         }}
       >
-        <div className="w-[30px]  flex justify-start items-center text-[23px]  ">
+        <div className="w-[40px] h-[40px] rounded-2xl bg-[#181F32] flex justify-center items-center text-[23px]  ">
           <FiPlus />
         </div>
-        <div className="w-auto ml-[10px] text-[16px] ">Add New Transaction</div>
+        {/* <div className="w-auto ml-[10px] text-[16px] ">Add New Transaction</div> */}
       </div>
     </>
   );

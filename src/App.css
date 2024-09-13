@@ -2,9 +2,67 @@
 @tailwind components;
 @tailwind utilities;
 
+
+
+.sha {
+  -webkit-box-shadow: 0px 0px 20px -9px rgba(0, 0, 0, 0.33);
+  -moz-box-shadow: 0px 0px 20px -9px rgba(0, 0, 0, 0.33);
+  box-shadow: 0px 0px 20px -9px rgba(0, 0, 0, 0.33);
+}
+
+.conicG {
+  background-image: conic-gradient(
+    from 45deg,
+    #e4f1f9,
+    #fde8e8,
+    #f9edf4,
+    #f2f2f4,
+    #e4f1f9
+  );
+  /* animation: 4s spin linear infinite; */
+}
+
 @font-face {
   font-family: google;
   src: url(./assets/font/Product\ Sans\ Regular.ttf);
+}
+@font-face {
+  font-family: geist;
+  src: url(./assets/font/Geist-Regular.ttf);
+}
+@font-face {
+  font-family: geistt;
+  src: url(./assets/font/Geist-Medium.ttf);
+}
+@font-face {
+  font-family: geisttt;
+  src: url(./assets/font/GeistMono-Medium.ttf);
+}
+
+@font-face {
+  font-family: tactico;
+  src: url(./assets/font/Tactico.otf);
+}
+@font-face {
+  font-family: mono;
+  src: url(./assets/font/DMMono-Regular.ttf);
+}
+@font-face {
+  font-family: aquatico;
+  src: url(./assets/font/Aquatico-Regular.otf);
+}
+@font-face {
+  font-family: aero;
+  src: url(./assets/font/poiaeronauttrial-regular.otf);
+}
+@font-face {
+  font-family: sky;
+  src: url(./assets/font/Bropella.ttf);
+}
+
+@font-face {
+  font-family: sky2;
+  src: url(./assets/font/Equinox\ Regular.otf);
 }
 
 @font-face {
@@ -120,6 +178,61 @@ input::placeholder {
   margin-left: 0px;
 }
 
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+.bii {
+  background-image: conic-gradient(
+    from 210deg,
+    #ff7b00,
+    #fc0394,
+    #00b3ff,
+    #3602c3,
+    #ff7b00
+  );
+  /* animation: 4s spin linear infinite; */
+}
+
+.bi {
+  background-image: conic-gradient(
+    from var(--angle),
+    #ff7b00,
+    #fc0394,
+    #00b3ff,
+    #3602c3,
+    #ff7b00
+  );
+  animation: 4s spin linear infinite;
+}
+.b {
+  color: black;
+  /* backdrop-filter: blur(7px); */
+}
+.d {
+  animation: 2.5s blur linear infinite;
+}
+@keyframes blur {
+  0% {
+    backdrop-filter: blur(7px);
+  }
+  50% {
+    backdrop-filter: blur(3px);
+  }
+  100% {
+    backdrop-filter: blur(7px);
+  }
+}
+
+@keyframes spin {
+  from {
+    --angle: 0deg;
+  }
+  to {
+    --angle: 360deg;
+  }
+}
 /* Track */
 ::-webkit-scrollbar-track {
   background: transparent;
@@ -204,5 +317,57 @@ textarea:focus {
   }
   100% {
     transform: rotate(360deg);
+  }
+}
+
+.rubberAnimate {
+  width: 100%;
+  height: auto;
+  animation: bounce-in 0.6s normal;
+  transition: 0.3s;
+}
+.rubberAnimate2 {
+  width: 100%;
+  height: 100%;
+  animation: bounce-in-inner 0.6s normal;
+  transition: 0.3s;
+  /* transition-delay: 0.4s; */
+}
+
+@keyframes bounce-in {
+  0% {
+    opacity: 0;
+    width: 0px;
+    margin-bottom: -400px;
+    transform: scale(0.3);
+  }
+  70% {
+    opacity: 1;
+    width: 100%;
+    margin-bottom: 0px;
+    transform: scale(1.014);
+  }
+  100% {
+    width: 100%;
+    margin-bottom: 0px;
+    transform: scale(1);
+  }
+}
+
+@keyframes bounce-in-inner {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  30% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
   }
 }
