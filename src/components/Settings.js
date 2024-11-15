@@ -21,6 +21,8 @@ import firebase from "../firebase";
 import { arrayUnion, onSnapshot } from "firebase/firestore";
 import { TbLogout } from "react-icons/tb";
 // import { BadgeIndianRupee } from "lucide-react";
+import { storage } from "../firebase";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import { mirage } from "ldrs";
 import UpdateModal, { LogoutModal, SavingsModal, SetPIN } from "./UpdateModal";
 import { ring } from "ldrs";
@@ -96,6 +98,7 @@ const Settings = (props) => {
   const [savings, setSavings] = useState("");
 
   const [income, setIncome] = useState("");
+  const [photo, setPhoto] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [budget, setBudget] = useState("");
@@ -128,6 +131,57 @@ const Settings = (props) => {
   const [PINRequired, setPINRequired] = useState(false);
   const [PINCode, setPINCode] = useState(false);
 
+  function Image(e) {
+    console.log(e.target.files[0]);
+    setImage(e.target.files[0]);
+    // setImageLength(e.target.files.length);
+  }
+
+  const uploadImageGetUrl = async (fileRef) => {
+    const user = firebase.auth().currentUser;
+    var geturl = await uploadBytes(fileRef, image).then((snapshot) => {
+      getDownloadURL(snapshot.ref).then((url) => {
+        console.log("Uploade Image URL");
+        console.log(url);
+        db.collection("Expense").doc(user?.uid).update({
+          Photo: url,
+        });
+        // setBill(url);
+      });
+    });
+    return geturl;
+  };
+
+  const uploadImage = async () => {
+    const user = firebase.auth().currentUser;
+    let date = new Date();
+    let today =
+      date.getDate() + (parseInt(date.getMonth()) + 1) + date.getFullYear();
+    const fileRef = ref(storage, `${user?.uid}`);
+    const myPromise = uploadImageGetUrl(fileRef);
+    if (myPromise) {
+      console.log("Uploading");
+    } else {
+      console.log("Not Uploaded");
+    }
+    // toast.promise(
+    //   myPromise,
+    //   {
+    //     loading: "Sending Image",
+    //     success: "Image Sent",
+    //     error: "Error",
+    //   },
+    //   {
+    //     style: {
+    //       backgroundColor: "#333333",
+    //       color: "#fff",
+    //       font: "work",
+    //       fontWeight: "400",
+    //     },
+    //   }
+    // );
+  };
+
   const userSignOut = () => {
     signOut(auth)
       .then(() => console.log("Signed Out Successfully"))
@@ -150,7 +204,7 @@ const Settings = (props) => {
     const user = firebase.auth().currentUser;
     const userRef = db.collection("Expense").doc(user?.uid);
     onSnapshot(userRef, (snapshot) => {
-      // setMonth(snapshot?.data()?.Photo);
+      setPhoto(snapshot?.data()?.Photo);
       setTransactionHistory(snapshot?.data()?.NormalTransaction);
       setIncome(snapshot?.data()?.TotalIncome);
       setBudget(snapshot?.data()?.Budget);
@@ -1156,28 +1210,39 @@ const Settings = (props) => {
                   className={`w-[80px] h-[80px] rounded-full bg-[${UIColor}] flex justify-center items-center`}
                   style={{ backgroundColor: `${UIColor}` }}
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="60"
-                    height="60"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="#000"
-                    stroke-width="1"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="lucide lucide-user"
-                  >
-                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-                    <circle cx="12" cy="7" r="4" />
-                  </svg>
+                  {photo == "nophoto" ? (
+                    <>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="60"
+                        height="60"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#000"
+                        stroke-width="1"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="lucide lucide-user"
+                      >
+                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                      </svg>
+                    </>
+                  ) : (
+                    <>
+                      <img
+                        src={photo}
+                        className="w-full h-full object-cover rounded-full"
+                      ></img>
+                    </>
+                  )}
                 </div>
                 <div
                   className={`w-[calc(100%-95px)] h-[80px] rounded-3xl bg-[${UIColor}] ml-[15px] flex justify-center items-center
                 `}
                   style={{ backgroundColor: `${UIColor}` }}
                 >
-                  <svg
+                  {/* <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="21"
                     height="21"
@@ -1194,19 +1259,92 @@ const Settings = (props) => {
                     <path d="M17 22v-5.5" />
                     <circle cx="9" cy="9" r="2" />
                   </svg>{" "}
-                  <span className="ml-[10px]">Upload Image</span>
+                  <span className="ml-[10px]">Upload Image</span> */}
+                  <label
+                    className="w-full flex items-center h-full border-dashed rounded-3xl opacity-100   cursor-pointer"
+                    // style={{ transition: "2s", transitionDelay: ".4s" }}
+                    for="image-file-input"
+                  >
+                    <div
+                      className={
+                        "w-full h-full px-[10px] flex flex-col text-[15px] items-center justify-center  border-transparent hover: rounded-md"
+                      }
+                    >
+                      <input
+                        id="image-file-input"
+                        type="file"
+                        accept="image/*"
+                        onChange={Image}
+                        className="hidden"
+                      ></input>
+                      {/* <FaCloudUploadAlt className="text-[55px] text-[#cabefb] mr-[8px]" /> */}
+                      {/* <img src={phot} className="w-[25px] mr-[8px]"></img> */}
+                      {/* <FcImageFile className="text-[24px] mr-[8px]" /> */}
+                      {/* <div className="w-full h-full flex justify-center items-center">
+                        <l-squircle
+                          size="45"
+                          stroke="4"
+                          stroke-length="0.15"
+                          bg-opacity="0.05"
+                          speed="0.9"
+                          color="#191A2C"
+                        ></l-squircle>
+                      </div> */}
+                      <div className="w-full h-full  flex justify-center items-center">
+                        {image == undefined ? (
+                          <>
+                            {/* <CgMathPlus className="text-[28px] text-[#181F32]" />{" "} */}
+                            Select Image
+                          </>
+                        ) : (
+                          <>
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="24"
+                              height="24"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="#181F32"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              class="lucide lucide-image-up"
+                            >
+                              <path d="M10.3 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10l-3.1-3.1a2 2 0 0 0-2.814.014L6 21" />
+                              <path d="m14 19.5 3-3 3 3" />
+                              <path d="M17 22v-5.5" />
+                              <circle cx="9" cy="9" r="2" />
+                            </svg>{" "}
+                            <span className="ml-[10px]">selected</span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </label>
                 </div>
               </div>
 
               <div className="w-full h-auto mt-[10px] flex justify-end items-end">
                 <div
-                  className="w-auto h-auto rounded-2xl cursor-pointer px-[15px] py-[8px] text-[14px] bg-[#191A2C] ml-[10px] text-[white]"
+                  className="w-auto h-auto rounded-2xl cursor-pointer px-[15px] py-[8px] text-[14px]  ml-[10px] text-[#000000]"
+                  style={{ backgroundColor: `${UIColor}` }}
                   onClick={() => {
                     // setErrorModal(false);
+                    // uploadImage();
                     setDpChangeModal(false);
                   }}
                 >
                   Cancel
+                </div>{" "}
+                <div
+                  className="w-auto h-auto rounded-2xl cursor-pointer ml-[15px] px-[15px] py-[8px] text-[14px] bg-[#191A2C] ml-[10px] text-[white]"
+                  onClick={() => {
+                    // setErrorModal(false);
+                    uploadImage();
+                    setDpChangeModal(false);
+                  }}
+                >
+                  Update
                 </div>
               </div>
             </div>
@@ -1259,21 +1397,32 @@ const Settings = (props) => {
               setDpChangeModal(true);
             }}
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="40"
-              height="40"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#000"
-              stroke-width="1.7"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="lucide lucide-user"
-            >
-              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-              <circle cx="12" cy="7" r="4" />
-            </svg>
+            {photo == "nophoto" ? (
+              <>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="40"
+                  height="40"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#000"
+                  stroke-width="1.7"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-user"
+                >
+                  <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+              </>
+            ) : (
+              <>
+                <img
+                  src={photo}
+                  className="w-full h-full object-cover rounded-full"
+                ></img>
+              </>
+            )}
           </div>
           <div className="text-[25px] mt-[7px] text-[black] ">{name}</div>
           {/* <div className="text-[17px] text-[#565656] mt-[-4px]">{email}</div> */}

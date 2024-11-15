@@ -6,6 +6,25 @@ import { onSnapshot } from "firebase/firestore";
 // rgS
 
 export const Profile = (props) => {
+  const [name, setName] = useState("");
+  const [number, setNumber] = useState("");
+  const [photo, setPhoto] = useState("");
+
+  useEffect(() => {
+    updateIncome();
+  }, []);
+
+  function updateIncome() {
+    const user = firebase.auth().currentUser;
+    const userRef = db.collection("Expense").doc(props?.data);
+    onSnapshot(userRef, (snapshot) => {
+      // setMonth(snapshot?.data()?.Photo);
+      setName(snapshot?.data()?.Name);
+      setNumber(snapshot?.data()?.Phone);
+      setPhoto(snapshot?.data()?.Photo);
+    });
+  }
+
   function remove() {
     if (props?.addedMember.includes(props?.data)) {
       props?.setAddedMember(
@@ -20,20 +39,60 @@ export const Profile = (props) => {
   }
   return (
     <>
-      <div
-        className="min-w-[45px] aspect-square rounded-full bg-[#ffddc5] mr-[15px] cursor-pointer"
-        onClick={() => {
-          remove();
-        }}
-      ></div>
+      {firebase.auth().currentUser?.uid == props?.data ? (
+        <></>
+      ) : (
+        <>
+          <div
+            className="min-w-[45px] flex justify-center items-center aspect-square rounded-full bg-[#8088a8] text-[white] mr-[15px] cursor-pointer"
+            onClick={() => {
+              remove();
+            }}
+          >
+            <span className="font-bold">
+              {name?.split(" ")[0]?.charAt(0)}
+              {name?.split(" ")[1]?.charAt(0)}
+            </span>
+          </div>
+        </>
+      )}
     </>
   );
 };
 
 export const ProfileTwo = (props) => {
+  const [name, setName] = useState("");
+  const [number, setNumber] = useState("");
+  const [photo, setPhoto] = useState("");
+
+  useEffect(() => {
+    updateIncome();
+  }, []);
+
+  function updateIncome() {
+    const user = firebase.auth().currentUser;
+    const userRef = db.collection("Expense").doc(props?.data);
+    onSnapshot(userRef, (snapshot) => {
+      // setMonth(snapshot?.data()?.Photo);
+      setName(snapshot?.data()?.Name);
+      setNumber(snapshot?.data()?.Phone);
+      setPhoto(snapshot?.data()?.Photo);
+    });
+  }
   return (
     <>
-      <div className="min-w-[40px] mb-[10px] aspect-square rounded-full bg-[#ffddc5] mr-[10px]"></div>
+      {firebase.auth().currentUser?.uid == props?.data ? (
+        <></>
+      ) : (
+        <>
+          <div className="min-w-[45px] flex justify-center items-center mb-[10px] aspect-square rounded-full bg-[#8088a8] text-[white] mr-[10px]">
+            <span className="font-bold">
+              {name?.split(" ")[0]?.charAt(0)}
+              {name?.split(" ")[1]?.charAt(0)}
+            </span>
+          </div>
+        </>
+      )}
     </>
   );
 };
@@ -41,6 +100,7 @@ export const ProfileTwo = (props) => {
 const Friends = (props) => {
   const [name, setName] = useState("");
   const [number, setNumber] = useState("");
+  const [photo, setPhoto] = useState("");
 
   useEffect(() => {
     updateIncome();
@@ -53,6 +113,7 @@ const Friends = (props) => {
       // setMonth(snapshot?.data()?.Photo);
       setName(snapshot?.data()?.Name);
       setNumber(snapshot?.data()?.Phone);
+      setPhoto(snapshot?.data()?.Photo);
     });
   }
 
@@ -72,15 +133,25 @@ const Friends = (props) => {
 
   return (
     <div
-      className="w-full h-[60px] flex  justify-start items-center font-[google] font-normal text-[17px] border-b-[.7px] border-[#ffede2] cursor-pointer"
+      className={
+        "w-full h-[60px] flex  justify-start items-center font-[google] font-normal text-[17px]  cursor-pointer" +
+        (props?.index == props?.count - 1
+          ? " border-b-[.7px] border-[#ffede200]"
+          : " border-b-[.7px] border-[#F5F6FA]")
+      }
       onClick={() => {
         addOrRemoveElement();
       }}
     >
-      <div className="w-[45px] aspect-square rounded-full bg-[#ffddc5]"></div>
+      <div className="w-[45px] aspect-square rounded-full bg-[#F5F6FA] flex justify-center items-center">
+        <span className="font-bold">
+          {name?.split(" ")[0]?.charAt(0)}
+          {name?.split(" ")[1]?.charAt(0)}
+        </span>
+      </div>
       <div className="ml-[15px] flex flex-col justify-center items-start">
         <span>{name}</span>
-        <span className="text-[13px] mt-[0px] text-[#828282]">8100524419</span>
+        <span className="text-[13px] mt-[0px] text-[#999999]">{number}</span>
       </div>
     </div>
   );

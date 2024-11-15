@@ -242,7 +242,7 @@ const SplitExpense = () => {
   }
 
   function searchUserFriendChangeWord() {
-    let words = searchName.split(" ");
+    let words = searchName?.trim()?.split(" ");
     for (let i = 0; i < words.length; i++) {
       words[i] =
         words[i].charAt(0).toUpperCase() + words[i].slice(1).toLowerCase();
@@ -547,25 +547,25 @@ const SplitExpense = () => {
   return (
     <>
       {addModal ? (
-        <div className="w-[calc(100%-40px)] h-[calc(100svh-40px)] rounded-3xl fixed  bg-[#fff5ee] top-[20px] left-[20px] flex flex-col justify-start items-start py-[30px] text-black z-50">
+        <div className="w-[calc(100%-40px)] h-[calc(100svh-40px)] rounded-3xl fixed  bg-[#ffffff] top-[20px] left-[20px] flex flex-col justify-start items-start py-[30px] text-black z-50">
           <span className="px-[30px] w-full text-[25px] text-black font-[google] font-normal flex justify-start items-center mb-[10px] mt-[-10px]">
-            Add <span className="text-[#de8544] ml-[10px]">Member</span>
+            Add <span className="text-[#000000] ml-[10px]">Member</span>
           </span>
-          <div
+          {/* <div
             className={
-              "px-[35px] pr-[5px]  w-auto  rounded-md flex justify-start items-center bg-transparent ml-[5px]   font-[google] font-normal mt-[15px]" +
+              "px-[35px] pr-[5px]  w-auto  rounded-md flex justify-start items-center ml-[5px]   font-[google] font-normal mt-[15px]" +
               (searchName?.length === 0
-                ? " h-[45px] mb-[-45px] z-30 border border-transparent text-[#8b8b8b] text-[15px]"
-                : " h-[1px] mb-[-1px] z-50 border border-[#fff5ee] text-[#de8544] text-[14px]")
+                ? " h-[45px] mb-[-45px] z-30  text-[#3f3f3f] text-[15px]"
+                : " h-[1px] mb-[-1px] z-50  text-[#858585] text-[14px]")
             }
             style={{ transition: ".4s" }}
           >
             Friend's Name
-          </div>
+          </div> */}
           <div className="px-[30px] w-full h-[45px] flex justify-start items-center ">
             <input
-              className="outline-none rounded-md w-full h-[45px] bg-transparent border border-[#ffd8be] px-[10px]  font-[google] font-normal text-[16px] z-40"
-              // placeholder="Name"
+              className="outline-none rounded-xl w-full h-[45px] px-[15px]  font-[google] font-normal bg-[#F5F6FA] text-[17px] z-40"
+              placeholder="Search here ..."
               value={searchName}
               onChange={(e) => {
                 setSearchName(e.target.value);
@@ -574,7 +574,7 @@ const SplitExpense = () => {
             {searchName !== "" ? (
               <>
                 <div
-                  className="w-[45px] h-full flex justify-center items-center ml-[-45px] text-[18px] cursor-pointer z-50 hover:text-[#de8544]"
+                  className="w-[45px] h-full flex justify-center items-center ml-[-45px] text-[20px] cursor-pointer z-50 "
                   onClick={() => {
                     // addToFirebase();
                     // addPerson();
@@ -593,28 +593,54 @@ const SplitExpense = () => {
             className={
               "px-[30px] w-full mt-[10px]  overflow-y-scroll " +
               (addedMember?.length === 0
-                ? " h-[calc(100%-128px)]"
-                : " h-[calc(100%-218px)]")
+                ? " h-[calc(100%-113px)]"
+                : " h-[calc(100%-203px)]")
             }
           >
             {userList.length === 0 ? (
               <>
-                <div className="w-full h-[60px] flex flex-col  justify-center text-[15px] items-center font-[google] font-normal text-[#de8544]"></div>
+                <div className="w-full h-[60px] flex  justify-center items-center font-[google] font-normal text-[17px]  cursor-pointer">
+                  <span className="z-10 text-[16px] flex justify-center items-center">
+                    No Result Found{" "}
+                    <div className="ml-[10px]">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="21"
+                        height="21"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="lucide lucide-satellite"
+                      >
+                        <path d="M13 7 9 3 5 7l4 4" />
+                        <path d="m17 11 4 4-4 4-4-4" />
+                        <path d="m8 12 4 4 6-6-4-4Z" />
+                        <path d="m16 8 3-3" />
+                        <path d="M9 21a6 6 0 0 0-6-6" />
+                      </svg>
+                    </div>
+                  </span>
+                </div>
               </>
             ) : (
               <>
-                {userList?.map((data) => {
+                {userList?.map((data, index) => {
                   return (
                     <>
                       <Friends
                         data={data}
+                        index={index}
+                        count={userList?.length}
                         addedMember={addedMember}
                         setAddedMember={setAddedMember}
                       />
                     </>
                   );
                 })}
-                <Friends
+                {/* <Friends
                   data={{ UserID: "50QaJrpno3SIKLnfQxqbzHOSXpy1" }}
                   addedMember={addedMember}
                   setAddedMember={setAddedMember}
@@ -653,20 +679,20 @@ const SplitExpense = () => {
                   data={{ UserID: "kqctxvgivIcDULNNpBF8ezervvb5zI42" }}
                   addedMember={addedMember}
                   setAddedMember={setAddedMember}
-                />
+                /> */}
                 <div></div>
               </>
             )}
           </div>
           <div
             className={
-              "w-[calc(100%-40px)] flex flex-col justify-center px-[30px] items-start font-[google] font-normal text-[15px] fixed bottom-[70px] left-[20px]   bg-[#fff5ee] z-50 overflow-hidden" +
+              "w-[calc(100%-40px)] flex flex-col justify-center px-[30px] items-start font-[google] font-normal text-[16px] fixed bottom-[70px] left-[20px]   bg-[#F5F6FA] z-50 overflow-hidden" +
               (addedMember?.length === 0 ? " h-0" : " h-[90px]")
             }
             style={{ transition: ".2s" }}
           >
             <div>Members Selected</div>
-            <div className="w-full flex justify-start items-center mt-[8px] ">
+            <div className="w-full flex justify-start h-[45px] items-center mt-[8px] ">
               {addedMember.map((data) => {
                 return (
                   <Profile
@@ -678,9 +704,9 @@ const SplitExpense = () => {
               })}
             </div>
           </div>
-          <div className="w-[calc(100%-40px)] flex justify-center items-end font-[google] font-normal text-[17px] fixed bottom-[20px] left-[20px] rounded-b-3xl  h-[50px] px-[20px]  bg-[#fff5ee] z-50 ">
+          <div className="w-[calc(100%-40px)] flex justify-center items-end font-[google] font-normal text-[17px] fixed bottom-[20px] left-[20px] rounded-b-3xl  h-[50px] px-[20px]  bg-[#F5F6FA] z-50 ">
             <div
-              className="h-full  flex justify-center items-center text-[#de8544] cursor-pointer "
+              className="h-full  flex justify-center items-center text-[#000000] cursor-pointer "
               onClick={() => {
                 // addToFirebase();
                 // addPerson();
@@ -1267,9 +1293,31 @@ const SplitExpense = () => {
                   </div>
                 </div>
 
+                <div className="flex flex-col w-full justify-center items-start mt-[15px] font-[google] font-normal text-black text-[15px]">
+                  <span className="text-[#000000]">Add Members</span>
+
+                  <div className="w-full h-auto mt-[10px] flex justify-start items-center flex-wrap">
+                    {addedMember.map((data) => {
+                      return (
+                        <>
+                          <ProfileTwo data={data} />{" "}
+                        </>
+                      );
+                    })}
+                    <div
+                      className="w-[45px] h-[45px] mb-[10px] rounded-full bg-[#8088a8] text-[white] flex justify-center items-center "
+                      onClick={() => {
+                        setAddModal(true);
+                      }}
+                    >
+                      <FiPlus className="text-[22px]" />
+                    </div>
+                  </div>
+                </div>
+
                 <div className="w-full h-auto mt-[10px] flex justify-end items-end">
                   <div
-                    className="w-auto h-auto rounded-2xl cursor-pointer px-[15px] py-[8px] text-[14px] bg-[#F4F5F7]"
+                    className=" mr-[15px] px-[15px] py-[10px] rounded-3xl bg-[#F5F6FA] text-[black] flex justify-center items-center cursor-pointer font-[google] "
                     onClick={() => {
                       setSplitModal(false);
                       setLabel("");
@@ -1294,7 +1342,7 @@ const SplitExpense = () => {
                   mode != "NotFound" ? (
                     <>
                       <div
-                        className="w-auto h-auto rounded-2xl cursor-pointer px-[15px] py-[8px] text-[14px] bg-[#191A2C] ml-[10px] text-[white]"
+                        className=" flex justify-center  px-[15px] py-[10px] rounded-3xl bg-[#181F32] text-[white] items-center cursor-pointer font-[google]"
                         onClick={() => {
                           // if (
                           //   label?.length != 0 &&
@@ -1304,9 +1352,8 @@ const SplitExpense = () => {
                           //   mode?.length != 0
                           //   // bill?.length != 0
                           // ) {
-                          setSubSection("");
-                          addToFirebase();
-                          setAddNewTransaction(false);
+                          mapOverAll();
+                          setSplitModal(false);
                           // }
                         }}
                       >
@@ -1316,7 +1363,7 @@ const SplitExpense = () => {
                   ) : (
                     <>
                       <div
-                        className="w-auto h-auto rounded-2xl cursor-pointer px-[15px] py-[8px] text-[14px] bg-[#181f3223] ml-[10px] text-[#0000006c]"
+                        className="flex justify-center  px-[15px] py-[10px] rounded-3xl bg-[#181f3223] items-center text-[#0000006c]  font-[google]"
                         onClick={() => {
                           // if (
                           //   label?.length != 0 &&
@@ -1326,8 +1373,8 @@ const SplitExpense = () => {
                           //   mode?.length != 0
                           //   // bill?.length != 0
                           // ) {
-                          //   addToFirebase();
-                          //   setAddNewTransaction(false);
+                          // addToFirebase();
+                          // setAddNewTransaction(false);
                           // }
                         }}
                       >
@@ -1336,6 +1383,31 @@ const SplitExpense = () => {
                     </>
                   )}
                 </div>
+                {/* <div className="w-full flex justify-end items-end font-[google] font-normal text-[15px] text-black h-[20px] mt-[20px]">
+                  <div
+                    className="h-full mr-[20px] flex justify-center items-center cursor-pointer  "
+                    onClick={() => {
+                      setSplitModal(false);
+                      setLabel("");
+                      setPrice("");
+                      setCategory("");
+                      setMode("");
+                      setBill("");
+                    }}
+                  >
+                    Cancel
+                  </div>
+                  <div
+                    className="h-full  flex justify-center items-center text-[#de8544] cursor-pointer "
+                    onClick={() => {
+                      // addToFirebase();
+                      mapOverAll();
+                      setSplitModal(false);
+                    }}
+                  >
+                    Add
+                  </div>
+                </div> */}
               </div>
             </div>
           </div>

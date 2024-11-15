@@ -137,7 +137,7 @@ const IndependentTransaction = (props) => {
       )}
       <div
         className={
-          "independentTran  w-[calc(100%-40px)] min-h-[60px] bg-[#ffffff]   px-[0px]  font-[google] font-normal text-[15px] text-white flex justify-center items-center  cursor-pointer " +
+          "independentTran  w-[calc(100%-40px)] min-h-[60px] bg-[#ffffff00]   px-[0px]  font-[google] font-normal text-[15px] text-white flex justify-center items-center  cursor-pointer " +
           (props?.index == 0 ? " border-none" : " border-t border-[#f9f9f9]")
         }
         // style={{
